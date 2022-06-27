@@ -7,13 +7,13 @@
 
 #include <QSizePolicy>
 
-#include <Kart/Player/Player.h>
+#include "2DGraphics/GPlayer.h";
 
 class PlayerScoreItem : public QFrame
 {
     Q_OBJECT
 public:
-    explicit PlayerScoreItem(Player *player, QWidget *parent = nullptr);
+    explicit PlayerScoreItem(GPlayer *g_player, QWidget *parent = nullptr);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -23,8 +23,9 @@ private:
     QLabel *label_playerName;
     QLabel *label_lastCheckpoint;
     QLabel *label_currentLap;
+    QLabel *label_controller;
 
-    Player *player;
+    GPlayer *g_player;
 
 private slots:
     void updateWidget();

@@ -57,22 +57,17 @@ void Window::gameInfoUpdated()
 {
     ui->spinBox_playersCount->setValue(engine->getGameMode()->_players->count());
 
-    for (Player *player : engine->getGameMode()->_players->values()) {
+    for (GPlayer *g_player : engine->getPlayersGraphics().values()) {
 
-        PlayerScoreItem *playerScoreItem = scorebordItem->value(player->getUuid());
+        PlayerScoreItem *playerScoreItem = scorebordItem->value(g_player->getPlayer()->getUuid());
 
         if (playerScoreItem == nullptr) {
-            playerScoreItem = new PlayerScoreItem(player);
+            playerScoreItem = new PlayerScoreItem(g_player);
 
             scorebordLayout->addWidget(playerScoreItem);
-            scorebordItem->insert(player->getUuid(), playerScoreItem);
+            scorebordItem->insert(g_player->getPlayer()->getUuid(), playerScoreItem);
         }
     }
-
-//    QAbstractItemModel *model = new QStandardItemModel(4,2,this);
-
-
-//    ui->tableView_scoreboard->setModel(model);
 }
 
 void Window::teamNumberUpdated(int team)
@@ -95,7 +90,7 @@ void Window::reset()
     this->timer->stop();
 
     ui->pushButton_start->setDisabled(false);
-    ui->tabWidget_scoreboard->clear();
+    clearLayout(scorebordLayout);
 
     scorebordItem->clear();
 
@@ -103,6 +98,22 @@ void Window::reset()
     ui->spinBox_teamNumber->setDisabled(false);
 
     engine->reset();
+}
+
+void Window::clearLayout(QLayout *layout) {
+    if (layout == NULL)
+        return;
+    QLayoutItem *item;
+    while((item = layout->takeAt(0))) {
+        if (item->layout()) {
+            clearLayout(item->layout());
+            delete item->layout();
+        }
+        if (item->widget()) {
+           delete item->widget();
+        }
+        delete item;
+    }
 }
 
 void Window::reload()

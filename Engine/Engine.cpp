@@ -139,7 +139,7 @@ void Engine::control_th()
         for (QGraphicsItem *gItem : g_items ) {
             QGraphicsObject *gObject = static_cast<QGraphicsObject *>(gItem);
 
-            if (gObject->property("type") == GCheckpoint::type) {
+            if (gObject->property("type") == GCheckpoint::type && gameStarted) {
                 GCheckpoint* g_checkpoint = (GCheckpoint*)gObject;
 
                 int nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
@@ -581,4 +581,9 @@ void Engine::reset()
     this->_map->reste();
 
     this->gameUpdate();
+}
+
+QMap<QString, GPlayer*> Engine::getPlayersGraphics()
+{
+    return playersGraphics;
 }
