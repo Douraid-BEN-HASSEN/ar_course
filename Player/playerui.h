@@ -12,6 +12,8 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QImage>
+#include <MqttService.h>
 
 class PlayerUi : public QWidget
 {
@@ -26,10 +28,12 @@ private :
     QLabel *labelAngle ;
     QLabel *labelPower ;
     QVBoxLayout *mainLayout ;
+    QLabel *labelImage ;
 
     //Component for the first modale ( select pseudo, select vehicle , select team )
     QVBoxLayout *initialLayout ;
     QLabel *labelPseudo ;
+    QLabel *labelPseudoRequired ;
     QDialog *dialogInitial ;
     QLineEdit *lineEditPseudo ;
     QLabel *labelController ;

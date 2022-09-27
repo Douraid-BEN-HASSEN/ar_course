@@ -2,37 +2,36 @@
 #include <QVBoxLayout>
 
 //to do :
-// changer le layout
-// ajouter le code d'alexis
 // envoyer du mqtt
 //améliorer le visuel ( plus tard ça  )
+//mettre une alerte si champs pas remplis
 
 void PlayerUi::keyPressEvent(QKeyEvent *key){
     switch(key->key()) {
     case Qt::Key_Z:
         this->catchKeyUp();
-    break;
+        break;
     case Qt::Key_Q:
         this->catchKeyLeft();
-    break ;
+        break ;
     case Qt::Key_S:
         this->catchKeyDown();
-    break ;
+        break ;
     case Qt::Key_D:
         this->catchKeyRight();
-    break ;
+        break ;
     case Qt::Key_1:
         this->catchActionKey(1);
-    break ;
+        break ;
     case Qt::Key_2:
         this->catchActionKey(2);
-    break ;
+        break ;
     case Qt::Key_3:
         this->catchActionKey(3);
-    break ;
+        break ;
     case Qt::Key_4:
         this->catchActionKey(4);
-    break ;
+        break ;
     }
     this->updateLabel();
 
@@ -42,18 +41,29 @@ void PlayerUi::buttonPlayPressed()
 {
     qDebug() << "button clicked" ;
 
-    //Make json file for register
-    QJsonObject messageJsonObject ;
-    messageJsonObject.insert("uuid" , this->uuid);
-    messageJsonObject.insert("pseudo" , this->lineEditPseudo->text());
-    messageJsonObject.insert("controller" , this->comboBoxController->currentText());
-    messageJsonObject.insert("vehicle" , this->comboBoxVehicle->currentText());
-    messageJsonObject.insert("team" , this->comboBoxTeam->currentText() == "No team" ? "null" : this->comboBoxTeam->currentText());
-    QJsonDocument doc(messageJsonObject);
-    QString strJson(doc.toJson(QJsonDocument::Compact));
-    QByteArray paquet ;
-    paquet.push_back(strJson.toUtf8());
-    qDebug() << strJson ;
+    if (this->lineEditPseudo->text() != "")
+    {
+        //Make json file for register
+        /*
+        QJsonObject messageJsonObject ;
+        messageJsonObject.insert("uuid" , this->uuid);
+        messageJsonObject.insert("pseudo" , this->lineEditPseudo->text());
+        messageJsonObject.insert("controller" , this->comboBoxController->currentText());
+        messageJsonObject.insert("vehicle" , this->comboBoxVehicle->currentText());
+        messageJsonObject.insert("team" , this->comboBoxTeam->currentText() == "No team" ? "null" : this->comboBoxTeam->currentText());
+        QJsonDocument doc(messageJsonObject);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        QByteArray paquet ;
+        paquet.push_back(strJson.toUtf8());
+        qDebug() << strJson ;
+        */
+        MqttService::instance()->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText() , this->comboBoxTeam->currentText());
+        delete this->initialLayout ;
+        qDeleteAll(this->children());
+        this->setLayout(mainLayout);
+    } else
+        this->labelPseudoRequired->setText("<h3  > <font color=\"red\"> Please enter pseudo </font> </h3>");
+
 }
 
 void PlayerUi::catchKeyUp() {
@@ -81,9 +91,10 @@ void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
 {
     qDebug() << "makeMqttMessage angle : " << angle << " power : " << power << " keyAction : " << keyAction ;
 
-    QString topic = "/player/control" ;
+    //QString topic = "/player/control" ;
 
     //Make json object
+    /*
     QJsonObject messageJsonObject ;
     messageJsonObject.insert("uuid" , this->uuid);
     messageJsonObject.insert("angle" , angle);
@@ -99,12 +110,28 @@ void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
     paquet.push_back(strJson.toUtf8());
 
     qDebug() << strJson ;
+    */
+     MqttService::instance()->sendMessageControl(this->uuid , angle , this->power , keyAction);
 }
 
 void PlayerUi::updateLabel()
 {
     this->labelAngle->setText("<h1> Angle : " + QString::number(this->angle) + " </h1> ");
     this->labelPower->setText("<h1> Power : " + QString::number(this->power) + " </h1> ");
+    switch ((int)this->angle) {
+    case 0 :
+        this->labelImage->setText("^");
+        break;
+    case 90 :
+        this->labelImage->setText(">");
+        break ;
+    case 180 :
+        this->labelImage->setText("V");
+        break ;
+    case 270 :
+        this->labelImage->setText("<");
+        break ;
+    }
 }
 
 void PlayerUi::catchKeyLeft() {
@@ -133,16 +160,23 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->angle = 180 ;
     this->power = 0 ;
     this->uuid = QUuid::createUuid().toString();
+
+    //Graphic content for debugging
     this->labelPower = new QLabel("<h1> Power : " + QString::number(this->power) + " </h1>") ;
     this->labelAngle = new QLabel("<h1> Angle : " + QString::number(this->angle) + " </h1> ") ;
+    this->labelImage = new QLabel("V") ;
+
+
     this->mainLayout = new QVBoxLayout ;
     this->mainLayout->addWidget(this->labelPower);
     this->mainLayout->addWidget(this->labelAngle);
+    this->mainLayout->addWidget(this->labelImage);
 
     //Make initial modale
 
     this->initialLayout = new QVBoxLayout ;
     this->labelPseudo = new QLabel("<h3> Pseudo : </h3>");
+    this->labelPseudoRequired = new QLabel("<h3  > <font color=\"white\"> Please enter pseudo </font> </h3>");
     this->lineEditPseudo = new QLineEdit ;
     this->labelController = new QLabel("<h3> Controller : </h3>");
     this->comboBoxController = new QComboBox ;
@@ -164,6 +198,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->initialButton = new QPushButton("VROOM VROOM !") ;
 
     this->initialLayout->addWidget(labelPseudo);
+    this->initialLayout->addWidget(labelPseudoRequired);
     this->initialLayout->addWidget(lineEditPseudo);
     this->initialLayout->addWidget(labelController);
     this->initialLayout->addWidget(comboBoxController);
