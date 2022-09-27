@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include "caruco.h"
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -14,7 +15,7 @@ int main(int argc, char *argv[])
         inputVideo.grab();
         inputVideo.retrieve(image);
 
-        aruco.detect(image);
+        qDebug() << aruco.detect(image);
 
         cv::waitKey(20);
     }

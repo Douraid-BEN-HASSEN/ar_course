@@ -29,8 +29,8 @@ void CMQtt::subscribe(QString pTopic)
 void CMQtt::updateLogStateChange()
 {
     qDebug() << "Etat mqtt : " << m_client->state();
-    if(m_client->state() == 2)  this->initSub();
-    else if(this->m_client->state() == 0) this->m_client->connectToHost();
+    /*if(m_client->state() == 2)  this->initSub();
+    else if(this->m_client->state() == 0) this->m_client->connectToHost();*/
 }
 
 //reception msg

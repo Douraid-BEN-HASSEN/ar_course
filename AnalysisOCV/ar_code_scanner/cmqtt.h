@@ -23,8 +23,6 @@ private:
     QMqttClient *m_client;
     // Subscriber mqtt
     QMqttSubscription *scanSubscriber;
-    // init la gestion
-    void initSub();
 
 
 public slots:
