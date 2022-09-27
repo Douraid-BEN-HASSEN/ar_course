@@ -5,13 +5,12 @@
 #include <QtMqtt/QtMqtt>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include "src/Kart/Map/Field.h"
 
 const static struct {
-    const QString hostname = "localhost";
+    const QString hostname = "127.0.0.1";
     const unsigned short port = 1883;
-    const QString username = "user";
-    const QString password = "pass";
+    const QString username = "";
+    const QString password = "";
 } Config;
 
 class MqttService: public QObject

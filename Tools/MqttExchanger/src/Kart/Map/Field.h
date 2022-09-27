@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QMap>
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonDocument>
+
 #include "Obstacle.h"
 #include "Checkpoint.h"
 
@@ -20,6 +23,9 @@ public:
     QMap<int, Checkpoint*> *checkpoints = new QMap<int, Checkpoint*>();
 
     void deserialize(const QJsonObject &);
+    QString serialize();
+    QJsonObject toJson();
+
 
 private:
     explicit Field(QObject *parent = nullptr);
