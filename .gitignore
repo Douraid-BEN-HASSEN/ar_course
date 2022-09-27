@@ -36,3 +36,5 @@ AnalysisOCV/
 *.cflags
 
 .idea/
+
+build-*/

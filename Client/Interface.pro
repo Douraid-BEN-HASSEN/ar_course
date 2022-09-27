@@ -16,7 +16,9 @@ SOURCES += \
     Mqtt/MqttService.cpp \
     Player.cpp \
     main.cpp \
-    interface.cpp
+    interface.cpp \
+    testQGraphics2022/obstaclerect.cpp \
+    testQGraphics2022/widget.cpp
 
 HEADERS += \
     Kart/Map/Checkpoint.h \
@@ -24,10 +26,13 @@ HEADERS += \
     Kart/Map/Obstacle.h \
     Mqtt/MqttService.h \
     Player.h \
-    interface.h
+    interface.h \
+    testQGraphics2022/obstaclerect.h \
+    testQGraphics2022/widget.h
 
 FORMS += \
-    interface.ui
+    interface.ui \
+    testQGraphics2022/widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
