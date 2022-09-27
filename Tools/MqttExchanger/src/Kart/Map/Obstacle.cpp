@@ -23,5 +23,4 @@ QJsonObject Obstacle::toJson() {
     jObject["angle"] = this->angle;
 
     return jObject;
-
 }
