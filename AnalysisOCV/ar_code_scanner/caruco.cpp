@@ -5,6 +5,11 @@ CAruco::CAruco()
 
 }
 
+CAruco::~CAruco()
+{
+
+}
+
 QList<int> CAruco::detect(cv::Mat &pImage)
 {
     QList<int> result;
@@ -30,7 +35,7 @@ QList<int> CAruco::detect(cv::Mat &pImage)
         // On dessine les marqueurs détectés sur l'image
         cv::aruco::drawDetectedMarkers(imageCopy, corners, ids);
 
-        // remplissage talbeau result
+        // remplissage tableau result
         for (std::vector<int>::iterator nId = ids.begin() ; nId != ids.end(); nId++)
             result.append(*nId);
     }

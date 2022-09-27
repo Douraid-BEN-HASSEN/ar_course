@@ -15,7 +15,12 @@
 class CAruco
 {
 public:
+    // Constructor
     CAruco();
+
+    // Destructor
+    ~CAruco();
+
     // Méthode qui retourne les ids dans une image
     QList<int> detect(cv::Mat &pImage);
 };
