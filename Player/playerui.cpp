@@ -34,14 +34,16 @@ void PlayerUi::keyPressEvent(QKeyEvent *key){
 
 void PlayerUi::catchKeyUp() {
     qDebug() << "Catch key up" ;
-    this->power++ ;
+    if (this->power != 100)
+        this->power++ ;
     this->makeMqttMessage(0 , this->power , 0 );
 
 }
 
 void PlayerUi::catchKeyDown() {
     qDebug() << "Catch key down" ;
-    this->power--;
+    if (this->power != -100)
+        this->power--;
     this->makeMqttMessage(0 , this->power , 0 );
 }
 
@@ -61,7 +63,7 @@ void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
     QJsonObject messageJsonObject ;
     messageJsonObject.insert("uuid" , this->uuid);
     messageJsonObject.insert("angle" , angle);
-    messageJsonObject.insert("power" , power);
+    messageJsonObject.insert("power" , this->power);
     QJsonObject messageJsonButtonsObject ;
     messageJsonButtonsObject.insert("banana" , keyAction == 1 ? true : false);
     messageJsonButtonsObject.insert("bomb" , keyAction == 2 ? true : false);
@@ -113,9 +115,42 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->mainLayout->addWidget(this->labelPower);
     this->mainLayout->addWidget(this->labelAngle);
 
-    this->setLayout(mainLayout);
+    //Make initial modale
 
-    //Modale pseudo
+    this->intialLayout = new QVBoxLayout ;
+    this->labelPseudo = new QLabel("<h3> Pseudo : </h3>");
+    this->lineEditPseudo = new QLineEdit ;
+    this->labelController = new QLabel("<h3> Controller : </h3>");
+    this->comboBoxController = new QComboBox ;
+    this->comboBoxController->addItem("ia");
+    this->comboBoxController->addItem("keyboard");
+    this->comboBoxController->addItem("controller");
+    this->comboBoxController->addItem("vr");
+    this->comboBoxController->addItem("phone");
+    this->labelVehicle = new QLabel("<h3> Vehicle </h3>");
+    this->comboBoxVehicle = new QComboBox ;
+    this->comboBoxVehicle->addItem("bike");
+    this->comboBoxVehicle->addItem("car");
+    this->comboBoxVehicle->addItem("truck");
+    this->labelTeam = new QLabel("<h3> Team </h3>");
+    this->spinBoxTeam = new QSpinBox;
+    this->initialButton = new QPushButton("VROOM VROOM !") ;
+
+    this->intialLayout->addWidget(labelPseudo);
+    this->intialLayout->addWidget(lineEditPseudo);
+    this->intialLayout->addWidget(labelController);
+    this->intialLayout->addWidget(comboBoxController);
+    this->intialLayout->addWidget(labelVehicle);
+    this->intialLayout->addWidget(comboBoxVehicle);
+    this->intialLayout->addWidget(labelTeam);
+    this->intialLayout->addWidget(spinBoxTeam);
+    this->intialLayout->addWidget(initialButton);
+
+    this->setLayout(this->intialLayout);
+    //this->setLayout(initialLayout);
+
+
+    //this->setLayout(mainLayout);
 
 }
 
