@@ -12,17 +12,17 @@ class CMQtt: public QObject
     Q_OBJECT
 public:
     // Constructeur
-    CMQtt(QObject*, QString pHost, int pPort, QString pUser, QString);
+    CMQtt(QObject*, QString pHost, int pPort, QString pUser, QString pPassword);
     // Destructeur
     ~CMQtt();
 
     void subscribe(QString pTopic);
-
+    void publish(QString pTopic, QString pData);
 private:
     // Client mqtt
     QMqttClient *m_client;
     // Subscriber mqtt
-    QMqttSubscription *scanSubscriber;
+    QMqttSubscription *_subscriber;
 
 
 public slots:
@@ -30,7 +30,6 @@ public slots:
     void updateLogStateChange();
     // reception du message
     void updateMessage(QMqttMessage);
-
 
 };
 

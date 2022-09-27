@@ -17,20 +17,26 @@ CMQtt::CMQtt(QObject *p, QString pHost, int pPort, QString pUser, QString pPassw
 CMQtt::~CMQtt()
 {
     delete this->m_client;
-    delete this->scanSubscriber;
+    delete this->_subscriber;
 }
 
 void CMQtt::subscribe(QString pTopic)
 {
-    this->scanSubscriber = m_client->subscribe(QMqttTopicFilter(pTopic), 1);
-    QObject::connect(this->scanSubscriber, SIGNAL(messageReceived(QMqttMessage)), this, SLOT(updateMessage(QMqttMessage)));
+    this->_subscriber = m_client->subscribe(QMqttTopicFilter(pTopic), 1);
+    QObject::connect(this->_subscriber, SIGNAL(messageReceived(QMqttMessage)), this, SLOT(updateMessage(QMqttMessage)));
+}
+
+void CMQtt::publish(QString pTopic, QString pData) {
+    QMqttTopicName topic(pTopic);
+    QByteArray data = pData.toUtf8();
+    this->m_client->publish(topic, data);
 }
 
 void CMQtt::updateLogStateChange()
 {
     qDebug() << "Etat mqtt : " << m_client->state();
-    /*if(m_client->state() == 2)  this->initSub();
-    else if(this->m_client->state() == 0) this->m_client->connectToHost();*/
+    /*if(m_client->state() == 2)  this->initSub();*/
+    if(this->m_client->state() == 0) this->m_client->connectToHost();
 }
 
 //reception msg
