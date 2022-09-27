@@ -23,6 +23,9 @@ private :
     QString uuid ;
     float angle ;
     int power ;
+    int nbBanana ;
+    int nbBomb ;
+    int nbRocket ;
 
     //Graphic component for debuging
     QLabel *labelAngle ;
@@ -31,9 +34,15 @@ private :
     QLabel *labelImage ;
 
     //Component for the first modale ( select pseudo, select vehicle , select team )
+
     QVBoxLayout *initialLayout ;
+    QHBoxLayout *horizontalLayout_1 ;
+    QHBoxLayout *horizontalLayout_2 ;
+    QHBoxLayout *horizontalLayout_3 ;
+    QHBoxLayout *horizontalLayout_4 ;
+
+    QLabel *labelTitle ;
     QLabel *labelPseudo ;
-    QLabel *labelPseudoRequired ;
     QDialog *dialogInitial ;
     QLineEdit *lineEditPseudo ;
     QLabel *labelController ;
