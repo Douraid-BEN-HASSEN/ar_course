@@ -1,5 +1,5 @@
 QT -= gui
-QT += mqtt
+#QT += mqtt
 
 CONFIG += c++17 console
 CONFIG -= app_bundle
