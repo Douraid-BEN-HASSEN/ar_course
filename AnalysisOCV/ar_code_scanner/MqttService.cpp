@@ -60,7 +60,7 @@ void MqttService::stateChange() {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
-    qDebug() << message << topic;
+    /*qDebug() << message << topic;
 
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
@@ -75,6 +75,6 @@ void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicNam
 
         emit gameUpdated(jsonObject["color"].toString());
 
-    }
+    }*/
 }
 

@@ -6,7 +6,16 @@
 #include <QDebug>
 #include "Obstacle.h"
 #include "Checkpoint.h"
-#include "caruco.h"
+
+#include <QList>
+#include <opencv2/aruco.hpp>
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <vector>
+
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 //  +------------+
 //  | Classe Map |
@@ -15,39 +24,42 @@ class Field : public QObject
 {
     Q_OBJECT
 public:
-/*{
-    "mapWidth": float,
-    "mapHeight": float,
-    "checkpoints: [
-    {
-    "id": int,
-    "x": int,
-    "y": int,
-    },
-    …
-    ],
-    "obstacles": [
-        {
-            "id": int
-            "angle": float,
-            "x": int
-            "y": int
-        },
-      ]
-    }
-*/
     static Field *instance();
 
-    float width;
-    float height;
-
-    QMap<int, Obstacle*> *obstacles = new QMap<int, Obstacle*>();
-    QMap<int, Checkpoint*> *checkpoints = new QMap<int, Checkpoint*>();
-
+    // === UTILS ===
     void deserialize(const QJsonObject &);
+    // méthode pour transformer l'objet en QString
+    QString serialize();
+
+    QJsonObject toJson();
+
+    // === SETTER ===
+    // méthode pour instancier des valeurs depuis une image
+    bool setMapInfo(cv::Mat& pImage);
+
+    void setMapWidth(float pMapWidth);
+    void setMapHeight(float pMapHeight);
+
+    // méthode pour ajouter un checkpoint
+    void addCheckpoint(Checkpoint *pCheckpoint);
+    // méthode pour ajouter un obstacle
+    void addObstacle(Obstacle *pObstacle);
+
+    // === GETTER ===
+    float getMapWidth();
+    float getMapHeight();
 
 private:
+    // constructor
     explicit Field(QObject *parent = nullptr);
+    // destructor
+    ~Field();
+
+    float _mapWidth;
+    float _mapHeight;
+
+    QMap<int, Checkpoint*> *_checkpoints;
+    QMap<int, Obstacle*> *_obstacles;
 
 private slots:
 
