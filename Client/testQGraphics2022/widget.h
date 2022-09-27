@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <QtMqtt/QtMqtt>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -18,9 +19,17 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+
+
+
 private:
     Ui::Widget *ui;
     QGraphicsScene* mScene;
     QGraphicsView* mView;
+
+public slots:
+    void updateMap();
+
+
 };
 #endif // WIDGET_H

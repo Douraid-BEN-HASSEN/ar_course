@@ -5,8 +5,13 @@ Field *Field::instance() {
     return &instance;
 }
 
+//connect(button_downServer, SIGNAL(clicked()), qApp, SLOT(quit()));
+
+
+
 Field::Field(QObject *parent): QObject{parent}
 {
+
 }
 
 /**
@@ -14,8 +19,8 @@ Field::Field(QObject *parent): QObject{parent}
  * @param json
  */
 void Field::deserialize(const QJsonObject &jsonObject) {
-    width = jsonObject["width"].toDouble();
-    height = jsonObject["height"].toDouble();
+    width = jsonObject["mapWidth"].toDouble();
+    height = jsonObject["mapHeight"].toDouble();
 
     QJsonArray jsonCheckpoints = jsonObject["checkpoints"].toArray();
 
@@ -44,4 +49,5 @@ void Field::deserialize(const QJsonObject &jsonObject) {
         obstacle->deserialize(obstacleJsonObject);
         obstacles->insert(obstacle->id, obstacle);
     }
+    emit fieldUpadeted();
 }

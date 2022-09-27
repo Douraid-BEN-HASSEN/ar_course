@@ -22,12 +22,16 @@ public:
 
     void deserialize(const QJsonObject &);
 
+signals:
+    void fieldUpadeted();
+
+
+
 private:
     explicit Field(QObject *parent = nullptr);
 
 private slots:
 
-signals:
 
 
 
