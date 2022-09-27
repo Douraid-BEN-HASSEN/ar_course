@@ -26,6 +26,13 @@ MqttService::MqttService(QObject *parent): QObject{parent}
     client->connectToHost();
 }
 
+void MqttService::publish(QString pTopic, QString pData)
+{
+    QMqttTopicName topic(pTopic);
+    QByteArray data = pData.toUtf8();
+    this->client->publish(topic, data);
+}
+
 /**
  * SLot of state mqttCLient
  */
