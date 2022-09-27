@@ -36,12 +36,22 @@ void PlayerUi::keyPressEvent(QKeyEvent *key){
 //Callback when "Vroum vroum" button is pressed
 void PlayerUi::buttonPlayPressed()
 {
+    this->pseudo = this->lineEditPseudo->text();
+    this->labelSelectionPseudo->setText("<h1> " + this->pseudo + " </h1> ");
+    this->labelSelectionTeam->setText(" <h2> " + this->comboBoxTeam->currentText() + "</h2>");
+    this->labelSelectionController->setText( " <h3> " + this->comboBoxController->currentText() + " </h3> ");
+    this->labelSelectionVehicle->setText(" <h3> " + this->comboBoxVehicle->currentText() + " </h3> ");
+
     if (this->lineEditPseudo->text() != "")
     {
+
         MqttService::instance()->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText() , this->comboBoxTeam->currentText());
-        delete this->initialLayout ;
+
+        this->team = this->comboBoxTeam->currentText();
+        this->vehicle = this->comboBoxVehicle->currentText();
+        delete this->registerLayout ;
         qDeleteAll(this->children());
-        this->setLayout(mainLayout);
+        this->setLayout(gameLayout);
     }
 }
 
@@ -65,7 +75,6 @@ void PlayerUi::catchActionKey(int idKey)
         this->makeMqttMessage(0 , this->power , idKey );
         idKey == 1 ? this->nbBanana-- : idKey == 2 ? this->nbBomb -- : this->nbRocket -- ;
     }
-
 }
 
 void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
@@ -75,22 +84,11 @@ void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
 
 void PlayerUi::updateLabel()
 {
-    this->labelAngle->setText("<h1> Angle : " + QString::number(this->angle) + " </h1> ");
-    this->labelPower->setText("<h1> Power : " + QString::number(this->power) + " </h1> ");
-    switch ((int)this->angle) {
-    case 0 :
-        this->labelImage->setText("^");
-        break;
-    case 90 :
-        this->labelImage->setText(">");
-        break ;
-    case 180 :
-        this->labelImage->setText("V");
-        break ;
-    case 270 :
-        this->labelImage->setText("<");
-        break ;
-    }
+    this->labelAngle->setText("<h4> Angle : " + QString::number(this->angle) + " </h4> ");
+    this->labelPower->setText("<h4> Power : " + QString::number(this->power) + " </h4> ");
+    this->labelBanana->setText(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
+    this->labelBomb->setText(" <h4> " + QString::number(this->nbBomb) + " bomb(s) </h4> ");
+    this->labelRocket->setText(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
 }
 
 void PlayerUi::catchKeyLeft() {
@@ -122,20 +120,44 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->nbRocket = 2 ;
     this->uuid = QUuid::createUuid().toString();
 
-    //Graphic content for debugging
-    this->labelPower = new QLabel("<h1> Power : " + QString::number(this->power) + " </h1>") ;
-    this->labelAngle = new QLabel("<h1> Angle : " + QString::number(this->angle) + " </h1> ") ;
-    this->labelImage = new QLabel("V") ;
+    //Graphic content for game
+    this->gameLayout = new QVBoxLayout ;
 
-    this->mainLayout = new QVBoxLayout ;
-    this->mainLayout->addWidget(this->labelPower);
-    this->mainLayout->addWidget(this->labelAngle);
-    this->mainLayout->addWidget(this->labelImage);
+    this->horizontalLayout_5 = new QHBoxLayout ;
+    this->labelSelectionPseudo = new QLabel("a");
+    this->labelSelectionTeam= new QLabel("team");
+    this->horizontalLayout_5->addWidget(this->labelSelectionPseudo);
+    this->horizontalLayout_5->addWidget(this->labelSelectionTeam);
+
+    this->horizontalLayout_6 = new QHBoxLayout ;
+    this->labelSelectionController = new QLabel("");
+    this->labelSelectionVehicle = new QLabel("");
+    this->horizontalLayout_6->addWidget(this->labelSelectionController);
+    this->horizontalLayout_6->addWidget(this->labelSelectionVehicle);
+
+    this->horizontalLayout_7 = new QHBoxLayout ;
+    this->labelBanana = new QLabel(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
+    this->labelBomb = new QLabel(" <h4> " + QString::number(this->nbBomb) + " bomb(s) </h4> ");
+    this->labelRocket = new QLabel(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
+    this->horizontalLayout_7->addWidget(this->labelBanana);
+    this->horizontalLayout_7->addWidget(this->labelBomb);
+    this->horizontalLayout_7->addWidget(this->labelRocket);
+
+    this->horizontalLayout_8 = new QHBoxLayout ;
+    this->labelPower = new QLabel("<h4> Power : " + QString::number(this->power) + " </h4>") ;
+    this->labelAngle = new QLabel("<h4> Angle : " + QString::number(this->angle) + " </h4> ") ;
+    this->horizontalLayout_8->addWidget(this->labelPower);
+    this->horizontalLayout_8->addWidget(this->labelAngle);
+
+    this->gameLayout->addLayout(this->horizontalLayout_5);
+    this->gameLayout->addLayout(this->horizontalLayout_6);
+    this->gameLayout->addLayout(this->horizontalLayout_7);
+    this->gameLayout->addLayout(this->horizontalLayout_8);
 
     //Make initial modale
     this->resize(500 , 300);
 
-    this->initialLayout = new QVBoxLayout ;
+    this->registerLayout = new QVBoxLayout ;
     this->horizontalLayout_1 = new QHBoxLayout ;
     this->horizontalLayout_2 = new QHBoxLayout ;
     this->horizontalLayout_3 = new QHBoxLayout ;
@@ -175,24 +197,23 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->horizontalLayout_4->addWidget(labelTeam);
     this->horizontalLayout_4->addWidget(comboBoxTeam);
 
-    this->initialButton = new QPushButton("Warm up the engine !")  ;
+    this->registerButton = new QPushButton("Warm up the engine !")  ;
 
-    this->initialLayout->addWidget(labelTitle);
-    this->initialLayout->addLayout(this->horizontalLayout_1);
-    this->initialLayout->addLayout(this->horizontalLayout_2);
-    this->initialLayout->addLayout(this->horizontalLayout_3);
-    this->initialLayout->addLayout(this->horizontalLayout_4);
-    this->initialLayout->addWidget(initialButton);
+    this->registerLayout->addWidget(labelTitle);
+    this->registerLayout->addLayout(this->horizontalLayout_1);
+    this->registerLayout->addLayout(this->horizontalLayout_2);
+    this->registerLayout->addLayout(this->horizontalLayout_3);
+    this->registerLayout->addLayout(this->horizontalLayout_4);
+    this->registerLayout->addWidget(registerButton);
 
-    this->setLayout(this->initialLayout);
+    this->setLayout(this->registerLayout);
 
     //Connect
-    this->connect(this->initialButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
+    this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
 }
+
 
 PlayerUi::~PlayerUi()
 {
     qDebug() << "Destructeur" ;
 }
-
-

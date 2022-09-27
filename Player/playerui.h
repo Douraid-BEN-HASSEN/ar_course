@@ -26,20 +26,33 @@ private :
     int nbBanana ;
     int nbBomb ;
     int nbRocket ;
+    QString pseudo ;
+    QString team ;
+    QString vehicle ;
 
-    //Graphic component for debuging
+    //Graphic component for game
+    QVBoxLayout *gameLayout ;
+
     QLabel *labelAngle ;
     QLabel *labelPower ;
-    QVBoxLayout *mainLayout ;
-    QLabel *labelImage ;
+    QLabel *labelSelectionPseudo ;
+    QLabel *labelSelectionTeam ;
+    QLabel *labelSelectionController;
+    QLabel *labelSelectionVehicle ;
+    QLabel *labelBanana ;
+    QLabel *labelBomb ;
+    QLabel *labelRocket ;
 
     //Component for the first modale ( select pseudo, select vehicle , select team )
-
-    QVBoxLayout *initialLayout ;
+    QVBoxLayout *registerLayout ;
     QHBoxLayout *horizontalLayout_1 ;
     QHBoxLayout *horizontalLayout_2 ;
     QHBoxLayout *horizontalLayout_3 ;
     QHBoxLayout *horizontalLayout_4 ;
+    QHBoxLayout *horizontalLayout_5 ;
+    QHBoxLayout *horizontalLayout_6 ;
+    QHBoxLayout *horizontalLayout_7 ;
+    QHBoxLayout *horizontalLayout_8 ;
 
     QLabel *labelTitle ;
     QLabel *labelPseudo ;
@@ -51,8 +64,7 @@ private :
     QComboBox *comboBoxVehicle ;
     QLabel *labelTeam ;
     QComboBox *comboBoxTeam ;
-
-    QPushButton *initialButton ;
+    QPushButton *registerButton ;
 
 protected :
     void keyPressEvent(QKeyEvent *e) ;
