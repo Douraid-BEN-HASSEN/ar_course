@@ -34,3 +34,5 @@
 *.cflags
 
 .idea/
+
+build-*/

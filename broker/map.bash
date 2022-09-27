@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if which mosquitto_pub -ne 0 ; then
     echo "Failed!"
