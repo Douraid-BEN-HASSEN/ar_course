@@ -1,11 +1,16 @@
 #include "MqttService.h"
 
-#include "src/Kart/Map/Field.h"
-
 MqttService *MqttService::instance()
 {
     static MqttService instance;
     return &instance;
+}
+
+void MqttService::publish(QString pTopic, QString pData)
+{
+    QMqttTopicName topic(pTopic);
+    QByteArray data = pData.toUtf8();
+    this->client->publish(topic, data);
 }
 
 
@@ -26,13 +31,6 @@ MqttService::MqttService(QObject *parent): QObject{parent}
     client->connectToHost();
 }
 
-void MqttService::publish(QString pTopic, QString pData)
-{
-    QMqttTopicName topic(pTopic);
-    QByteArray data = pData.toUtf8();
-    this->client->publish(topic, data);
-}
-
 /**
  * SLot of state mqttCLient
  */
@@ -48,8 +46,8 @@ void MqttService::stateChange() {
         case 2 :
             qDebug() << "Connecté";
 
-            subscribes->append(client->subscribe(QString("/map")));
-            subscribes->append(client->subscribe(QString("/game")));
+            subscribes->append(client->subscribe(QString("map")));
+            subscribes->append(client->subscribe(QString("game")));
 
             break;
     }
@@ -67,13 +65,13 @@ void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicNam
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 
-    if (topic == QString("/map")) {
+    if (topic == QString("map")) {
         Field *field = Field::instance();
         field->deserialize(jsonObject);
 
         qDebug() << field->serialize();
 
-    } else if (topic == QString("/game")) {
+    } else if (topic == QString("game")) {
 
         emit gameUpdated(jsonObject["color"].toString());
 

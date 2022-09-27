@@ -20,14 +20,12 @@ public:
     static MqttService *instance();
 
     QMqttClient *client;
-    // méthode pour publier
     void publish(QString pTopic, QString pData);
 
 private:
     explicit MqttService(QObject * parent = nullptr);
-
     QList<QMqttSubscription *> *subscribes;
-    
+
 private slots:
     void stateChange();
     void receivedMessage(const QByteArray &message, const QMqttTopicName &topic);

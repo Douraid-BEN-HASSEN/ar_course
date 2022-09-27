@@ -14,10 +14,7 @@ public:
     int x;
     int y;
 
-    void deserialize(const QJsonObject &);
-    QString serialize();
-    QJsonObject toJson();
-
+    void deserialize(const QJsonObject &json);
 signals:
 
 };

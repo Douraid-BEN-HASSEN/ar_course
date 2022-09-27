@@ -7,14 +7,12 @@
 
 int main(int argc, char *argv[])
 {
-
-    MqttService* ptr1 = MqttService::instance();
-    MqttService* ptr2 = MqttService::instance();
-
-    qDebug() << ptr1 << " | " << ptr2 << Qt::endl;
-
     QApplication a(argc, argv);
+
+    MqttService::instance();
+
     Window w;
     w.show();
+
     return a.exec();
 }

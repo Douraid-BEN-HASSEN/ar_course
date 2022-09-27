@@ -27,7 +27,7 @@ private:
     explicit MqttService(QObject * parent = nullptr);
 
     QList<QMqttSubscription *> *subscribes;
-    
+
 private slots:
     void stateChange();
     void receivedMessage(const QByteArray &message, const QMqttTopicName &topic);
@@ -37,6 +37,6 @@ public: signals:
     void gameUpdated(QString color);
 
 };
+
+
 #endif // MQTTSERVICE_H
-
-

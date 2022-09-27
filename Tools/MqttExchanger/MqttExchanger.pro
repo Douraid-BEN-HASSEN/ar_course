@@ -10,6 +10,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/Kart/Game/Properties.cpp \
+    src/Kart/Game/Vehicle.cpp \
     src/Kart/Map/Field.cpp \
     src/Kart/Map/Obstacle.cpp \
     src/Kart/Map/Checkpoint.cpp \
@@ -18,6 +20,8 @@ SOURCES += \
     src/window.cpp
 
 HEADERS += \
+    src/Kart/Game/Properties.h \
+    src/Kart/Game/Vehicle.h \
     src/Kart/Map/Field.h \
     src/Kart/Map/Obstacle.h \
     src/Kart/Map/Checkpoint.h \

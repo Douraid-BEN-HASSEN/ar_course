@@ -45,24 +45,3 @@ void Field::deserialize(const QJsonObject &jsonObject) {
         obstacles->insert(obstacle->id, obstacle);
     }
 }
-
-QJsonObject Field::toJson() {
-    QJsonObject jObject;
-    jObject["width"] = this->width;
-    jObject["height"] = this->height;
-
-    auto obstaclesJA = QJsonArray();
-
-    for (auto & obstacle : obstacles->values())
-        obstaclesJA.append(obstacle->toJson());
-
-    jObject["obstacles"] = obstaclesJA;
-
-    return jObject;
-}
-
-
-QString Field::serialize() {
-    QJsonDocument doc(this->toJson());
-    return QString(doc.toJson(QJsonDocument::Compact));
-}

@@ -4,16 +4,38 @@
 #include <QObject>
 #include <QMap>
 #include <QDebug>
-#include <QJsonArray>
-#include <QJsonDocument>
-
 #include "Obstacle.h"
 #include "Checkpoint.h"
+#include "caruco.h"
 
+//  +------------+
+//  | Classe Map |
+//  +------------+
 class Field : public QObject
 {
     Q_OBJECT
 public:
+/*{
+    "mapWidth": float,
+    "mapHeight": float,
+    "checkpoints: [
+    {
+    "id": int,
+    "x": int,
+    "y": int,
+    },
+    …
+    ],
+    "obstacles": [
+        {
+            "id": int
+            "angle": float,
+            "x": int
+            "y": int
+        },
+      ]
+    }
+*/
     static Field *instance();
 
     float width;
@@ -23,9 +45,6 @@ public:
     QMap<int, Checkpoint*> *checkpoints = new QMap<int, Checkpoint*>();
 
     void deserialize(const QJsonObject &);
-    QString serialize();
-    QJsonObject toJson();
-
 
 private:
     explicit Field(QObject *parent = nullptr);
