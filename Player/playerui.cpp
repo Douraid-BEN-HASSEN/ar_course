@@ -1,6 +1,12 @@
 #include "playerui.h"
 #include <QVBoxLayout>
 
+//to do :
+// changer le layout
+// ajouter le code d'alexis
+// envoyer du mqtt
+//améliorer le visuel ( plus tard ça  )
+
 void PlayerUi::keyPressEvent(QKeyEvent *key){
     switch(key->key()) {
     case Qt::Key_Z:
@@ -32,16 +38,36 @@ void PlayerUi::keyPressEvent(QKeyEvent *key){
 
 }
 
+void PlayerUi::buttonPlayPressed()
+{
+    qDebug() << "button clicked" ;
+
+    //Make json file for register
+    QJsonObject messageJsonObject ;
+    messageJsonObject.insert("uuid" , this->uuid);
+    messageJsonObject.insert("pseudo" , this->lineEditPseudo->text());
+    messageJsonObject.insert("controller" , this->comboBoxController->currentText());
+    messageJsonObject.insert("vehicle" , this->comboBoxVehicle->currentText());
+    messageJsonObject.insert("team" , this->comboBoxTeam->currentText() == "No team" ? "null" : this->comboBoxTeam->currentText());
+    QJsonDocument doc(messageJsonObject);
+    QString strJson(doc.toJson(QJsonDocument::Compact));
+    QByteArray paquet ;
+    paquet.push_back(strJson.toUtf8());
+    qDebug() << strJson ;
+}
+
 void PlayerUi::catchKeyUp() {
     qDebug() << "Catch key up" ;
-    this->power++ ;
+    if (this->power != 100)
+        this->power++ ;
     this->makeMqttMessage(0 , this->power , 0 );
 
 }
 
 void PlayerUi::catchKeyDown() {
     qDebug() << "Catch key down" ;
-    this->power--;
+    if (this->power != -100)
+        this->power--;
     this->makeMqttMessage(0 , this->power , 0 );
 }
 
@@ -61,7 +87,7 @@ void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
     QJsonObject messageJsonObject ;
     messageJsonObject.insert("uuid" , this->uuid);
     messageJsonObject.insert("angle" , angle);
-    messageJsonObject.insert("power" , power);
+    messageJsonObject.insert("power" , this->power);
     QJsonObject messageJsonButtonsObject ;
     messageJsonButtonsObject.insert("banana" , keyAction == 1 ? true : false);
     messageJsonButtonsObject.insert("bomb" , keyAction == 2 ? true : false);
@@ -113,9 +139,48 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->mainLayout->addWidget(this->labelPower);
     this->mainLayout->addWidget(this->labelAngle);
 
-    this->setLayout(mainLayout);
+    //Make initial modale
 
-    //Modale pseudo
+    this->initialLayout = new QVBoxLayout ;
+    this->labelPseudo = new QLabel("<h3> Pseudo : </h3>");
+    this->lineEditPseudo = new QLineEdit ;
+    this->labelController = new QLabel("<h3> Controller : </h3>");
+    this->comboBoxController = new QComboBox ;
+    this->comboBoxController->addItem("ia");
+    this->comboBoxController->addItem("keyboard");
+    this->comboBoxController->addItem("controller");
+    this->comboBoxController->addItem("vr");
+    this->comboBoxController->addItem("phone");
+    this->labelVehicle = new QLabel("<h3> Vehicle </h3>");
+    this->comboBoxVehicle = new QComboBox ;
+    this->comboBoxVehicle->addItem("bike");
+    this->comboBoxVehicle->addItem("car");
+    this->comboBoxVehicle->addItem("truck");
+    this->labelTeam = new QLabel("<h3> Team </h3>");
+    this->comboBoxTeam = new QComboBox;
+    this->comboBoxTeam->addItem("No team");
+    for (int i = 0 ; i < 100 ; i++)
+        this->comboBoxTeam->addItem(QString::number(i));
+    this->initialButton = new QPushButton("VROOM VROOM !") ;
+
+    this->initialLayout->addWidget(labelPseudo);
+    this->initialLayout->addWidget(lineEditPseudo);
+    this->initialLayout->addWidget(labelController);
+    this->initialLayout->addWidget(comboBoxController);
+    this->initialLayout->addWidget(labelVehicle);
+    this->initialLayout->addWidget(comboBoxVehicle);
+    this->initialLayout->addWidget(labelTeam);
+    this->initialLayout->addWidget(comboBoxTeam);
+    this->initialLayout->addWidget(initialButton);
+
+    this->setLayout(this->initialLayout);
+    //this->setLayout(initialLayout);
+
+
+    //this->setLayout(mainLayout);
+
+    //CONNECT
+    this->connect(this->initialButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
 
 }
 

@@ -15,10 +15,7 @@ public:
     int y;
     float angle;
 
-    void deserialize(const QJsonObject &);
-    QString serialize();
-    QJsonObject toJson();
-
+    void deserialize(const QJsonObject &json);
 signals:
 
 };

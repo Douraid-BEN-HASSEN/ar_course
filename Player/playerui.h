@@ -8,6 +8,11 @@
 #include <QString>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QComboBox>
+#include <QSpinBox>
+
 class PlayerUi : public QWidget
 {
     Q_OBJECT
@@ -17,13 +22,31 @@ private :
     float angle ;
     int power ;
 
-    //graphic component
+    //Graphic component for debuging
     QLabel *labelAngle ;
     QLabel *labelPower ;
     QVBoxLayout *mainLayout ;
+
+    //Component for the first modale ( select pseudo, select vehicle , select team )
+    QVBoxLayout *initialLayout ;
+    QLabel *labelPseudo ;
+    QDialog *dialogInitial ;
+    QLineEdit *lineEditPseudo ;
+    QLabel *labelController ;
+    QComboBox *comboBoxController ;
+    QLabel *labelVehicle ;
+    QComboBox *comboBoxVehicle ;
+    QLabel *labelTeam ;
+    QComboBox *comboBoxTeam ;
+
+    QPushButton *initialButton ;
+
 protected :
     void keyPressEvent(QKeyEvent *e) ;
 
+protected slots :
+    //Call when the user validate the initial form
+    void buttonPlayPressed() ;
 public:
     PlayerUi(QWidget *parent = nullptr);
     void catchKeyUp() ;
@@ -34,5 +57,6 @@ public:
     void makeMqttMessage(int angle , int power , int keyAction );
     void updateLabel();
     ~PlayerUi();
+
 };
 #endif // PLAYERUI_H

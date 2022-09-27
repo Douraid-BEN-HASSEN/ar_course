@@ -17,5 +17,8 @@ public:
 
 private:
     Ui::Window *ui;
+
+public slots:
+    void connection();
 };
 #endif // WINDOW_H
