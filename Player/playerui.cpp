@@ -1,6 +1,12 @@
 #include "playerui.h"
 #include <QVBoxLayout>
 
+//to do :
+// changer le layout
+// ajouter le code d'alexis
+// envoyer du mqtt
+//améliorer le visuel ( plus tard ça  )
+
 void PlayerUi::keyPressEvent(QKeyEvent *key){
     switch(key->key()) {
     case Qt::Key_Z:
@@ -30,6 +36,24 @@ void PlayerUi::keyPressEvent(QKeyEvent *key){
     }
     this->updateLabel();
 
+}
+
+void PlayerUi::buttonPlayPressed()
+{
+    qDebug() << "button clicked" ;
+
+    //Make json file for register
+    QJsonObject messageJsonObject ;
+    messageJsonObject.insert("uuid" , this->uuid);
+    messageJsonObject.insert("pseudo" , this->lineEditPseudo->text());
+    messageJsonObject.insert("controller" , this->comboBoxController->currentText());
+    messageJsonObject.insert("vehicle" , this->comboBoxVehicle->currentText());
+    messageJsonObject.insert("team" , this->comboBoxTeam->currentText() == "No team" ? "null" : this->comboBoxTeam->currentText());
+    QJsonDocument doc(messageJsonObject);
+    QString strJson(doc.toJson(QJsonDocument::Compact));
+    QByteArray paquet ;
+    paquet.push_back(strJson.toUtf8());
+    qDebug() << strJson ;
 }
 
 void PlayerUi::catchKeyUp() {
@@ -117,7 +141,7 @@ PlayerUi::PlayerUi(QWidget *parent)
 
     //Make initial modale
 
-    this->intialLayout = new QVBoxLayout ;
+    this->initialLayout = new QVBoxLayout ;
     this->labelPseudo = new QLabel("<h3> Pseudo : </h3>");
     this->lineEditPseudo = new QLineEdit ;
     this->labelController = new QLabel("<h3> Controller : </h3>");
@@ -133,24 +157,30 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->comboBoxVehicle->addItem("car");
     this->comboBoxVehicle->addItem("truck");
     this->labelTeam = new QLabel("<h3> Team </h3>");
-    this->spinBoxTeam = new QSpinBox;
+    this->comboBoxTeam = new QComboBox;
+    this->comboBoxTeam->addItem("No team");
+    for (int i = 0 ; i < 100 ; i++)
+        this->comboBoxTeam->addItem(QString::number(i));
     this->initialButton = new QPushButton("VROOM VROOM !") ;
 
-    this->intialLayout->addWidget(labelPseudo);
-    this->intialLayout->addWidget(lineEditPseudo);
-    this->intialLayout->addWidget(labelController);
-    this->intialLayout->addWidget(comboBoxController);
-    this->intialLayout->addWidget(labelVehicle);
-    this->intialLayout->addWidget(comboBoxVehicle);
-    this->intialLayout->addWidget(labelTeam);
-    this->intialLayout->addWidget(spinBoxTeam);
-    this->intialLayout->addWidget(initialButton);
+    this->initialLayout->addWidget(labelPseudo);
+    this->initialLayout->addWidget(lineEditPseudo);
+    this->initialLayout->addWidget(labelController);
+    this->initialLayout->addWidget(comboBoxController);
+    this->initialLayout->addWidget(labelVehicle);
+    this->initialLayout->addWidget(comboBoxVehicle);
+    this->initialLayout->addWidget(labelTeam);
+    this->initialLayout->addWidget(comboBoxTeam);
+    this->initialLayout->addWidget(initialButton);
 
-    this->setLayout(this->intialLayout);
+    this->setLayout(this->initialLayout);
     //this->setLayout(initialLayout);
 
 
     //this->setLayout(mainLayout);
+
+    //CONNECT
+    this->connect(this->initialButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
 
 }
 

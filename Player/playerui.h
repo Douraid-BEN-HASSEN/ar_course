@@ -28,7 +28,7 @@ private :
     QVBoxLayout *mainLayout ;
 
     //Component for the first modale ( select pseudo, select vehicle , select team )
-    QVBoxLayout *intialLayout ;
+    QVBoxLayout *initialLayout ;
     QLabel *labelPseudo ;
     QDialog *dialogInitial ;
     QLineEdit *lineEditPseudo ;
@@ -37,13 +37,16 @@ private :
     QLabel *labelVehicle ;
     QComboBox *comboBoxVehicle ;
     QLabel *labelTeam ;
-    QSpinBox *spinBoxTeam ;
+    QComboBox *comboBoxTeam ;
 
     QPushButton *initialButton ;
 
 protected :
     void keyPressEvent(QKeyEvent *e) ;
 
+protected slots :
+    //Call when the user validate the initial form
+    void buttonPlayPressed() ;
 public:
     PlayerUi(QWidget *parent = nullptr);
     void catchKeyUp() ;
@@ -54,5 +57,6 @@ public:
     void makeMqttMessage(int angle , int power , int keyAction );
     void updateLabel();
     ~PlayerUi();
+
 };
 #endif // PLAYERUI_H

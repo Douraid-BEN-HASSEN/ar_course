@@ -1,6 +1,6 @@
 #include <QCoreApplication>
 #include "caruco.h"
-#include "cmqtt.h"
+#include "MqttService.h"
 #include <QDebug>
 
 int main(int argc, char *argv[])
