@@ -6,7 +6,6 @@
 #include <QDebug>
 #include "Obstacle.h"
 #include "Checkpoint.h"
-#include "../MqttExchanger/src/Mqtt/MqttService.h"
 
 class Field : public QObject
 {

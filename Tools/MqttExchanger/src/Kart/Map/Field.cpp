@@ -1,4 +1,5 @@
 #include "Field.h"
+#include <QJsonArray>
 
 Field *Field::instance() {
     static Field instance;

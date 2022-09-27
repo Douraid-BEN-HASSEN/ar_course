@@ -1,4 +1,4 @@
-#include "obstacle.h"
+#include "Obstacle.h"
 
 Obstacle::Obstacle(QObject *parent)
     : QObject{parent}

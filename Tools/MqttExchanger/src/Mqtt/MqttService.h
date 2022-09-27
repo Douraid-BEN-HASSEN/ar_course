@@ -5,7 +5,7 @@
 #include <QtMqtt/QtMqtt>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include "../MqttExchanger/src/Kart/Map/Field.h"
+#include "src/Kart/Map/Field.h"
 
 const static struct {
     const QString hostname = "localhost";
