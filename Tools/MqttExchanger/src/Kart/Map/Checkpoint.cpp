@@ -15,6 +15,7 @@ void Checkpoint::deserialize(const QJsonObject &jsonObject) {
     this->_id = jsonObject["id"].toInt();
     this->_x = jsonObject["x"].toInt();
     this->_y = jsonObject["y"].toInt();
+    this->_timeout = jsonObject["timeout"].toInt();
 }
 
 QString Checkpoint::serialize()
@@ -29,6 +30,7 @@ QJsonObject Checkpoint::toJson()
     jObject["id"] = this->_id;
     jObject["x"] = this->_x;
     jObject["y"] = this->_y;
+    jObject["timeout"] = this->_timeout;
 
     return jObject;
 }
@@ -48,6 +50,11 @@ void Checkpoint::setY(int pY) {
     this->_y = pY;
 }
 
+void Checkpoint::setTimeout(int pTimeout)
+{
+    this->_timeout = pTimeout;
+}
+
 //  +--------+
 //  | GETTER |
 //  +--------+
@@ -61,5 +68,10 @@ int Checkpoint::getX() {
 
 int Checkpoint::getY() {
     return this->_y;
+}
+
+int Checkpoint::getTimeout()
+{
+    return this->_timeout;
 }
 

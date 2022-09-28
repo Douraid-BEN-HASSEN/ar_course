@@ -12,6 +12,7 @@ SOURCES += \
         ../../Tools/MqttExchanger/src/Kart/Map/Checkpoint.cpp \
         ../../Tools/MqttExchanger/src/Kart/Map/Field.cpp \
         ../../Tools/MqttExchanger/src/Kart/Map/Obstacle.cpp \
+        FieldAruco.cpp \
         MqttService.cpp \
         caruco.cpp \
         main.cpp
@@ -28,5 +29,6 @@ HEADERS += \
     ../../Tools/MqttExchanger/src/Kart/Map/Checkpoint.h \
     ../../Tools/MqttExchanger/src/Kart/Map/Field.h \
     ../../Tools/MqttExchanger/src/Kart/Map/Obstacle.h \
+    FieldAruco.h \
     MqttService.h \
     caruco.h

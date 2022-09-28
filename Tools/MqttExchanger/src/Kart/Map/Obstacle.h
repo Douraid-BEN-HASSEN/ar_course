@@ -24,18 +24,21 @@ public:
     void setX(int pX);
     void setY(int pY);
     void setAngle(float pAngle);
+    void setTimeout(int pTimeout);
 
     // === GETTER ===
     int getId();
     int getX();
     int getY();
     float getAngle();
+    int getTimeout();
 
 private:
     int _id;
     int _x;
     int _y;
     float _angle;
+    int _timeout;
 
 signals:
 

@@ -13,7 +13,6 @@ void MqttService::publish(QString pTopic, QString pData)
     this->client->publish(topic, data);
 }
 
-
 MqttService::MqttService(QObject *parent): QObject{parent}
 {
     client = new QMqttClient();

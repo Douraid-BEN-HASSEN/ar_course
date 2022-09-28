@@ -45,13 +45,14 @@ public:
     float getMapHeight();
 
 private:
+    float _mapWidth;
+    float _mapHeight;
+
+protected:
     // constructor
     explicit Field(QObject *parent = nullptr);
     // destructor
     ~Field();
-
-    float _mapWidth;
-    float _mapHeight;
 
     QMap<int, Checkpoint*> *_checkpoints;
     QMap<int, Obstacle*> *_obstacles;

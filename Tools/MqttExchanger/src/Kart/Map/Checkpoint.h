@@ -23,16 +23,19 @@ public:
     void setId(int pId);
     void setX(int pX);
     void setY(int pY);
+    void setTimeout(int pTimeout);
 
     // === GETTER ===
     int getId();
     int getX();
     int getY();
+    int getTimeout();
 
 private:
     int _id;
     int _x;
     int _y;
+    int _timeout;
 
 signals:
 
