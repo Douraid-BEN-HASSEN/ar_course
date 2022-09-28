@@ -14,9 +14,6 @@ LIBS += -L../ExchangeLib/debug -lExchangeLib
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Kart/Map/Checkpoint.cpp \
-    Kart/Map/Field.cpp \
-    Kart/Map/Obstacle.cpp \
     Player.cpp \
     main.cpp \
     interface.cpp \
@@ -24,9 +21,6 @@ SOURCES += \
     testQGraphics2022/widget.cpp
 
 HEADERS += \
-    Kart/Map/Checkpoint.h \
-    Kart/Map/Field.h \
-    Kart/Map/Obstacle.h \
     Player.h \
     interface.h \
     testQGraphics2022/obstaclerect.h \

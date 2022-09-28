@@ -2,9 +2,14 @@ QT -= gui
 QT += mqtt
 
 TEMPLATE = lib
-DEFINES += MQTTSERVICE_LIBRARY
 
 CONFIG += c++17
+
+DEFINES += \
+    MQTTSERVICE_LIBRARY \
+    MAP_LIBRARY \
+    CHECKPOINT_LIBRARY \
+    OBSTACLE_LIBRARY
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.

@@ -1,6 +1,13 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
+#if defined(OBSTACLE_LIBRARY)
+#  define OBSTACLE_EXPORT Q_DECL_EXPORT
+#else
+#  define OBSTACLE_EXPORT Q_DECL_IMPORT
+#endif
+
+
 #include <QObject>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -8,7 +15,7 @@
 /**
  * @brief The Obstacle class
  */
-class Obstacle : public QObject
+class OBSTACLE_EXPORT Obstacle : public QObject
 {
     Q_OBJECT
 public:

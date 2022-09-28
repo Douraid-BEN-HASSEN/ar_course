@@ -1,6 +1,13 @@
 #ifndef MAP_H
 #define MAP_H
 
+#if defined(MAP_LIBRARY)
+#  define MAP_EXPORT Q_DECL_EXPORT
+#else
+#  define MAP_EXPORT Q_DECL_IMPORT
+#endif
+
+
 #include <QObject>
 #include <QMap>
 #include <QList>
@@ -18,7 +25,7 @@
 /**
  * @brief The Map class
  */
-class Map : public QObject
+class MAP_EXPORT Map : public QObject
 {
     Q_OBJECT
 public:
