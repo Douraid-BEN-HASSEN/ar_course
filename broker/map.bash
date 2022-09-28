@@ -14,4 +14,3 @@ while true; do
     -t /map
     sleep 1
 done
-

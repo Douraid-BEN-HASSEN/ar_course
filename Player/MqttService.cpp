@@ -1,4 +1,5 @@
 #include "MqttService.h"
+#include "properties.h"
 
 MqttService *MqttService::instance()
 {
@@ -14,6 +15,7 @@ MqttService::MqttService(QObject *parent): QObject{parent}
     client->setPort(Config.port);
     client->setUsername(Config.username);
     client->setPassword(Config.password);
+    this->propertiesReceived = new Properties ;
 
     subscribes = new QList<QMqttSubscription *>;
 
@@ -74,10 +76,8 @@ void MqttService::stateChange() {
         break;
     case 2 :
         qDebug() << "Connecté";
-
-        subscribes->append(client->subscribe(QString("map")));
-        subscribes->append(client->subscribe(QString("game")));
-
+        //Subscribers
+        this->subscribes->append(this->client->subscribe(QString("/game/properties")));
         break;
     }
 }
@@ -89,21 +89,12 @@ void MqttService::stateChange() {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
-    qDebug() << message << topic;
 
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 
-    if (topic == QString("map")) {
-        //Field *field = Field::instance();
-        //field->deserialize(jsonObject);
-
-        //qDebug() << field->serialize();
-
-    } else if (topic == QString("game")) {
-
-        emit gameUpdated(jsonObject["color"].toString());
-
+    if (topic == QString("/game/properties")){
+        this->propertiesReceived->deserialize(jsonObject);
     }
 }
 
