@@ -13,13 +13,21 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QImage>
-#include <MqttService.h>
+#include <QVBoxLayout>
+
+#include <Mqtt/MqttService.h>
+#include <Kart/Game/Properties.h>
+
+#include "Controller.h"
 
 class PlayerUi : public QWidget
 {
     Q_OBJECT
 
 private :
+
+    Controller *_controller;
+
     QString uuid ;
     float angle ;
     int power ;
@@ -87,6 +95,7 @@ public:
     void makeMqttMessage(int angle , int power , int keyAction );
     void updateLayoutToRegister() ;
     void updateLabel();
+
     ~PlayerUi();
 
 };

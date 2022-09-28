@@ -1,7 +1,4 @@
-#include "properties.h"
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonDocument>
+#include "Properties.h"
 
 Properties::Properties(QObject *parent)
     : QObject{parent}

@@ -3,7 +3,12 @@
 
 #include <QObject>
 #include <QMap>
-#include "vehicle.h"
+
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+
+#include "Vehicle.h"
 
 class Properties : public QObject
 {
