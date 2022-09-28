@@ -14,8 +14,8 @@ Field::Field(QObject *parent): QObject{parent}
  * @param json
  */
 void Field::deserialize(const QJsonObject &jsonObject) {
-    width = jsonObject["width"].toDouble();
-    height = jsonObject["height"].toDouble();
+    width = jsonObject["mapWidth"].toDouble();
+    height = jsonObject["mapHeight"].toDouble();
 
     QJsonArray jsonCheckpoints = jsonObject["checkpoints"].toArray();
 
@@ -48,8 +48,8 @@ void Field::deserialize(const QJsonObject &jsonObject) {
 
 QJsonObject Field::toJson() {
     QJsonObject jObject;
-    jObject["width"] = this->width;
-    jObject["height"] = this->height;
+    jObject["mapWidth"] = this->width;
+    jObject["mapHeight"] = this->height;
 
     auto obstaclesJA = QJsonArray();
 
