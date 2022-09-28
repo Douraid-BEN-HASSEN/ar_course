@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <QBrush>
 
-#include "Kart/Map/Checkpoint.h"
+#include <Kart/Map/Checkpoint.h>
 
 class CheckpointGraphics: public QGraphicsObject
 {

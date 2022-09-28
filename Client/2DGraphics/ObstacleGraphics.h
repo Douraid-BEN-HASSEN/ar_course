@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QPainter>
 
-#include "Kart/Map/Obstacle.h"
+#include <Kart/Map/Obstacle.h>
 
 class ObstacleGraphics : public QGraphicsObject
 {

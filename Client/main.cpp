@@ -1,7 +1,7 @@
 #include <QApplication>
 
-#include "Mqtt/MqttService.h"
-#include "Kart/Map/Map.h"
+#include <Mqtt/MqttService.h>
+#include <Kart/Map/Map.h>
 
 #include "2DGraphics/widget.h"
 
