@@ -1,8 +1,14 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-    Client \   # relative paths
+    Client \
     Player \
     Engine \
-    ExchangeLib \
-    Maps
+    ExchangeLib
+
+unix {
+    SOURCES += Maps
+}
+
+win32 {
+}

@@ -9,6 +9,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MqttService::instance();
+    Map *m = Map::instance();
+
     Widget w;
 
     w.show();

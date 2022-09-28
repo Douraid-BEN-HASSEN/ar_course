@@ -13,11 +13,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-const static struct {
+struct {
     const QString hostname = "localhost";
     const unsigned short port = 1883;
-    const QString username = "user";
-    const QString password = "pass";
+    const QString username = "";
+    const QString password = "";
 } Config;
 
 /**

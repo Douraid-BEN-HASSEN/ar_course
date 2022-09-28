@@ -9,10 +9,11 @@
 
 #include <QObject>
 #include <QList>
-#include "Player.h"
-#include "Item.h"
 #include <QJsonObject>
 #include <QJsonArray>
+
+#include "Player.h"
+#include "Item.h"
 
 class GAMEMODE_EXPORT GameMode: public QObject
 {

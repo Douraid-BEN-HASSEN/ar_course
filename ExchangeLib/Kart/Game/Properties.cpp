@@ -4,9 +4,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
-Properties::Properties(QObject *parent)
-    : QObject{parent}
-{
+Properties::Properties(QObject *parent) : QObject{parent} {
 
 }
 
@@ -34,19 +32,19 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
 
     QJsonObject vehicleOptionsJO = jsonObject["vehicleOptions"].toObject();
 
-    foreach(const QString &key, vehicleOptionsJO.keys()) {
-        QJsonObject userJsonObject = vehicleOptionsJO.value(key).toObject();
+            foreach(const QString &key, vehicleOptionsJO.keys()) {
+            QJsonObject userJsonObject = vehicleOptionsJO.value(key).toObject();
 
-        Vehicle *vehicle = vehicleOptions->value(key);
+            Vehicle *vehicle = vehicleOptions->value(key);
 
-        if (!vehicle) {
-            vehicle = new Vehicle();
+            if (!vehicle) {
+                vehicle = new Vehicle();
+            }
+
+            QJsonObject vehicleJO = vehicleOptionsJO[key].toObject();
+            vehicle->deserialize(vehicleJO);
+
         }
-
-        QJsonObject vehicleJO = vehicleOptionsJO[key].toObject();
-        vehicle->deserialize(vehicleJO);
-
-    }
 }
 
 QJsonObject Properties::toJson() {

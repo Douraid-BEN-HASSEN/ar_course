@@ -11,8 +11,7 @@
 #include <QMap>
 #include "Vehicle.h"
 
-class PROPERTIES_EXPORT Properties : public QObject
-{
+class PROPERTIES_EXPORT Properties : public QObject {
     Q_OBJECT
 public:
     explicit Properties(QObject *parent = nullptr);
@@ -36,10 +35,12 @@ public:
     int bananaTTL = 0.0f;
     int bombTTL = 0.0f;
 
-    QMap<QString, Vehicle*> *vehicleOptions = new  QMap<QString, Vehicle*>;
+    QMap<QString, Vehicle *> *vehicleOptions = new QMap<QString, Vehicle *>;
 
     void deserialize(const QJsonObject &);
+
     QString serialize();
+
     QJsonObject toJson();
 
 signals:

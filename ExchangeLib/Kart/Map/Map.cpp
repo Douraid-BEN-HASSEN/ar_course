@@ -8,6 +8,8 @@ Map *Map::instance() {
 // constructor
 Map::Map(QObject *parent): QObject{parent}
 {
+    MqttService::instance()->subscribe(Map::topic);
+
     this->_mapWidth = -1;
     this->_mapHeight = -1;
     this->_checkpoints = new QMap<int, Checkpoint*>();
@@ -25,7 +27,7 @@ Map::~Map() {
 }
 
 void Map::receivedMessage(QJsonObject message, QString topic) {
-    if (topic == QString("/map")) {
+    if (topic == Map::topic) {
         this->deserialize(message);
     }
 
