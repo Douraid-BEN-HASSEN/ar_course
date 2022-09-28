@@ -11,12 +11,18 @@ CONFIG += c++17
 
 SOURCES += \
     MqttService.cpp \
+    controller.cpp \
     main.cpp \
-    playerui.cpp
+    playerui.cpp \
+    properties.cpp \
+    vehicle.cpp
 
 HEADERS += \
     MqttService.h \
-    playerui.h
+    controller.h \
+    playerui.h \
+    properties.h \
+    vehicle.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

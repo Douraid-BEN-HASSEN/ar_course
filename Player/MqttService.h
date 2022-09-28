@@ -1,6 +1,8 @@
+
 #ifndef MQTTSERVICE_H
 #define MQTTSERVICE_H
 
+#include "properties.h"
 #include <QObject>
 #include <QtMqtt/QtMqtt>
 #include <QJsonDocument>
@@ -18,7 +20,7 @@ class MqttService: public QObject
     Q_OBJECT
 public:
     static MqttService *instance();
-
+    Properties *propertiesReceived ;
     QMqttClient *client;
     // méthode pour publier
     void publish(QString pTopic, QString pData);
