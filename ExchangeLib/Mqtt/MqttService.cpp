@@ -58,6 +58,10 @@ bool MqttService::subscribe(QString topic) {
     return true;
 }
 
+void MqttService::publish(QString topic, QString message) {
+    this->client->publish(topic, message.toUtf8());
+}
+
 /**
  * callback of message receive
  * @param message

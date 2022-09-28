@@ -30,7 +30,7 @@ public:
     static MqttService *instance();
     QMqttClient *client;
     bool subscribe(QString topic);
-
+    void publish(QString topic, QString message);
 
 private:
     explicit MqttService(QObject * parent = nullptr);
