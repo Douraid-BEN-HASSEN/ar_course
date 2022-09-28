@@ -7,7 +7,14 @@ CONFIG += c++17
 
 DEPENDPATH += . ../ExchangeLib
 INCLUDEPATH += ../ExchangeLib
-LIBS += -L../ExchangeLib/debug -lExchangeLib
+
+unix {
+    LIBS += -L../ExchangeLib -lExchangeLib
+}
+
+win32 {
+    LIBS += -L../ExchangeLib/debug -lExchangeLib
+}
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
