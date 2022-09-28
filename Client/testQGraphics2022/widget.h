@@ -6,6 +6,8 @@
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
 #include <QtMqtt/QtMqtt>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
