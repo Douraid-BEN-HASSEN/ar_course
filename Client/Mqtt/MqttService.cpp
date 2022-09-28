@@ -56,8 +56,6 @@ void MqttService::stateChange() {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
-    //qDebug() << message << topic;
-
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 

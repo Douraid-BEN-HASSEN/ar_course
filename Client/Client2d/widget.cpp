@@ -2,7 +2,8 @@
 #include "ui_widget.h"
 
 #include <QHBoxLayout>
-#include "obstaclerect.h"
+#include "obstaclegraph.h"
+#include "checkpointgraph.h"
 
 #include "Mqtt/MqttService.h"
 
@@ -12,9 +13,10 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
     mScene = new QGraphicsScene(this);
-    mScene->setSceneRect(Field::instance()->width,Field::instance()->width,Field::instance()->height,Field::instance()->height);
+    mScene->setSceneRect(0, 0, 1000,1000);
     mView = new QGraphicsView(this);
     mView->setScene(mScene);
+
 
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
@@ -34,37 +36,24 @@ void Widget::updateMap(){
     // Faire une boucle sur tous les obstacles
     // Sur chaque obstacle on va devoir le créer + le placer
 
+
     for (auto * iter : Field::instance()->obstacles->values()) {
-       // ObstacleRect* obstaclerect = new ObstacleRect(new Obstacle());
-        ObstacleRect* obstaclerect = new ObstacleRect(1, 1, 1, 1);
+        // Verifier si l object ObstacleRect* obstaclerect  existe
+        ObstacleGraph* obstaclegraph = new ObstacleGraph(iter);
+        mScene->addItem(obstaclegraph);
+        obstaclegraph->setPos(iter->x, iter->y);
     }
 
 
-    for (auto iter = Field::instance()->obstacles->constBegin(); iter != Field::instance()->obstacles->constEnd(); ++iter) {
-        ObstacleRect* obstaclerect = new ObstacleRect();
-
-
-
-        QGraphicsSimpleTextItem* idObstacle = new QGraphicsSimpleTextItem(QString::number(iter.value()->id));
-        qDebug() << "value()->id) = " << iter.value()->id;
-        idObstacle->setBrush(Qt::black);
-        idObstacle->setPos(iter.value()->x+25,iter.value()->y+25);
-        if(iter.value()->id % 2 == 1){
-            QGraphicsRectItem* rectItem = new QGraphicsRectItem(0,0,50,50);
-            rectItem->setBrush(Qt::red);
-            mScene->addItem(rectItem);
-            rectItem->setPos(iter.value()->x,iter.value()->y);
-        } else {
-            QGraphicsEllipseItem* ellipseItemObstacle = new QGraphicsEllipseItem(0,0,50,50);
-            ellipseItemObstacle->setBrush(Qt::red);
-            mScene->addItem(ellipseItemObstacle);
-            ellipseItemObstacle->setPos(iter.value()->x,iter.value()->y);
-        }
-        mScene->addItem(idObstacle);
-
+    for (auto * iter : Field::instance()->checkpoints->values()) {
+         //Verifier si l object Checkpointgraph* obstaclerect  existe
+        Checkpointgraph* checkpointgraph = new Checkpointgraph(iter);
+        mScene->addItem(checkpointgraph);
+        checkpointgraph->setPos(iter->x, iter->y);
     }
 
 
+/*
     for (auto iter = Field::instance()->checkpoints->constBegin(); iter != Field::instance()->checkpoints->constEnd(); ++iter) {
         QGraphicsEllipseItem* ellipseItem = new QGraphicsEllipseItem(0,0,50,50);
         QGraphicsSimpleTextItem* idCheckpoint = new QGraphicsSimpleTextItem(QString::number(iter.value()->id));
@@ -75,7 +64,7 @@ void Widget::updateMap(){
         ellipseItem->setPos(iter.value()->x,iter.value()->y);
         idCheckpoint->setPos(iter.value()->x+25,iter.value()->y+25);
     }
-
+    */
 
 
 

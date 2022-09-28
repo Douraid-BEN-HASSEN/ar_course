@@ -10,6 +10,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Client2d/checkpointgraph.cpp \
     Kart/Map/Checkpoint.cpp \
     Kart/Map/Field.cpp \
     Kart/Map/Obstacle.cpp \
@@ -17,22 +18,23 @@ SOURCES += \
     Player.cpp \
     main.cpp \
     interface.cpp \
-    testQGraphics2022/obstaclerect.cpp \
-    testQGraphics2022/widget.cpp
+    Client2d/obstaclegraph.cpp \
+    Client2d/widget.cpp
 
 HEADERS += \
+    Client2d/checkpointgraph.h \
     Kart/Map/Checkpoint.h \
     Kart/Map/Field.h \
     Kart/Map/Obstacle.h \
     Mqtt/MqttService.h \
     Player.h \
     interface.h \
-    testQGraphics2022/obstaclerect.h \
-    testQGraphics2022/widget.h
+    Client2d/obstaclegraph.h \
+    Client2d/widget.h
 
 FORMS += \
     interface.ui \
-    testQGraphics2022/widget.ui
+    Client2d/widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

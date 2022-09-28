@@ -1,6 +1,6 @@
 //#include "interface.h"
-#include "testQGraphics2022/widget.h"
-#include "testQGraphics2022/obstaclerect.h"
+#include "Client2d/widget.h"
+#include "Client2d/obstaclegraph.h"
 
 #include <QApplication>
 //#include <QtMqtt/QtMqtt>
