@@ -69,6 +69,8 @@ void Map::deserialize(const QJsonObject &jsonObject) {
         obstacle->deserialize(obstacleJsonObject);
         _obstacles->insert(obstacle->getId(), obstacle);
     }
+
+    emit fieldUpadeted();
 }
 
 QString Map::serialize() {
@@ -138,3 +140,15 @@ float Map::getMapHeight()
 {
     return this->_mapHeight;
 }
+
+QMap<int, Checkpoint *>* Map::getCheckpoints()
+{
+    return this->_checkpoints;
+}
+
+QMap<int, Obstacle*>* Map::getObstacles()
+{
+    return this->_obstacles;
+}
+
+

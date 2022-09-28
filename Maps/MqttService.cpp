@@ -45,8 +45,8 @@ void MqttService::stateChange() {
         case 2 :
             qDebug() << "Connecté";
 
-            subscribes->append(client->subscribe(QString("map")));
-            subscribes->append(client->subscribe(QString("game")));
+            subscribes->append(client->subscribe(QString("/map")));
+            subscribes->append(client->subscribe(QString("/game")));
 
             break;
     }
@@ -59,12 +59,10 @@ void MqttService::stateChange() {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
-    /*qDebug() << message << topic;
-
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 
-    if (topic == QString("map")) {
+    if (topic == QString("/map")) {
         Field *field = Field::instance();
         field->deserialize(jsonObject);
 
@@ -73,7 +71,6 @@ void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicNam
     } else if (topic == QString("game")) {
 
         emit gameUpdated(jsonObject["color"].toString());
-
-    }*/
+    }
 }
 

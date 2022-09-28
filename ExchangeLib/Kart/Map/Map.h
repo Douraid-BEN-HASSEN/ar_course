@@ -50,6 +50,8 @@ public:
     // === GETTER ===
     float getMapWidth();
     float getMapHeight();
+    QMap<int, Checkpoint *>* getCheckpoints();
+    QMap<int, Obstacle*>* getObstacles();
 
 private:
     float _mapWidth;
@@ -67,7 +69,8 @@ protected:
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
 
-signals:
+public: signals:
+    void fieldUpadeted();
 
 };
 

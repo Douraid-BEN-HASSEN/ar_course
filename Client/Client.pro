@@ -21,21 +21,23 @@ win32 {
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    2DGraphics/CheckpointGraphics.cpp \
+    2DGraphics/ObstacleGraphics.cpp \
+    2DGraphics/widget.cpp \
     Player.cpp \
-    main.cpp \
     interface.cpp \
-    testQGraphics2022/obstaclerect.cpp \
-    testQGraphics2022/widget.cpp
+    main.cpp
 
 HEADERS += \
+    2DGraphics/CheckpointGraphics.h \
+    2DGraphics/ObstacleGraphics.h \
+    2DGraphics/widget.h \
     Player.h \
-    interface.h \
-    testQGraphics2022/obstaclerect.h \
-    testQGraphics2022/widget.h
+    interface.h
 
 FORMS += \
     interface.ui \
-    testQGraphics2022/widget.ui
+    2DGraphics/widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
