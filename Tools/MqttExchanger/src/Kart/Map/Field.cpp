@@ -56,6 +56,25 @@ void Field::deserialize(const QJsonObject &jsonObject) {
     }
 }
 
+<<<<<<< HEAD
+QJsonObject Field::toJson() {
+    QJsonObject jObject;
+    jObject["mapWidth"] = this->width;
+    jObject["mapHeight"] = this->height;
+
+    auto obstaclesJA = QJsonArray();
+
+    for (auto & obstacle : obstacles->values())
+        obstaclesJA.append(obstacle->toJson());
+
+    jObject["obstacles"] = obstaclesJA;
+
+    return jObject;
+}
+
+
+=======
+>>>>>>> refs/remotes/origin/dev
 QString Field::serialize() {
     QJsonDocument doc(this->toJson());
     return QString(doc.toJson(QJsonDocument::Compact));

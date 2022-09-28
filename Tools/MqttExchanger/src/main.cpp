@@ -1,6 +1,7 @@
 #include "window.h"
 
 #include "src/Mqtt/MqttService.h"
+#include "src/Kart/Map/Field.h"
 
 #include <QApplication>
 #include <QDebug>
