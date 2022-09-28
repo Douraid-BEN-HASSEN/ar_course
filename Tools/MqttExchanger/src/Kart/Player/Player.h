@@ -27,8 +27,6 @@ public:
     QJsonObject toJson();
 signals:
 
-signals:
-
 };
 
 #endif // PLAYER_H

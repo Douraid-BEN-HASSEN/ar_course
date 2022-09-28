@@ -1,6 +1,5 @@
 #include "mqttservice.h"
-#include "map.h"
-
+#include "../Tools/MqttExchanger/src/Kart/Map/Field.h"
 
 MqttService *MqttService::instance()
 {
@@ -22,6 +21,12 @@ MqttService::MqttService(QObject *parent): QObject{parent}
     /* -- connect -- */
     connect(client, &QMqttClient::stateChanged, this, &MqttService::stateChange);
     connect(client, &QMqttClient::messageReceived, this, &MqttService::receivedMessage);
+
+    connect(client, &QMqttClient::messageReceived, this, &MqttService::receivedMessage);
+
+    //connect(this, &MqttService::message, _gameMode, &GameMode::message);
+
+    //connect(this, SIGNAL(message(QJsonObject, QString)), _gameMode, SLOT(message(QJsonObject, QString)));
 
     client->connectToHost();
 }
@@ -66,6 +71,7 @@ void MqttService::publish(QString pTopic, QString pData)
  * SLot of state mqttCLient
  */
 void MqttService::stateChange() {
+    qDebug() << "stateChange";
 
     switch (client->state()) {
     case 0 :
@@ -92,28 +98,10 @@ void MqttService::stateChange() {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
-    qDebug() << message << topic;
-
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 
-    if (topic == QString("map")) {
-        //
-        //field->deserialize(jsonObject);
-
-        //qDebug() << field->serialize();
-
-    } else if (topic == QString("game")) {
-
-        emit gameUpdated(jsonObject["color"].toString());
-
-    }else if(topic == QString("/player/control")){
-        Map *dataPlayer= Map::instance();
-        dataPlayer->deserialize(jsonObject);
-        qDebug() << dataPlayer->serialize();
-
-
-    }
+    emit this->message(jsonObject, topic.name());
 }
 
 
