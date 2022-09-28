@@ -9,10 +9,10 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        Checkpoint.cpp \
-        Field.cpp \
+        ../../Tools/MqttExchanger/src/Kart/Map/Checkpoint.cpp \
+        ../../Tools/MqttExchanger/src/Kart/Map/Field.cpp \
+        ../../Tools/MqttExchanger/src/Kart/Map/Obstacle.cpp \
         MqttService.cpp \
-        Obstacle.cpp \
         caruco.cpp \
         main.cpp
 
@@ -25,8 +25,8 @@ INCLUDEPATH += /usr/local/include/opencv4
 LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_objdetect -lopencv_imgcodecs -lopencv_videoio -lopencv_aruco
 
 HEADERS += \
-    Checkpoint.h \
-    Field.h \
+    ../../Tools/MqttExchanger/src/Kart/Map/Checkpoint.h \
+    ../../Tools/MqttExchanger/src/Kart/Map/Field.h \
+    ../../Tools/MqttExchanger/src/Kart/Map/Obstacle.h \
     MqttService.h \
-    Obstacle.h \
     caruco.h
