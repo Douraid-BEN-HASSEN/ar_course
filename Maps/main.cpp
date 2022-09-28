@@ -13,8 +13,6 @@ int main(int argc, char *argv[])
     cv::VideoCapture inputVideo(4);
     cv::Mat image;
 
-    QList<int> ids;
-
     while(true)
     {
         inputVideo.grab();

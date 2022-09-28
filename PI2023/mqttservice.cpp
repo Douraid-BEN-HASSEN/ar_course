@@ -1,5 +1,4 @@
 #include "mqttservice.h"
-#include "../Tools/MqttExchanger/src/Kart/Map/Field.h"
 
 MqttService *MqttService::instance()
 {
@@ -21,18 +20,12 @@ MqttService::MqttService(QObject *parent): QObject{parent}
     /* -- connect -- */
     connect(client, &QMqttClient::stateChanged, this, &MqttService::stateChange);
     connect(client, &QMqttClient::messageReceived, this, &MqttService::receivedMessage);
-
     connect(client, &QMqttClient::messageReceived, this, &MqttService::receivedMessage);
 
-    connect(client,
-                SIGNAL(messageReceived(const QByteArray &, const QMqttTopicName &)),
-                this,
-                SLOT(message(QJsonObject, QString)));
-
     connect(this,
-            SIGNAL(message(QJsonObject, QString)),
+            SIGNAL(message(QJsonObject,QString)),
             &_gameMode,
-            SLOT(message(QJsonObject, QString)));
+            SLOT(message(QJsonObject,QString)));
 
     client->connectToHost();
 }
