@@ -90,7 +90,6 @@ bool Field::setMapInfo(cv::Mat &pImage)
     this->_obstacles = new QMap<int, Obstacle*>();
 
     bool success = false;
-    QList<int> result;
     std::vector< std::vector< cv::Point2f > > corners, rejected;
     std::vector< std::vector< cv::Point2f > > corners_final, rejected_final;
     std::vector< cv::Vec3d > rvecs_final, tvecs_final;

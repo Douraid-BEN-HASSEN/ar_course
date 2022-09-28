@@ -22,7 +22,6 @@ int main(int argc, char *argv[])
 
         map->setMapInfo(image);
         QString result = map->serialize();
-        qDebug() << result;
         mqtt->publish("/map", result);
 
         cv::waitKey(1);
