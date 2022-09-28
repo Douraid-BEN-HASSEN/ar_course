@@ -3,7 +3,11 @@ QT  += mqtt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
+
+DEPENDPATH += . ../ExchangeLib
+INCLUDEPATH += ../ExchangeLib
+LIBS += -L../ExchangeLib/debug -lExchangeLib
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -13,7 +17,6 @@ SOURCES += \
     Kart/Map/Checkpoint.cpp \
     Kart/Map/Field.cpp \
     Kart/Map/Obstacle.cpp \
-    Mqtt/MqttService.cpp \
     Player.cpp \
     main.cpp \
     interface.cpp \
@@ -24,7 +27,6 @@ HEADERS += \
     Kart/Map/Checkpoint.h \
     Kart/Map/Field.h \
     Kart/Map/Obstacle.h \
-    Mqtt/MqttService.h \
     Player.h \
     interface.h \
     testQGraphics2022/obstaclerect.h \

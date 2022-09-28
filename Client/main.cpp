@@ -1,20 +1,14 @@
-//#include "interface.h"
-#include "testQGraphics2022/widget.h"
-#include "testQGraphics2022/obstaclerect.h"
-
 #include <QApplication>
-//#include <QtMqtt/QtMqtt>
-#include <Mqtt/MqttService.h>
 
-void init();
+#include "Mqtt/MqttService.h"
+#include "testQGraphics2022/widget.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MqttService::instance();
-    Widget ww;
 
-    //w.show();
-    ww.show();
+    Widget w;
+    w.show();
     return a.exec();
 }

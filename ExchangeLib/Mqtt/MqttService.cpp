@@ -6,7 +6,6 @@ MqttService *MqttService::instance()
     return &instance;
 }
 
-
 MqttService::MqttService(QObject *parent): QObject{parent}
 {
     client = new QMqttClient();
@@ -31,16 +30,16 @@ void MqttService::stateChange() {
 
     QString message;
     switch (client->state()) {
-        case 0 :
+        case QMqttClient::Disconnected :
             message = "Déconnecté";
             break;
-        case 1 :
+        case QMqttClient::Connecting :
             message = "En cours de connexion";
             break;
-        case 2 :
+        case QMqttClient::Connected :
             message = "Connecté";
 
-            subscribes->append(client->subscribe(QString("map")));
+;
             subscribes->append(client->subscribe(QString("game")));
 
             break;
@@ -48,6 +47,15 @@ void MqttService::stateChange() {
 
     qDebug() << message;
 
+}
+
+bool MqttService::subscribe(QString topic) {
+    if (client->state() != QMqttClient::Connected)
+        return false;
+
+    subscribes->append(client->subscribe(topic));
+
+    return true;
 }
 
 /**
@@ -61,14 +69,6 @@ void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicNam
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 
-    if (topic == QString("map")) {
-        Field *field = Field::instance();
-        field->deserialize(jsonObject);
-
-    } else if (topic == QString("game")) {
-
-        emit gameUpdated(jsonObject["color"].toString());
-
-    }
+    emit this->message(jsonObject, topic.name());
 }
 
