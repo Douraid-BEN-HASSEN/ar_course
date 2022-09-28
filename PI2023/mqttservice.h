@@ -29,13 +29,11 @@ private:
     QList<QMqttSubscription *> *subscribes;
     GameMode _gameMode;
 
-public :
-    void sendMessageRegister(QString uuid , QString pseudo , QString controller, QString vehicle, QString team);
-    void sendMessageControl(QString uuid , int angle , int power , int keyAction);
-
 private slots:
     void stateChange();
     void receivedMessage(const QByteArray &message, const QMqttTopicName &topic);
+    void sendMessageRegister(QString uuid , QString pseudo , QString controller, QString vehicle, QString team);
+    void sendMessageControl(QString uuid , int angle , int power , int keyAction);
 
 signals:
     void message(QJsonObject pMessage, QString pTopic);

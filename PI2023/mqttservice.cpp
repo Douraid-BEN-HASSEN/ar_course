@@ -24,9 +24,15 @@ MqttService::MqttService(QObject *parent): QObject{parent}
 
     connect(client, &QMqttClient::messageReceived, this, &MqttService::receivedMessage);
 
-    //connect(this, &MqttService::message, _gameMode, &GameMode::message);
+    connect(client,
+                SIGNAL(messageReceived(const QByteArray &, const QMqttTopicName &)),
+                this,
+                SLOT(message(QJsonObject, QString)));
 
-    //connect(this, SIGNAL(message(QJsonObject, QString)), _gameMode, SLOT(message(QJsonObject, QString)));
+    connect(this,
+            SIGNAL(message(QJsonObject, QString)),
+            &_gameMode,
+            SLOT(message(QJsonObject, QString)));
 
     client->connectToHost();
 }

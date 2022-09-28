@@ -5,6 +5,9 @@ Item::Item(QObject *parent): QObject{parent}
 
 }
 
+//  +-------+
+//  | UTILS |
+//  +-------+
 void Item::deserialize(const QJsonObject &jsonObject) {
     this->_x = jsonObject["x"].toInt();
     this->_y = jsonObject["x"].toInt();
@@ -13,34 +16,56 @@ void Item::deserialize(const QJsonObject &jsonObject) {
     this->_type = jsonObject["type"].toString();
 }
 
+QString Item::serialize() {
+    QJsonDocument doc(this->toJson());
+    return QString(doc.toJson(QJsonDocument::Compact));
+}
+
+QJsonObject Item::toJson() {
+    QJsonObject jsonObject;
+
+    jsonObject["x"] = this->_x;
+    jsonObject["y"] = this->_y;
+    jsonObject["status"] = this->_status;
+    jsonObject["type"] = this->_type;
+
+    return jsonObject;
+}
+
+//  +--------+
+//  | SETTER |
+//  +--------+
 void Item::setX(int pX)
 {
- this->_x=pX;
+    this->_x = pX;
 }
 
 void Item::setY(int pY)
 {
-    this->_y=pY;
+    this->_y = pY;
 }
 
 void Item::setAngle(float pAngle)
 {
-    this->_angle=pAngle;
+    this->_angle = pAngle;
 }
 
 void Item::setStatus(QString pStatut)
 {
-    this->_status=pStatut;
+    this->_status = pStatut;
 }
 
+//  +--------+
+//  | GETTER |
+//  +--------+
 int Item::getX()
 {
-return this->_x;
+    return this->_x;
 }
 
 int Item::getY()
 {
-return this->_y;
+    return this->_y;
 }
 
 float Item::getAngle()
