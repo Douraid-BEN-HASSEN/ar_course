@@ -75,8 +75,6 @@ void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicNam
 
     } else if (topic == QString("/game")) {
 
-        emit gameUpdated(jsonObject["color"].toString());
-
     }
 }
 

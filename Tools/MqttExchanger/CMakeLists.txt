@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(MqttExchnager VERSION 0.1 LANGUAGES CXX)
 
-set(Qt5_DIR "~/Qt/5.15.2/gcc_64/lib/cmake/Qt5")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)

@@ -37,10 +37,12 @@ void Field::deserialize(const QJsonObject &jsonObject) {
         QJsonObject checkpointJsonObject = value.toObject();
         Checkpoint *checkpoint = this->_checkpoints->value(checkpointJsonObject["id"].toInt());
 
-        if (checkpoint) {
-            checkpoint->deserialize(checkpointJsonObject);
-            this->_checkpoints->insert(checkpoint->getId(), checkpoint);
+        if (!checkpoint) {
+            checkpoint = new Checkpoint();
         }
+
+        checkpoint->deserialize(checkpointJsonObject);
+        this->_checkpoints->insert(checkpoint->getId(), checkpoint);
     }
 
     QJsonArray jsonObstacles = jsonObject["obstacles"].toArray();
@@ -49,10 +51,12 @@ void Field::deserialize(const QJsonObject &jsonObject) {
         QJsonObject obstacleJsonObject = value.toObject();
         Obstacle *obstacle = this->_obstacles->value(obstacleJsonObject["id"].toInt());
 
-        if (obstacle) {
-            obstacle->deserialize(obstacleJsonObject);
-            this->_obstacles->insert(obstacle->getId(), obstacle);
+        if (!obstacle) {
+            obstacle = new Obstacle();
         }
+
+        obstacle->deserialize(obstacleJsonObject);
+        _obstacles->insert(obstacle->getId(), obstacle);
     }
 }
 

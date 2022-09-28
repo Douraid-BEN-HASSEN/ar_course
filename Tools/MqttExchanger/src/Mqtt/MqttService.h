@@ -33,8 +33,6 @@ private slots:
     void receivedMessage(const QByteArray &message, const QMqttTopicName &topic);
 
 public: signals:
-    void mapUpdated(QJsonObject jsonObject);
-    void gameUpdated(QString color);
 
 };
 #endif // MQTTSERVICE_H
