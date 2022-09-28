@@ -8,8 +8,6 @@
 #include "Checkpoint.h"
 
 #include <QList>
-#include <opencv2/aruco.hpp>
-#include <opencv2/opencv.hpp>
 #include <iostream>
 #include <vector>
 
@@ -34,9 +32,6 @@ public:
     QJsonObject toJson();
 
     // === SETTER ===
-    // méthode pour instancier des valeurs depuis une image
-    bool setMapInfo(cv::Mat& pImage);
-
     void setMapWidth(float pMapWidth);
     void setMapHeight(float pMapHeight);
 
