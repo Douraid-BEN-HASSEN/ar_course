@@ -1,13 +1,14 @@
 #include <QCoreApplication>
-#include "caruco.h"
 #include "MqttService.h"
+#include "../../Tools/MqttExchanger/src/Kart/Map/Field.h"
 #include <QDebug>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    CAruco aruco;
-    CMQtt mqtt(nullptr, "127.0.0.1", 1883, "", "");
+
+    MqttService *mqtt = MqttService::instance();
+    Field *map = Field::instance();
 
     cv::VideoCapture inputVideo(4);
     cv::Mat image;
@@ -19,15 +20,11 @@ int main(int argc, char *argv[])
         inputVideo.grab();
         inputVideo.retrieve(image);
 
-        ids = aruco.detect(image);
-        if(ids.count()>0) {
-            for(int nId=0; nId<ids.count(); nId++)
-                mqtt.publish("topic", QString::number(ids[nId]));
-        }
+        map->setMapInfo(image);
+        QString result = map->serialize();
+        mqtt->publish("/map", result);
 
-        qDebug() << ids;
-
-        cv::waitKey(20);
+        cv::waitKey(1);
     }
 
     return a.exec();

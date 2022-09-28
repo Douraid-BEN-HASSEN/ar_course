@@ -1,4 +1,4 @@
-#include "checkpoint.h"
+#include "Checkpoint.h"
 
 Checkpoint::Checkpoint(QObject *parent)
     : QObject{parent}

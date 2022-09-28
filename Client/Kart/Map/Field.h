@@ -6,36 +6,12 @@
 #include <QDebug>
 #include "Obstacle.h"
 #include "Checkpoint.h"
-#include "caruco.h"
+#include "Mqtt/MqttService.h"
 
-//  +------------+
-//  | Classe Map |
-//  +------------+
 class Field : public QObject
 {
     Q_OBJECT
 public:
-/*{
-    "mapWidth": float,
-    "mapHeight": float,
-    "checkpoints: [
-    {
-    "id": int,
-    "x": int,
-    "y": int,
-    },
-    …
-    ],
-    "obstacles": [
-        {
-            "id": int
-            "angle": float,
-            "x": int
-            "y": int
-        },
-      ]
-    }
-*/
     static Field *instance();
 
     float width;
