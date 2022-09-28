@@ -6,7 +6,7 @@ FieldAruco *FieldAruco::instance() {
 }
 
 // constructor
-FieldAruco::FieldAruco(): Field{}
+FieldAruco::FieldAruco(): Map{}
 {
 
 }

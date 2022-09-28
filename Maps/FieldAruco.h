@@ -4,9 +4,9 @@
 #include <opencv2/aruco.hpp>
 #include <opencv2/opencv.hpp>
 
-#include "../Tools/MqttExchanger/src/Kart/Map/Field.h"
+#include <Kart/Map/Map.h>
 
-class FieldAruco: public Field
+class FieldAruco: public Map
 {
 public:
     static FieldAruco *instance();
