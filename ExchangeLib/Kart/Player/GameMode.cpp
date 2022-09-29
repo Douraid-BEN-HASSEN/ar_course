@@ -5,6 +5,13 @@ GameMode::GameMode(QObject *parent): QObject{parent}
 {
     this->_players = new QList<Player*>();
     this->_items = new QList<Item*>();
+    this->_mqtt = MqttService::instance();
+
+    connect(this->_mqtt,
+                SIGNAL(message(QJsonObject,QString)),
+                this,
+                SLOT(message(QJsonObject,QString)));
+
 }
 
 // destructor
@@ -110,10 +117,16 @@ QString GameMode::getStatus()
     return this->_status;
 }
 
+void GameMode::traitement()
+{
+
+}
+
 //  +------+
 //  | SLOT |
 //  +------+
 void GameMode::message(QJsonObject pMessage, QString pTopic)
 {
     if (pTopic == "/map") this->deserialize(pMessage);
+    qDebug() << "message";
 }

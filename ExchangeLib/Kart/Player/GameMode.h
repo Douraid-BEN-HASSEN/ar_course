@@ -14,6 +14,7 @@
 
 #include "Player.h"
 #include "Item.h"
+#include <Mqtt/MqttService.h>
 
 class GAMEMODE_EXPORT GameMode: public QObject
 {
@@ -46,6 +47,9 @@ private:
     int _elapsedTime;
     QString _infoMessage;
     QString _status;
+    MqttService *_mqtt;
+
+    void traitement();
 
 public slots:
     void message(QJsonObject pMessage, QString pTopic);
