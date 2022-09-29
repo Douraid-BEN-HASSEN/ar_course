@@ -1,11 +1,9 @@
 #include <QCoreApplication>
-#include "mqttservice.h"
-
+#include <Kart/Player/GameMode.h>
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-
-    MqttService *mqtt = MqttService::instance();
+    GameMode game;
 
     return a.exec();
 }
