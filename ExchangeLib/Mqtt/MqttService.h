@@ -35,6 +35,7 @@ public:
 private:
     explicit MqttService(QObject * parent = nullptr);
     QList<QMqttSubscription *> *subscribes;
+    QList<QString> *subscribesWait = new QList<QString>();
 
 private slots:
     void stateChange();

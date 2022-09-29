@@ -21,7 +21,7 @@ Widget::Widget(QWidget *parent)
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
     // Pour finir sur this = Widget apperler updateMap
-    connect(Map::instance(), SIGNAL(fieldUpadeted()), this, SLOT(updateMap()));
+    connect(Map::instance(), SIGNAL(mapUpadeted()), this, SLOT(updateMap()));
 
 }
 

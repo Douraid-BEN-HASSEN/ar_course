@@ -72,7 +72,7 @@ void Map::deserialize(const QJsonObject &jsonObject) {
         _obstacles->insert(obstacle->getId(), obstacle);
     }
 
-    emit fieldUpadeted();
+    emit mapUpadeted();
 }
 
 QString Map::serialize() {

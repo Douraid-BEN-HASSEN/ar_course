@@ -17,10 +17,10 @@ Vehicle::Vehicle(QObject *parent)
  * @param json
  */
 void Vehicle::deserialize(const QJsonObject &jsonObject) {
-    maxSpeed = jsonObject["maxSpeed"].toInt();
-    acceleration = jsonObject["acceleration"].toDouble();
-    weight = jsonObject["weight"].toInt();
-    steeringAngle = jsonObject["steeringAngle"].toDouble();
+    int maxSpeed = jsonObject["maxSpeed"].toInt();
+    float acceleration = jsonObject["acceleration"].toDouble();
+    int weight = jsonObject["weight"].toInt();
+    float steeringAngle = jsonObject["steeringAngle"].toDouble();
 }
 
 QJsonObject Vehicle::toJson() {
