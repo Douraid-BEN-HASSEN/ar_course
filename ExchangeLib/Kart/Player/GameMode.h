@@ -16,6 +16,10 @@
 #include "Item.h"
 #include <Kart/Map/Map.h>
 #include <Mqtt/MqttService.h>
+#include <Kart/Game/Properties.h>
+#include <Kart/Game/Control.h>
+#include <QTimer>
+#include <Kart/Game/Vehicle.h>
 
 
 
@@ -45,6 +49,7 @@ public:
 
 private:
     Map *_map;
+    Properties *_properties;
     QMap<QString,Player*> *_players;
     QList<Item*> *_items;
 
@@ -53,10 +58,14 @@ private:
     QString _status;
     MqttService *_mqtt;
 
-    void traitement();
     void traitementMap(QJsonObject pMessage);
     void traitementPlayerRegister(QJsonObject pMessage);
     void traitementPlayerControl(QJsonObject pMessage);
+
+    void envoiGameInfo();
+    void control_th();
+
+    QMap<QString, Control> _controls;
 
 public slots:
     void message(QJsonObject pMessage, QString pTopic);

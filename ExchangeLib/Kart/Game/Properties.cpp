@@ -59,7 +59,7 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
         Vehicle *vehicle = vehicleOptions->value(key);
 
         if (!vehicle) {
-            vehicle = new Vehicle();
+            vehicle = new Vehicle("car");
         }
 
         QJsonObject vehicleJO = vehicleOptionsJO[key].toObject();
