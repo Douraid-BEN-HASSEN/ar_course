@@ -36,6 +36,7 @@ private:
 
 public slots:
     void updateMap();
+    void updateProperties();
 
 
 };

@@ -24,11 +24,20 @@ Widget::Widget(QWidget *parent)
     // regarder a chaque fois que cette méthode est appellé
     // Pour finir sur this = Widget apperler updateMap
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
+    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
+
 }
 
 Widget::~Widget()
 {
     delete ui;
+}
+
+void Widget::updateProperties(){
+    ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
+    ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
+    ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
+
 }
 
 void Widget::updateMap(){

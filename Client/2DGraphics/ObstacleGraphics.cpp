@@ -1,14 +1,19 @@
 #include "ObstacleGraphics.h"
+#include "Kart/Game/Properties.h"
 
 #include <QBrush>
 
-
+qreal ObstacleGraphics::radius = 50;
+qreal ObstacleGraphics::heigth = 100;
+qreal ObstacleGraphics::width = 100;
 
 ObstacleGraphics::ObstacleGraphics(Obstacle *obstacle, QGraphicsItem *parent):QGraphicsObject(parent)
 {
     this->id = obstacle->getId();
     this->x = obstacle->getX();
     this->y = obstacle->getY();
+    //this->heigth = Properties::getInstance()->getRectangleWidth();
+    //this->width = Properties::getInstance()->getRectangleHeight();
 }
 
 
