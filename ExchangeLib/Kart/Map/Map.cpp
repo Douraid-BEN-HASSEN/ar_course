@@ -30,7 +30,6 @@ void Map::receivedMessage(QJsonObject message, QString topic) {
     if (topic == Map::topic) {
         this->deserialize(message);
     }
-
 }
 
 //  +-------+
