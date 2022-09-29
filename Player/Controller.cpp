@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include <QtMath>
 
 Controller::Controller(QObject *parent): QObject{parent}
 {
@@ -28,9 +29,11 @@ void Controller::sendMessageRegister(QString uuid, QString pseudo, QString contr
 
 void Controller::sendMessageControl(QString uuid, int angle, int power, int keyAction)
 {
+    qDebug() << angle ;
     QJsonObject messageJsonObject ;
     messageJsonObject.insert("uuid" , uuid);
-    messageJsonObject.insert("angle" , angle);
+    //Multipliez votre nombre de degrés par π/180.
+    messageJsonObject.insert("angle" , qDegreesToRadians(double(angle)) );
     messageJsonObject.insert("power" , power);
     QJsonObject messageJsonButtonsObject ;
     messageJsonButtonsObject.insert("banana" , keyAction == 1 ? true : false);

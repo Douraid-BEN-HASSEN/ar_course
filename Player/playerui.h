@@ -37,6 +37,7 @@ private :
     QString pseudo ;
     QString team ;
     QString vehicle ;
+    Properties *props;
 
     //Graphic component for the loading
     QHBoxLayout *loadingLayout ;
@@ -84,7 +85,7 @@ protected :
 private slots :
     //Call when the user validate the initial form
     void buttonPlayPressed() ;
-    void onRunFind() ;
+    void onRunFind(QByteArray datas) ;
 public:
     PlayerUi(QWidget *parent = nullptr);
     void catchKeyUp() ;

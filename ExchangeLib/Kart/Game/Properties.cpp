@@ -37,6 +37,7 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
     QJsonObject vehicleOptionsJO = jsonObject["vehicleOptions"].toObject();
 
     for (const QString &key: vehicleOptionsJO.keys()) {
+        qDebug() << "new vehicle";
         QJsonObject userJsonObject = vehicleOptionsJO.value(key).toObject();
 
         Vehicle *vehicle = vehicleOptions->value(key);
