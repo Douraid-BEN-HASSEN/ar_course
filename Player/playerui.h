@@ -95,6 +95,7 @@ public:
     void makeMqttMessage(int angle , int power , int keyAction );
     void updateLayoutToRegister() ;
     void updateLabel();
+    void connectToMqtt();
 
     ~PlayerUi();
 

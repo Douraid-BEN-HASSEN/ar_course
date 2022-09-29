@@ -119,6 +119,12 @@ void PlayerUi::updateLabel()
     this->labelRocket->setText(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
 }
 
+void PlayerUi::connectToMqtt()
+{
+    qDebug() << MqttService::instance()->client->state();
+    MqttService::instance()->subscribe("/game/properties");
+}
+
 void PlayerUi::catchKeyLeft() {
     qDebug() << "Catch key left" ;
     if (this->angle == 0)
@@ -242,9 +248,16 @@ PlayerUi::PlayerUi(QWidget *parent)
 
     this->setLayout(this->loadingLayout);
 
+
+
+
+    //MqttService::instance()->
+
     //Connect
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind()) );
+    this->connectToMqtt();
+
 }
 
 

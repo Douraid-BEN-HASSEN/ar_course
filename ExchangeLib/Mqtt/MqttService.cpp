@@ -50,11 +50,15 @@ void MqttService::stateChange() {
 }
 
 bool MqttService::subscribe(QString topic) {
+    qDebug( ) << "Dans MqttService : subscribe" ;
+
     if (client->state() != QMqttClient::Connected)
+        qDebug() << " case return false";
         return false;
 
     subscribes->append(client->subscribe(topic));
 
+    qDebug() << "case return true"  ;
     return true;
 }
 
@@ -68,7 +72,7 @@ void MqttService::publish(QString topic, QString message) {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
-    qDebug() << message << topic;
+    qDebug() << "receivedMessage" << message << topic;
 
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();

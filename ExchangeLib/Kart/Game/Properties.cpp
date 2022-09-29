@@ -3,6 +3,7 @@
 Properties::Properties(QObject *parent) : QObject{parent}
 {
     MqttService::instance()->subscribe(Properties::topic);
+
 }
 
 void Properties::receivedMessage(QJsonObject message, QString topic) {
