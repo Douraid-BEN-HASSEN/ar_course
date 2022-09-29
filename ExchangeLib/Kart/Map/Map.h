@@ -43,6 +43,8 @@ public:
     QString serialize();
     QJsonObject toJson();
 
+    void publish();
+
     // === SETTER ===
     void setMapWidth(float pMapWidth);
     void setMapHeight(float pMapHeight);

@@ -35,6 +35,10 @@ Map::~Map() {
     delete this->_obstacles;
 }
 
+void Map::publish() {
+    MqttService::instance()->publish(Map::topic, this->serialize().toUtf8());
+}
+
 void Map::receivedMessage(QJsonObject message, QString topic) {
     if (topic == Map::topic) {
         this->deserialize(message);

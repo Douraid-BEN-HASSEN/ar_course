@@ -18,6 +18,10 @@ Properties *Properties::getInstance() {
 
 Properties::Properties(QObject *parent) : QObject{parent} {}
 
+void Properties::publish() {
+    MqttService::instance()->publish(Properties::topic, this->serialize().toUtf8());
+}
+
 void Properties::receivedMessage(QJsonObject message, QString topic) {
     if (topic == Properties::topic) {
         this->deserialize(message);
