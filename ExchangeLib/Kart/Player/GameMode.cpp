@@ -3,9 +3,12 @@
 // constructor
 GameMode::GameMode(QObject *parent): QObject{parent}
 {
-    this->_players = new QList<Player*>();
+    this->_players = new QMap<QString, Player*>();
     this->_items = new QList<Item*>();
     this->_mqtt = MqttService::instance();
+    this->_mqtt->subscribe("map");
+    this->_mqtt->subscribe("player/register");
+    this->_mqtt->subscribe("player/control");
 
     connect(this->_mqtt,
                 SIGNAL(message(QJsonObject,QString)),
@@ -25,7 +28,7 @@ GameMode::~GameMode() {
 //  +-------+
 void GameMode::deserialize(const QJsonObject &jsonObject)
 {
-    this->_players = new QList<Player*>();
+    this->_players = new QMap<QString, Player*>();
     this->_items = new QList<Item*>();
 
     QJsonArray jsonPlayers = jsonObject["players"].toArray();
@@ -34,7 +37,7 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
         QJsonObject playerJsonObject = value.toObject();
         Player *player = new Player();
         player->deserialize(playerJsonObject);
-        this->_players->append(player);
+        this->_players->insert(player->getUuid(), player);
     }
 
     QJsonArray jsonItems = jsonObject["items"].toArray();
@@ -122,11 +125,60 @@ void GameMode::traitement()
 
 }
 
+void GameMode::traitementMap(QJsonObject pMessage)
+{
+
+}
+
+void GameMode::traitementPlayerRegister(QJsonObject pMessage)
+{
+    Player *player = new Player();
+    player->deserialize(pMessage);
+    this->_players->insert(player->getUuid(), player);
+}
+
+void GameMode::traitementPlayerControl(QJsonObject pMessage)
+{
+/*
+    "uuid": str,
+    "angle": float, // en rad
+    "power": int, // [-100%;100%]
+    "buttons": { // état des boutons
+    "banana": bool,
+    "bomb": bool,
+    "rocket": bool
+    }
+*/
+    QString uuid = pMessage["uuid"].toString();
+
+    Player *player = this->_players->value(uuid);
+
+    if(!player) {
+        qDebug() << "[ERROR] traitementPlayerControl player not found";
+        return;
+    }
+
+    //calcul new data
+    int newX;
+    int newY;
+    float newAngle;
+    int newSpeed;
+
+    //check checkpoint
+    //bounded rect du checkpoint
+
+}
+
 //  +------+
 //  | SLOT |
 //  +------+
 void GameMode::message(QJsonObject pMessage, QString pTopic)
 {
-    if (pTopic == "/map") this->deserialize(pMessage);
+    if (pTopic == "map") this->traitementMap(pMessage);
+    if (pTopic == "player/register") this->traitementPlayerRegister(pMessage);
+    if (pTopic == "player/control") this->traitementPlayerControl(pMessage);
+
     qDebug() << "message";
 }
+
+

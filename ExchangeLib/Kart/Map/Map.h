@@ -31,7 +31,7 @@ class MAP_EXPORT Map : public QObject
 public:
     static Map *instance();
 
-    const QString topic = "/map";
+    const QString topic = "map";
 
     // === UTILS ===
     void deserialize(const QJsonObject &);
