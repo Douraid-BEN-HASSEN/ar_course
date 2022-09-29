@@ -23,17 +23,17 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
+
+private:
     QMap<int, ObstacleGraphics*> localObstacles;
     QMap<int, CheckpointGraphics*> localCheckpoint;
 
-private:
     Ui::Widget *ui;
     QGraphicsScene* mScene;
     QGraphicsView* mView;
 
-public slots:
+private slots:
     void updateMap();
-
-
+    void updateProperties();
 };
 #endif // WIDGET_H

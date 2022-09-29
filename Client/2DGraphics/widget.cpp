@@ -4,11 +4,12 @@
 #include <QHBoxLayout>
 #include "ObstacleGraphics.h"
 #include "CheckpointGraphics.h"
-#include "Kart/Map/Map.h"
-#include "Kart/Game/Properties.h"
-#include "Kart/Player/GameMode.h"
 
-#include "Mqtt/MqttService.h"
+#include <Kart/Map/Map.h>
+#include <Kart/Game/Properties.h>
+#include <Kart/Player/GameMode.h>
+
+#include <Mqtt/MqttService.h>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -20,10 +21,13 @@ Widget::Widget(QWidget *parent)
     mView = new QGraphicsView(this);
     mView->setScene(mScene);
 
+    Map::getInstance();
+
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
     // Pour finir sur this = Widget apperler updateMap
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
+    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
 }
 
 Widget::~Widget()
@@ -31,7 +35,9 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::updateMap(){
+void Widget::updateMap() {
+
+    qDebug() << "map";
     //new QMap<int, Obstacle*>();
     // Faire une boucle sur tous les obstacles
     // Sur chaque obstacle on va devoir le créer + le placer
@@ -72,5 +78,11 @@ void Widget::updateMap(){
     qDebug() << "Topic width = " << Map::getInstance()->getMapWidth();
     qDebug() << "Topic recu = " << Map::getInstance()->getMapHeight();
 
+}
+
+void Widget::updateProperties() {
+    ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
+    ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
+    ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
 }
 

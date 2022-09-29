@@ -11,7 +11,11 @@ Map *Map::getInstance() {
         /* -- connect -- */
         /* todo implmente an interface and methode to connect */
         connect(MqttService::instance(), &MqttService::message, instance, &Map::receivedMessage);
+
+        qDebug() << "Map connected";
     }
+
+
 
     return instance;
 }
@@ -76,7 +80,7 @@ void Map::deserialize(const QJsonObject &jsonObject) {
         _obstacles->insert(obstacle->getId(), obstacle);
     }
 
-    emit mapUpadeted();
+    emit updated();
 }
 
 QString Map::serialize() {
