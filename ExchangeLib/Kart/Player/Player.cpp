@@ -22,6 +22,9 @@ void Player::deserialize(const QJsonObject &jsonObject) {
     this->_pseudo = jsonObject["pseudo"].toString();
     this->_color = jsonObject["color"].toString();
     this->_team = jsonObject["team"].toString();
+    this->_x = jsonObject["x"].toInt();
+    this->_y = jsonObject["y"].toInt();
+    this->_angle = jsonObject["angle"].toDouble();
     this->_speed = jsonObject["speed"].toInt();
     this->_vehicle = jsonObject["vehicle"].toString();
 
@@ -49,6 +52,9 @@ QJsonObject Player::toJson() {
     jsonObject["pseudo"] = this->_pseudo;
     jsonObject["color"] = this->_color;
     jsonObject["team"] = this->_team;
+    jsonObject["x"] = this->_x;
+    jsonObject["y"] = this->_y;
+    jsonObject["angle"] = this->_angle;
     jsonObject["speed"] = this->_speed;
     jsonObject["vehicle"] = this->_vehicle;
 
@@ -91,6 +97,22 @@ void Player::setTeam(QString pTeam)
 {
     this->_team = pTeam;
 }
+
+void Player::setX(int pX)
+{
+    this->_x = pX;
+}
+
+void Player::setY(int pY)
+{
+    this->_y = pY;
+}
+
+void Player::setAngle(float pAngle)
+{
+    this->_angle = pAngle;
+}
+
 
 void Player::setSpeed(int pSpeed)
 {
@@ -143,6 +165,21 @@ QString Player::getColor()
 QString Player::getTeam()
 {
     return this->_team;
+}
+
+int Player::getX()
+{
+    return this->_x;
+}
+
+int Player::getY()
+{
+    return this->_y;
+}
+
+float Player::getAngle()
+{
+    return this->_angle;
 }
 
 int Player::getSpeed()

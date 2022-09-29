@@ -1,6 +1,6 @@
 #include <QCoreApplication>
 #include "MqttService.h"
-#include "FieldAruco.h"
+#include "MapAruco.h"
 #include <QDebug>
 
 int main(int argc, char *argv[])
@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     MqttService *mqtt = MqttService::instance();
-    FieldAruco *map = FieldAruco::instance();
+    MapAruco *map = MapAruco::instance();
 
     cv::VideoCapture inputVideo(4);
     cv::Mat image;

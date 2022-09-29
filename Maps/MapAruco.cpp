@@ -1,27 +1,23 @@
-#include "FieldAruco.h"
+#include "MapAruco.h"
 
-FieldAruco *FieldAruco::instance() {
-    static FieldAruco instance;
+MapAruco *MapAruco::instance() {
+    static MapAruco instance;
     return &instance;
 }
 
 // constructor
-FieldAruco::FieldAruco(): Map{}
+MapAruco::MapAruco(): Map{}
 {
 
 }
 
 // destructor
-FieldAruco::~FieldAruco()
+MapAruco::~MapAruco()
 {
-
 }
 
-bool FieldAruco::setMapInfo(cv::Mat &pImage)
+bool MapAruco::setMapInfo(cv::Mat &pImage)
 {
-    this->_checkpoints = new QMap<int, Checkpoint*>();
-    this->_obstacles = new QMap<int, Obstacle*>();
-
     bool success = false;
     std::vector< std::vector< cv::Point2f > > corners, rejected;
     std::vector< std::vector< cv::Point2f > > corners_final, rejected_final;
@@ -43,14 +39,6 @@ bool FieldAruco::setMapInfo(cv::Mat &pImage)
     // get map bounds
     if (ids.size() > 0)
     {
-        /*for(std::vector<int>::iterator nId = ids.begin(); nId != ids.end(); nId++) {
-            if(this->_checkpoints->contains(*nId)){
-
-            } else if(this->_obstacles->contains(*nId)) {
-
-            }
-        }*/
-
         success = true;
         // On dessine les marqueurs détectés sur l'image
         cv::aruco::drawDetectedMarkers(imageCopy, corners, ids);
@@ -95,15 +83,65 @@ bool FieldAruco::setMapInfo(cv::Mat &pImage)
                 checkpoint->setId(ids[itId]);
                 checkpoint->setX(itemPos.x);
                 checkpoint->setY(itemPos.y);
-                this->_checkpoints->insert(checkpoint->getId(), checkpoint);
+                if(this->_checkpoints->contains(checkpoint->getId())) {
+                    this->_checkpoints->remove(checkpoint->getId());
+                    this->_checkpoints->insert(checkpoint->getId(), checkpoint);
+                } else this->_checkpoints->insert(checkpoint->getId(), checkpoint);
             } else if(ids[itId] > 9 && ids[itId] < 250) {
                 Obstacle *obstacle = new Obstacle();
                 obstacle->setId(ids[itId]);
                 obstacle->setX(itemPos.x);
                 obstacle->setY(itemPos.y);
                 obstacle->setAngle(0);
-                this->_obstacles->insert(obstacle->getId(), obstacle);
+                if(this->_obstacles->contains(obstacle->getId())) {
+                    this->_obstacles->remove(obstacle->getId());
+                    this->_obstacles->insert(obstacle->getId(), obstacle);
+                } else this->_obstacles->insert(obstacle->getId(), obstacle);
             }
+
+            // === gestion des timeout ===
+            bool contains;
+            // liste contenant les ids à supprimer
+            int timeoutLimit = 5000;
+            QList<int> checkpointIdTimedout;
+            QList<int> obstacleIdTimedout;
+
+            // checkpoint
+            foreach(Checkpoint *checkpoint, *this->_checkpoints) {
+                contains = false;
+                for(std::vector<int>::iterator id = ids.begin(); id != ids.end(); id++) {
+                    contains = checkpoint->getId() == *id;
+                    if(contains) {
+                        checkpoint->setTimeout(0); // reset timeout
+                        break;
+                    }
+                }
+                if(!contains) checkpoint->setTimeout(checkpoint->getTimeout()+1);
+                if(checkpoint->getTimeout() >= timeoutLimit) checkpointIdTimedout.append(checkpoint->getId());
+            }
+            // obstacle
+            foreach(Obstacle *obstacle, *this->_obstacles) {
+                contains = false;
+                for(std::vector<int>::iterator id = ids.begin(); id != ids.end(); id++) {
+                    contains = obstacle->getId() == *id;
+                    if(contains) {
+                        obstacle->setTimeout(0); // reset timeout
+                        break;
+                    }
+                }
+                if(!contains) obstacle->setTimeout(obstacle->getTimeout()+1);
+                if(obstacle->getTimeout() >= timeoutLimit) obstacleIdTimedout.append(obstacle->getId());
+            }
+
+            // suppression des elements
+            foreach (int id, checkpointIdTimedout) {
+                this->_checkpoints->remove(id);
+            }
+
+            foreach (int id, obstacleIdTimedout) {
+                this->_obstacles->remove(id);
+            }
+            // ============================
 
             itId++;
         }

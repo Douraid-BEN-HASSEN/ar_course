@@ -30,7 +30,6 @@ void Map::receivedMessage(QJsonObject message, QString topic) {
     if (topic == Map::topic) {
         this->deserialize(message);
     }
-
 }
 
 //  +-------+
@@ -72,7 +71,7 @@ void Map::deserialize(const QJsonObject &jsonObject) {
         _obstacles->insert(obstacle->getId(), obstacle);
     }
 
-    emit fieldUpadeted();
+    emit mapUpadeted();
 }
 
 QString Map::serialize() {

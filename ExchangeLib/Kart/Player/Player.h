@@ -27,6 +27,9 @@ public:
     void setPseudo(QString pPseudo);
     void setColor(QString pColor);
     void setTeam(QString pTeam);
+    void setX(int pX);
+    void setY(int pY);
+    void setAngle(float pAngle);
     void setSpeed(int pSpeed);
     void setVehicule(QString pVehicule);
     void setLastCheckpoint(int pLastCheckpoint);
@@ -39,6 +42,9 @@ public:
     QString getPseudo();
     QString getColor();
     QString getTeam();
+    int getX();
+    int getY();
+    float getAngle();
     int getSpeed();
     QString getVehicule();
     QMap<QString, int>* getItems();
@@ -52,6 +58,9 @@ private:
     QString _pseudo;
     QString _color;
     QString _team;
+    int _x;
+    int _y;
+    float _angle;
     int _speed;
     QString _vehicle; // enum a modifier
     QMap<QString, int> *_items;
