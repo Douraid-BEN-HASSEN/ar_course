@@ -24,7 +24,9 @@ QString Vehicle::toString() {
                 QString::number(this->maxSpeed),
                 QString::number(this->acceleration),
                 QString::number(this->weight),
-                QString::number(this->steeringAngle)
+                QString::number(this->steeringAngle),
+                QString::number(this->weight),
+                QString::number(this->height)
                 );
 
 }
@@ -38,6 +40,8 @@ void Vehicle::deserialize(const QJsonObject &jsonObject) {
     this->acceleration = jsonObject["acceleration"].toDouble();
     this->weight = jsonObject["weight"].toInt();
     this->steeringAngle = jsonObject["steeringAngle"].toDouble();
+    this->width = jsonObject["width"].toInt();
+    this->height = jsonObject["height"].toInt();
 }
 
 QJsonObject Vehicle::toJson() {
@@ -46,6 +50,8 @@ QJsonObject Vehicle::toJson() {
     jObject["acceleration"] = this->acceleration;
     jObject["weight"] = this->weight;
     jObject["steeringAngle"] = this->weight;
+    jObject["width"] = this->weight;
+    jObject["height"] = this->height;
 
     return jObject;
 }

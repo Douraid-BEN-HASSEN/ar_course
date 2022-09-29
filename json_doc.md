@@ -8,7 +8,7 @@ Description
 ---
 
 
-`/map`
+`map`
 
 ### OpenCV -> GameEngine, Clients
 
@@ -19,8 +19,8 @@ A RENVOYER A CHAQUE X SECONDES ?
 
 ```json
 {
-    "mapWidth": "float",
-    "mapHeight": "float",
+    "mapWidth": "int",
+    "mapHeight": "int",
     "checkpoints": [
         {
             "id": "int",
@@ -41,7 +41,7 @@ A RENVOYER A CHAQUE X SECONDES ?
 
 --- 
 
-`/player/register`
+`player/register`
 
 ### joueur -> GameEngine
 
@@ -59,7 +59,7 @@ A RENVOYER A CHAQUE X SECONDES ?
 
 ---
 
-`/player/control`
+`player/control`
 
 ### Joueur -> GameEngine
 
@@ -69,16 +69,16 @@ A RENVOYER A CHAQUE X SECONDES ?
     "angle": "float", // [-90°;90°]
     "power": "int", // [-100%;100%]
     "buttons": { // état des boutons
-    "banana": "bool",
-    "bomb": "bool",
-    "rocket": "bool"
+        "banana": "bool",
+        "bomb": "bool",
+        "rocket": "bool"
     }
 }
 ```
 
 --- 
 
-`/game`
+`game`
 
 ### Moteur de jeu -> Joueur
 
@@ -94,7 +94,7 @@ Informations des items placés sur la map en temps réel (coordonnées)
             "pseudo": "string",
             "color": "string",
             "team": "string",
-            "x": "string",
+            "x": "int",
             "y": "int",
             "angle": "float",
             "speed": "int",
@@ -139,25 +139,36 @@ Nombre d’items
 {
     "lapsNb": "int", // nombre de tour à faire
     "teamNb": "int", // nombre d’équipe dans la partie
-    "circleRadius": "float",
-    "rectangleWidth": "float",
-    "rectangleHeight": "float",
-    "checkpointRadius": "float",
+    
+    "circleRadius": "int",
+    "rectangleWidth": "int",
+    "rectangleHeight": "int",
+    "checkpointRadius": "int",
+    
     "bananaNb": "int", // -1 = infinie
-    "bombNb": "int", // -1 = infinie
-    "rocketNb": "int", // -1 = infinie
     "bananaCd": "int", // temps entre deux utilisations
-    "bombCd": "int", // temps entre deux utilisations
-    "rocketCd": "int", // temps entre deux utilisations
-    "rocketSpeed": "float", // vitesse d’une roquette
     "bananaTtl": "int", // temps avant que la banane disparaisse
+    "bananaRadius": "int", // taille de la banane
+
+    "bombNb": "int", // -1 = infinie
+    "bombCd": "int", // temps entre deux utilisations
     "bombTtl": "int", // temps avant explosion
+    "bombRadius": "int",
+    "bombExplosionRadius": "int", // taille de l’explosion
+
+    "rocketNb": "int",// -1 = infinie
+    "rocketCd": "int", // temps entre deux utilisation
+    "rocketSpeed": "float", // vitesse d’une roquette
+    "rocketRadius": "int", // taille d’une roquette
+
     "vehicleOptions" {
         "<vehicle>": { // vehicle : bike, car, truck
             "maxSpeed": "int",
             "acceleration": "float",
             "weight": "int",
-            "steeringAngle": "float", // angle de braquage
+            "steeringAngle": "float", // angle de braquage, en rad
+            "width": "int", // largeur du véhicule
+            "height": "int" // longueur du véhicule
         }
     }
 }

@@ -20,6 +20,9 @@ public:
     float acceleration = 0.0f;
     int weight = 0.0f;
     float steeringAngle = 0.0f;
+    int width = 0;
+    int height = 0;
+
     QString type = "";
 
     QString toString();
