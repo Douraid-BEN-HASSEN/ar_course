@@ -17,22 +17,26 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
     laps = jsonObject["lapsNb"].toInt();
     team = jsonObject["teamNb"].toInt();
 
-    circleRadius = jsonObject["circleRadius"].toDouble();
-    rectangleWidth = jsonObject["rectangleWidth"].toDouble();
-    rectangleHeight = jsonObject["rectangleHeight"].toDouble();
-    checkpointRadius = jsonObject["checkpointRadius"].toDouble();
+    circleRadius = jsonObject["circleRadius"].toInt();
+    rectangleWidth = jsonObject["rectangleWidth"].toInt();
+    rectangleHeight = jsonObject["rectangleHeight"].toInt();
+    checkpointRadius = jsonObject["checkpointRadius"].toInt();
 
     banana = jsonObject["bananaNb"].toInt();
-    bomb = jsonObject["bombNb"].toInt();
-    rocket = jsonObject["rocketNb"].toInt();
-
     bananaCooldown = jsonObject["bananaCd"].toInt();
-    bombCooldown = jsonObject["bombCd"].toInt();
-    rocketCooldown = jsonObject["rocketCd"].toInt();
+    bananaTTL = jsonObject["bananaTtl"].toInt();
+    bananaRadius = jsonObject["bananaRadius"].toInt();
 
+    bomb = jsonObject["bombNb"].toInt();
+    bombCooldown = jsonObject["bombCd"].toInt();
+    bombTTL = jsonObject["bombTtl"].toInt();
+    bombRadius = jsonObject["bombRadius"].toInt();
+    bombExplosionRadius = jsonObject["bombExplosionRadius"].toInt();
+
+    rocket = jsonObject["rocketNb"].toInt();
+    rocketCooldown = jsonObject["rocketCd"].toInt();
     rocketSpeed = jsonObject["rocketSpeed"].toDouble();
-    bananaTTL = jsonObject["bananaTtl"].toDouble();
-    bombTTL = jsonObject["bombTtl"].toDouble();
+    rocketRadius = jsonObject["rocketRadius"].toInt();
 
     QJsonObject vehicleOptionsJO = jsonObject["vehicleOptions"].toObject();
 
@@ -62,16 +66,19 @@ QJsonObject Properties::toJson() {
     jObject["checkpointRadius"] = this->checkpointRadius;
 
     jObject["bananaNb"] = this->banana;
-    jObject["bombNb"] = this->bomb;
-    jObject["rocketNb"] = this->rocket;
-
     jObject["bananaCd"] = this->bananaCooldown;
-    jObject["bombCd"] = this->bombCooldown;
-    jObject["rocketCd"] = this->rocketCooldown;
-
-    jObject["rocketSpeed"] = this->rocketSpeed;
     jObject["bananaTtl"] = this->bananaTTL;
+    jObject["bananaRadius"] = this->bananaRadius;
+
+    jObject["bombNb"] = this->bomb;
     jObject["bombTtl"] = this->bombTTL;
+    jObject["bombCd"] = this->bombCooldown;
+    jObject["bombRadius"] = this->bombRadius;
+
+    jObject["rocketNb"] = this->rocket;
+    jObject["rocketCd"] = this->rocketCooldown;
+    jObject["rocketSpeed"] = this->rocketSpeed;
+    jObject["rocketRadius"] = this->rocketRadius;
 
     QJsonObject vehicleOptionsJO = QJsonObject();
 

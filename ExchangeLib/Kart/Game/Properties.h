@@ -27,22 +27,27 @@ public:
 
     int laps = 0;
     int team = 0;
-    float circleRadius = 0.0f;
-    float rectangleWidth = 0.0f;
-    float rectangleHeight = 0.0f;
-    float checkpointRadius = 0.0f;
 
     int banana = 0;
-    int bomb = 0;
-    int rocket = 0;
-
     int bananaCooldown = 0;
-    int bombCooldown = 0;
-    int rocketCooldown = 0;
+    int bananaTTL = 0;
+    int bananaRadius = 0;
 
+    int bomb = 0;
+    int bombCooldown = 0;
+    int bombTTL = 0;
+    int bombRadius = 0;
+    int bombExplosionRadius = 0;
+
+    int rocket = 0;
+    int rocketCooldown = 0;
     float rocketSpeed = 0.0f;
-    int bananaTTL = 0.0f;
-    int bombTTL = 0.0f;
+    int rocketRadius = 0;
+
+    int circleRadius = 0;
+    int rectangleWidth = 0;
+    int rectangleHeight = 0;
+    int checkpointRadius = 0;
 
     QMap<QString, Vehicle *> *vehicleOptions = new QMap<QString, Vehicle *>;
 
