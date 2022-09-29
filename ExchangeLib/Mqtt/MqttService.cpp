@@ -6,13 +6,6 @@ MqttService *MqttService::instance()
     return &instance;
 }
 
-void MqttService::publish(QString pTopic, QString pData)
-{
-    QMqttTopicName topic(pTopic);
-    QByteArray data = pData.toUtf8();
-    this->client->publish(topic, data);
-}
-
 MqttService::MqttService(QObject *parent): QObject{parent}
 {
     client = new QMqttClient();
@@ -21,13 +14,13 @@ MqttService::MqttService(QObject *parent): QObject{parent}
     client->setUsername(Config.username);
     client->setPassword(Config.password);
 
+    client->connectToHost();
+
     subscribes = new QList<QMqttSubscription *>;
 
     /* -- connect -- */
     connect(client, &QMqttClient::stateChanged, this, &MqttService::stateChange);
     connect(client, &QMqttClient::messageReceived, this, &MqttService::receivedMessage);
-
-    client->connectToHost();
 }
 
 /**
@@ -35,22 +28,43 @@ MqttService::MqttService(QObject *parent): QObject{parent}
  */
 void MqttService::stateChange() {
 
+    QString message;
     switch (client->state()) {
-        case 0 :
-            qDebug() << "Déconnecté";
+        case QMqttClient::Disconnected :
+            message = "Déconnecté";
             break;
-        case 1 :
-            qDebug() << "En cours de connexion";
+        case QMqttClient::Connecting :
+            message = "En cours de connexion";
             break;
-        case 2 :
-            qDebug() << "Connecté";
+        case QMqttClient::Connected :
+            message = "Connecté";
 
-            subscribes->append(client->subscribe(QString("/map")));
-            subscribes->append(client->subscribe(QString("/game")));
+            for (QString topic : *this->subscribesWait) {
+                this->subscribe(topic);
+            }
 
             break;
     }
 
+    qDebug() << message;
+
+}
+
+bool MqttService::subscribe(QString topic) {
+    qDebug( ) << "Dans MqttService : subscribe" ;
+
+    if (client->state() != QMqttClient::Connected) {
+        subscribesWait->append(topic);
+        return true;
+    }
+
+    subscribes->append(client->subscribe(topic));
+
+    return true;
+}
+
+void MqttService::publish(QString topic, QString message) {
+    this->client->publish(topic, message.toUtf8());
 }
 
 /**
@@ -59,18 +73,10 @@ void MqttService::stateChange() {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
+
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 
-    if (topic == QString("/map")) {
-        Field *field = Field::instance();
-        field->deserialize(jsonObject);
-
-        qDebug() << field->serialize();
-
-    } else if (topic == QString("game")) {
-
-        emit gameUpdated(jsonObject["color"].toString());
-    }
+    emit this->message(jsonObject, topic.name());
 }
 

@@ -1,6 +1,5 @@
 #include "playerui.h"
-#include "properties.h"
-#include <QVBoxLayout>
+#include <QDebug>
 
 //Catch event of key pressed
 void PlayerUi::keyPressEvent(QKeyEvent *key){
@@ -45,7 +44,7 @@ void PlayerUi::buttonPlayPressed()
 
     if (this->lineEditPseudo->text() != "")
     {
-        MqttService::instance()->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText() , this->comboBoxTeam->currentText());
+        this->_controller->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText() , this->comboBoxTeam->currentText());
         this->team = this->comboBoxTeam->currentText();
         this->vehicle = this->comboBoxVehicle->currentText();
         delete this->registerLayout ;
@@ -90,20 +89,23 @@ void PlayerUi::catchActionKey(int idKey)
 //On action, make message for mqtt
 void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
 {
-    MqttService::instance()->sendMessageControl(this->uuid , angle , this->power , keyAction);
+    this->_controller->sendMessageControl(this->uuid , angle , this->power , keyAction);
 }
 
 //After find à run , make the page for register
 void PlayerUi::updateLayoutToRegister()
 {
-    this->nbBanana = MqttService::instance()->propertiesReceived->bananaNb;
-    this->nbBomb = MqttService::instance()->propertiesReceived->bombNb;
-    this->nbRocket = MqttService::instance()->propertiesReceived->rocketNb;
+    this->nbBanana = this->_controller->getProperties()->banana;
+    this->nbBomb = this->_controller->getProperties()->bomb;
+    this->nbRocket = this->_controller->getProperties()->rocket;
     this->updateLabel();
-    qDebug() << MqttService::instance()->propertiesReceived->vehicleOptions->size() ;
-    QMap<QString, Vehicle *>::iterator i;
-    for (int i = 0 ; i < MqttService::instance()->propertiesReceived->vehicleOptions->size() ; i++)
-        this->comboBoxVehicle->addItem("Type : " + MqttService::instance()->propertiesReceived->vehicleOptions->at(i)->type + " | MS : " + QString::number(MqttService::instance()->propertiesReceived->vehicleOptions->at(i)->maxSpeed) + " | A : " + QString::number(MqttService::instance()->propertiesReceived->vehicleOptions->at(i)->acceleration) + " | W : " + QString::number(MqttService::instance()->propertiesReceived->vehicleOptions->at(i)->weight) + " | SA : " + QString::number(MqttService::instance()->propertiesReceived->vehicleOptions->at(i)->steeringAngle)) ;
+    qDebug() << this->_controller->getProperties()->vehicleOptions->size();
+
+    Properties *properties = this->_controller->getProperties();
+    for (Vehicle *vehicle : properties->vehicleOptions->values()) {
+
+        this->comboBoxVehicle->addItem(vehicle->toString());
+    }
 
 }
 
@@ -115,6 +117,12 @@ void PlayerUi::updateLabel()
     this->labelBanana->setText(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
     this->labelBomb->setText(" <h4> " + QString::number(this->nbBomb) + " bomb(s) </h4> ");
     this->labelRocket->setText(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
+}
+
+void PlayerUi::connectToMqtt()
+{
+    qDebug() << MqttService::instance()->client->state();
+    MqttService::instance()->subscribe("/game/properties");
 }
 
 void PlayerUi::catchKeyLeft() {
@@ -140,6 +148,8 @@ void PlayerUi::catchKeyRight() {
 PlayerUi::PlayerUi(QWidget *parent)
     : QWidget(parent)
 {
+    _controller = new Controller;
+
     //Init parameters
     this->angle = 180 ;
     this->power = 0 ;
@@ -238,9 +248,16 @@ PlayerUi::PlayerUi(QWidget *parent)
 
     this->setLayout(this->loadingLayout);
 
+
+
+
+    //MqttService::instance()->
+
     //Connect
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind()) );
+    this->connectToMqtt();
+
 }
 
 
