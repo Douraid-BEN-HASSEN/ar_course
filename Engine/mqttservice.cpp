@@ -1,4 +1,4 @@
-#include "MqttService.h"
+#include "mqttservice.h"
 
 MqttService *MqttService::instance()
 {
@@ -20,6 +20,12 @@ MqttService::MqttService(QObject *parent): QObject{parent}
     /* -- connect -- */
     connect(client, &QMqttClient::stateChanged, this, &MqttService::stateChange);
     connect(client, &QMqttClient::messageReceived, this, &MqttService::receivedMessage);
+    connect(client, &QMqttClient::messageReceived, this, &MqttService::receivedMessage);
+
+    connect(this,
+            SIGNAL(message(QJsonObject,QString)),
+            &_gameMode,
+            SLOT(message(QJsonObject,QString)));
 
     client->connectToHost();
 }
@@ -64,6 +70,7 @@ void MqttService::publish(QString pTopic, QString pData)
  * SLot of state mqttCLient
  */
 void MqttService::stateChange() {
+    qDebug() << "stateChange";
 
     switch (client->state()) {
     case 0 :
@@ -75,8 +82,9 @@ void MqttService::stateChange() {
     case 2 :
         qDebug() << "Connecté";
 
-        subscribes->append(client->subscribe(QString("map")));
-        subscribes->append(client->subscribe(QString("game")));
+        subscribes->append(client->subscribe(QString("/player/control")));
+        subscribes->append(client->subscribe(QString("/map")));
+        subscribes->append(client->subscribe(QString("/")));
 
         break;
     }
@@ -89,21 +97,11 @@ void MqttService::stateChange() {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
-    qDebug() << message << topic;
-
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 
-    if (topic == QString("map")) {
-        //Field *field = Field::instance();
-        //field->deserialize(jsonObject);
-
-        //qDebug() << field->serialize();
-
-    } else if (topic == QString("game")) {
-
-        emit gameUpdated(jsonObject["color"].toString());
-
-    }
+    emit this->message(jsonObject, topic.name());
 }
+
+
 

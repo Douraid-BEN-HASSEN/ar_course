@@ -15,6 +15,7 @@ SOURCES += \
     src/Kart/Map/Field.cpp \
     src/Kart/Map/Obstacle.cpp \
     src/Kart/Map/Checkpoint.cpp \
+    src/Kart/Player/Player.cpp \
     src/Mqtt/MqttService.cpp \
     src/main.cpp \
     src/window.cpp
@@ -25,6 +26,7 @@ HEADERS += \
     src/Kart/Map/Field.h \
     src/Kart/Map/Obstacle.h \
     src/Kart/Map/Checkpoint.h \
+    src/Kart/Player/Player.h \
     src/Mqtt/MqttService.h \
     src/window.h
 

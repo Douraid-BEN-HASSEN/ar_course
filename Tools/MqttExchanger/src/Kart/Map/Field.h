@@ -4,31 +4,58 @@
 #include <QObject>
 #include <QMap>
 #include <QDebug>
-#include <QJsonArray>
-#include <QJsonDocument>
-
 #include "Obstacle.h"
 #include "Checkpoint.h"
 
+#include <QList>
+#include <iostream>
+#include <vector>
+
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+
+//  +------------+
+//  | Classe Map |
+//  +------------+
 class Field : public QObject
 {
     Q_OBJECT
 public:
     static Field *instance();
 
-    float width;
-    float height;
-
-    QMap<int, Obstacle*> *obstacles = new QMap<int, Obstacle*>();
-    QMap<int, Checkpoint*> *checkpoints = new QMap<int, Checkpoint*>();
-
+    // === UTILS ===
     void deserialize(const QJsonObject &);
+    // méthode pour transformer l'objet en QString
     QString serialize();
+
     QJsonObject toJson();
 
+    // === SETTER ===
+    void setMapWidth(float pMapWidth);
+    void setMapHeight(float pMapHeight);
+
+    // méthode pour ajouter un checkpoint
+    void addCheckpoint(Checkpoint *pCheckpoint);
+    // méthode pour ajouter un obstacle
+    void addObstacle(Obstacle *pObstacle);
+
+    // === GETTER ===
+    float getMapWidth();
+    float getMapHeight();
 
 private:
+    float _mapWidth;
+    float _mapHeight;
+
+protected:
+    // constructor
     explicit Field(QObject *parent = nullptr);
+    // destructor
+    ~Field();
+
+    QMap<int, Checkpoint*> *_checkpoints;
+    QMap<int, Obstacle*> *_obstacles;
 
 private slots:
 

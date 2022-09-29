@@ -1,47 +1,43 @@
-#ifndef OBSTACLE_H
-#define OBSTACLE_H
+#ifndef ITEM_H
+#define ITEM_H
 
 #include <QObject>
 #include <QJsonObject>
 #include <QJsonDocument>
 
-class Obstacle : public QObject
+class Item : public QObject
 {
     Q_OBJECT
 public:
-    // constructor
-    explicit Obstacle(QObject *parent = nullptr);
-    // destructor
-    ~Obstacle();
+    explicit Item(QObject *parent = nullptr);
 
     // === UTILS ===
-    void deserialize(const QJsonObject &json);
+    void deserialize(const QJsonObject &jsonObject);
     QString serialize();
     QJsonObject toJson();
 
     // === SETTER ===
-    void setId(int pId);
     void setX(int pX);
     void setY(int pY);
     void setAngle(float pAngle);
-    void setTimeout(int pTimeout);
+    void setStatus(QString pStatut);
 
     // === GETTER ===
-    int getId();
     int getX();
     int getY();
     float getAngle();
-    int getTimeout();
+    QString getStatus();
+    QString getType();
 
 private:
-    int _id;
     int _x;
     int _y;
     float _angle;
-    int _timeout;
+    QString _status;
+    QString _type;
 
 signals:
 
 };
 
-#endif // OBSTACLE_H
+#endif // ITEM_H
