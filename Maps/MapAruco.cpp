@@ -1,22 +1,22 @@
-#include "FieldAruco.h"
+#include "MapAruco.h"
 
-FieldAruco *FieldAruco::instance() {
-    static FieldAruco instance;
+MapAruco *MapAruco::instance() {
+    static MapAruco instance;
     return &instance;
 }
 
 // constructor
-FieldAruco::FieldAruco(): Field{}
+MapAruco::MapAruco(): Map{}
 {
 
 }
 
 // destructor
-FieldAruco::~FieldAruco()
+MapAruco::~MapAruco()
 {
 }
 
-bool FieldAruco::setMapInfo(cv::Mat &pImage)
+bool MapAruco::setMapInfo(cv::Mat &pImage)
 {
     bool success = false;
     std::vector< std::vector< cv::Point2f > > corners, rejected;

@@ -1,20 +1,20 @@
-#ifndef FIELDARUCO_H
-#define FIELDARUCO_H
+#ifndef MAPARUCO_H
+#define MAPARUCO_H
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/opencv.hpp>
 
-#include "../Tools/MqttExchanger/src/Kart/Map/Field.h"
+#include <Kart/Map/Map.h>
 
-class FieldAruco: public Field
+class MapAruco: public Map
 {
 public:
-    static FieldAruco *instance();
+    static MapAruco *instance();
 
     bool setMapInfo(cv::Mat &pImage);
 private:
-    FieldAruco();
-    ~FieldAruco();
+    MapAruco();
+    ~MapAruco();
 };
 
-#endif // FIELDARUCO_H
+#endif // MAPARUCO_H
