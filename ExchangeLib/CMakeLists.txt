@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.5)
 
 project(ExchangeLib LANGUAGES CXX)
 
-set(CMAKE_PREFIX_PATH "C:/Qt/5.15.2/mingw81_64/lib/cmake/Qt5")
+#set(CMAKE_PREFIX_PATH "C:/Qt/5.15.2/mingw81_64/lib/cmake/Qt5")
+set(Qt5_DIR "~/Qt/5.15.2/gcc_64/lib/cmake/Qt5")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
