@@ -17,6 +17,8 @@
 #include <Kart/Map/Map.h>
 #include <Mqtt/MqttService.h>
 
+
+
 class GAMEMODE_EXPORT GameMode: public QObject
 {
     Q_OBJECT
@@ -59,7 +61,8 @@ private:
 public slots:
     void message(QJsonObject pMessage, QString pTopic);
 
-signals:
+public: signals:
+    void mapUpadeted();
 
 };
 
