@@ -72,8 +72,7 @@ private slots:
     void receivedMessage(QJsonObject message, QString topic);
 
 public: signals:
-    void fieldUpadeted();
+    void mapUpadeted();
 
 };
-
 #endif // MAP_H

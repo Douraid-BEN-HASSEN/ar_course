@@ -39,8 +39,9 @@ void MqttService::stateChange() {
         case QMqttClient::Connected :
             message = "Connecté";
 
-;
-            subscribes->append(client->subscribe(QString("game")));
+            for (QString topic : *this->subscribesWait) {
+                this->subscribe(topic);
+            }
 
             break;
     }
@@ -50,8 +51,12 @@ void MqttService::stateChange() {
 }
 
 bool MqttService::subscribe(QString topic) {
-    if (client->state() != QMqttClient::Connected)
-        return false;
+    qDebug( ) << "Dans MqttService : subscribe" ;
+
+    if (client->state() != QMqttClient::Connected) {
+        subscribesWait->append(topic);
+        return true;
+    }
 
     subscribes->append(client->subscribe(topic));
 
@@ -68,7 +73,6 @@ void MqttService::publish(QString topic, QString message) {
  * @param topic
  */
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
-    qDebug() << message << topic;
 
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();

@@ -3,6 +3,8 @@
 Controller::Controller(QObject *parent): QObject{parent}
 {
     this->_properties = new Properties();
+    //Connect
+
 }
 
 Properties* Controller::getProperties()

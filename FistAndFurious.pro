@@ -7,7 +7,6 @@ SUBDIRS = \
     ExchangeLib
 
 unix {
-    SOURCES += Maps
 }
 
 win32 {

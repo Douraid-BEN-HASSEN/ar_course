@@ -3,7 +3,7 @@
 // constructor
 Obstacle::Obstacle(QObject *parent): QObject{parent}
 {
-
+    this->_timeout = 0;
 }
 
 // destructor
