@@ -54,13 +54,18 @@ void PlayerUi::buttonPlayPressed()
 }
 
 //When receive mqtt message on topic /game/properties
-void PlayerUi::onRunFind()
+void PlayerUi::onRunFind(QByteArray datas)
 {
-    qDebug() << " on run find " ;
+    this->props->deserialize(QJsonDocument::fromJson(datas).object());
+    qDebug() << props->banana << props->bomb << props->rocket ;
+    this->nbBanana = props->banana ;
+    this->nbBomb = props->bomb ;
+    this->nbRocket = props->rocket;
     delete this->loadingLayout ;
     qDeleteAll(this->children());
-    this->updateLayoutToRegister();
     this->setLayout(this->registerLayout);
+    this->updateLayoutToRegister();
+    this->updateLabel();
 }
 
 
@@ -89,21 +94,21 @@ void PlayerUi::catchActionKey(int idKey)
 //On action, make message for mqtt
 void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
 {
-    this->_controller->sendMessageControl(this->uuid , angle , this->power , keyAction);
+    this->_controller->sendMessageControl(this->uuid , this->angle , this->power , keyAction);
 }
 
 //After find à run , make the page for register
 void PlayerUi::updateLayoutToRegister()
 {
-    this->nbBanana = this->_controller->getProperties()->banana;
-    this->nbBomb = this->_controller->getProperties()->bomb;
-    this->nbRocket = this->_controller->getProperties()->rocket;
+    //this->nbBanana = this->_controller->getProperties()->banana;
+    //this->nbBomb = this->_controller->getProperties()->bomb;
+    //this->nbRocket = this->_controller->getProperties()->rocket;
     this->updateLabel();
     qDebug() << this->_controller->getProperties()->vehicleOptions->size();
 
-    Properties *properties = this->_controller->getProperties();
-    for (Vehicle *vehicle : properties->vehicleOptions->values()) {
-
+    qDebug() << this->props->bananaCooldown << " eee ";
+    for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
+        qDebug() << "new vehicle" ;
         this->comboBoxVehicle->addItem(vehicle->toString());
     }
 
@@ -112,6 +117,7 @@ void PlayerUi::updateLayoutToRegister()
 //Function to update label when catching keyboard actions
 void PlayerUi::updateLabel()
 {
+    qDebug() << "dans update label banana | bomb | rocket " << this->nbBanana << " " << this->nbBomb << " " << this->nbRocket ;
     this->labelAngle->setText("<h4> Angle : " + QString::number(this->angle) + " </h4> ");
     this->labelPower->setText("<h4> Power : " + QString::number(this->power) + " </h4> ");
     this->labelBanana->setText(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
@@ -158,6 +164,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->nbRocket = 0 ;
     this->resize(500 , 300);
     this->uuid = QUuid::createUuid().toString();
+    this->props = new Properties;
 
     //Graphic content for loading page
     this->loadingLayout = new QHBoxLayout ;
@@ -225,6 +232,9 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->horizontalLayout_3 = new QHBoxLayout ;
     this->labelVehicle = new QLabel("<h3> Vehicle : </h3>");
     this->comboBoxVehicle = new QComboBox ;
+    this->comboBoxVehicle->addItem("car");
+    this->comboBoxVehicle->addItem("truck");
+    this->comboBoxVehicle->addItem("bike");
     this->horizontalLayout_3->addWidget(labelVehicle);
     this->horizontalLayout_3->addWidget(comboBoxVehicle);
 
@@ -248,14 +258,11 @@ PlayerUi::PlayerUi(QWidget *parent)
 
     this->setLayout(this->loadingLayout);
 
-
-
-
     //MqttService::instance()->
 
     //Connect
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
-    this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind()) );
+    this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind(QByteArray)) );
     this->connectToMqtt();
 
 }
