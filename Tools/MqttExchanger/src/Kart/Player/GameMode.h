@@ -39,6 +39,8 @@ private:
     QString _infoMessage;
     QString _status;
 
+    void traitementPhysics(); // méthode qui gère la la physique
+
 public slots:
     void message(QJsonObject pMessage, QString pTopic);
 

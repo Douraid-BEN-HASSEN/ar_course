@@ -99,7 +99,6 @@ void MqttService::stateChange() {
 void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicName &topic) {
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
-
     emit this->message(jsonObject, topic.name());
 }
 

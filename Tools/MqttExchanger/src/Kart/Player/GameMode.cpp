@@ -110,10 +110,17 @@ QString GameMode::getStatus()
     return this->_status;
 }
 
+void GameMode::traitementPhysics()
+{
+
+}
+
 //  +------+
 //  | SLOT |
 //  +------+
 void GameMode::message(QJsonObject pMessage, QString pTopic)
 {
     if (pTopic == "/map") this->deserialize(pMessage);
+    // TODO: player control
+
 }
