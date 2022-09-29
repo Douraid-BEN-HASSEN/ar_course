@@ -1,26 +1,36 @@
 ﻿#include "GameMode.h"
 
+GameMode *GameMode::getInstance() {
+    static GameMode *instance;
+
+    if (instance == nullptr) {
+        instance = new GameMode();
+
+        MqttService::instance()->subscribe(instance->topic);
+
+        /* -- connect -- */
+        /* todo implmente an interface and methode to connect */
+        connect(MqttService::instance(), &MqttService::message, instance, &GameMode::receivedMessage);
+    }
+
+    return instance;
+}
+
 // constructor
 GameMode::GameMode(QObject *parent): QObject{parent}
 {
     this->_players = new QMap<QString, Player*>();
     this->_items = new QList<Item*>();
-    this->_mqtt = MqttService::instance();
-    this->_mqtt->subscribe("map");
-    this->_mqtt->subscribe("player/register");
-    this->_mqtt->subscribe("player/control");
-
-    connect(this->_mqtt,
-                SIGNAL(message(QJsonObject,QString)),
-                this,
-                SLOT(message(QJsonObject,QString)));
-
 }
 
 // destructor
 GameMode::~GameMode() {
     delete this->_players;
     delete this->_items;
+}
+
+void GameMode::publish() {
+    MqttService::instance()->publish(GameMode::topic, this->serialize().toUtf8());
 }
 
 //  +-------+
@@ -86,6 +96,12 @@ QJsonObject GameMode::toJson()
     return jsonObject;
 }
 
+void GameMode::receivedMessage(QJsonObject message, QString topic) {
+    if (topic == GameMode::topic) {
+        this->deserialize(message);
+    }
+}
+
 //  +--------+
 //  | SETTER |
 //  +--------+
@@ -121,110 +137,3 @@ QString GameMode::getStatus()
 {
     return this->_status;
 }
-
-void GameMode::traitementMap(QJsonObject pMessage)
-{
-    this->_map->deserialize(pMessage);
-}
-
-void GameMode::traitementPlayerRegister(QJsonObject pMessage)
-{
-    Player *player = new Player();
-    player->deserialize(pMessage);
-    this->_players->remove(player->getUuid());
-    this->_players->insert(player->getUuid(), player);
-}
-
-void GameMode::traitementPlayerControl(QJsonObject pMessage)
-{
-/*
-    "uuid": str,
-    "angle": float, // en rad
-    "power": int, // [-100%;100%]
-    "buttons": { // état des boutons
-        "banana": bool,
-        "bomb": bool,
-        "rocket": bool
-     }
-*/
-    QString uuid = pMessage["uuid"].toString();
-    float angle = pMessage["angle"].toDouble();
-    int power = pMessage["power"].toInt();
-
-    QMap<QString, bool> buttons;
-    buttons["banana"] = pMessage["banana"].toBool();
-    buttons["bomb"] = pMessage["bomb"].toBool();
-    buttons["rocket"] = pMessage["rocket"].toBool();
-
-    Player *player = this->_players->value(uuid);
-
-    if(!player) {
-        qDebug() << "[ERROR] traitementPlayerControl player not found";
-        return;
-    }
-
-    Control control;
-    control.setUuid(uuid);
-    control.setAngle(angle);
-    control.setPower(power);
-    control.setButtons(buttons);
-
-    this->_controls.remove(player->getUuid());
-    this->_controls.insert(player->getUuid(), control);
-}
-
-void GameMode::envoiGameInfo()
-{
-    QTimer::singleShot(100, this, &GameMode::envoiGameInfo);
-    this->_mqtt->publish("game", this->serialize());
-}
-
-void GameMode::control_th()
-{
-    QTimer::singleShot(1000, this, &GameMode::control_th);
-    // traitement
-    foreach(Control control, this->_controls) {
-        Player *player = this->_players->value(control.getUuid());
-        Vehicle vehicule(player->getVehicule());
-
-        float P = 1000;
-
-        float F = control.getPower() * P;
-        float C = 1.9;
-        float Ff = 0.5 * C * 1.09 * (player->getSpeed()*player->getSpeed());
-        float acceleration = (F-Ff) / (vehicule.getWeight()*1000); // acceleration
-        float speed = player->getSpeed() + acceleration;
-        // a faire
-        int x = speed * 25;
-        int y = speed * 25;
-        float angle = player->getAngle() + (player->getAngle()-control.getAngle());
-
-
-        player->setX(x);
-        player->setY(y);
-        player->setAngle(angle);
-        player->setSpeed(speed);
-
-        // gerer les checkpoints
-        // gerer les obstacles
-
-        this->_players->remove(player->getUuid());
-        this->_players->insert(player->getUuid(), player);
-
-    }
-
-}
-
-//  +------+
-//  | SLOT |
-//  +------+
-void GameMode::message(QJsonObject pMessage, QString pTopic)
-{
-    if (pTopic == "map") this->traitementMap(pMessage);
-    if (pTopic == "player/register") this->traitementPlayerRegister(pMessage);
-    if (pTopic == "player/control") this->traitementPlayerControl(pMessage);
-
-    qDebug() << "message";
-}
-
-

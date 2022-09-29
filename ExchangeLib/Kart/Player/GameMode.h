@@ -27,12 +27,17 @@ class GAMEMODE_EXPORT GameMode: public QObject
 {
     Q_OBJECT
 public:
+    static GameMode *getInstance();
+
     // constructor
     explicit GameMode(QObject *parent = nullptr);
     // desctructor
     ~GameMode();
 
+    const QString topic = "game";
+
     // === UTILS ===
+    void publish();
     void deserialize(const QJsonObject &);
     QString serialize();
     QJsonObject toJson();
@@ -48,7 +53,6 @@ public:
     QString getStatus();
 
 private:
-    Map *_map;
     Properties *_properties;
     QMap<QString,Player*> *_players;
     QList<Item*> *_items;
@@ -56,19 +60,9 @@ private:
     int _elapsedTime;
     QString _infoMessage;
     QString _status;
-    MqttService *_mqtt;
-
-    void traitementMap(QJsonObject pMessage);
-    void traitementPlayerRegister(QJsonObject pMessage);
-    void traitementPlayerControl(QJsonObject pMessage);
-
-    void envoiGameInfo();
-    void control_th();
-
-    QMap<QString, Control> _controls;
 
 public slots:
-    void message(QJsonObject pMessage, QString pTopic);
+    void receivedMessage(QJsonObject pMessage, QString pTopic);
 
 public: signals:
     void mapUpadeted();

@@ -26,9 +26,6 @@ public:
     QMap<int, ObstacleGraphics*> localObstacles;
     QMap<int, CheckpointGraphics*> localCheckpoint;
 
-
-
-
 private:
     Ui::Widget *ui;
     QGraphicsScene* mScene;

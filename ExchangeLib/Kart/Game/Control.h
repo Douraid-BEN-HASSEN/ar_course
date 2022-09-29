@@ -1,10 +1,17 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
+#if defined(CONTROL_LIBRARY)
+#  define CONTROL_EXPORT Q_DECL_EXPORT
+#else
+#  define CONTROL_EXPORT Q_DECL_IMPORT
+#endif
+
+
 #include <QString>
 #include <QMap>
 
-class Control
+class CONTROL_EXPORT Control
 {
 public:
     Control();
