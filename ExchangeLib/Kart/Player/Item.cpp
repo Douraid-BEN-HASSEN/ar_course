@@ -10,7 +10,7 @@ Item::Item(QObject *parent): QObject{parent}
 //  +-------+
 void Item::deserialize(const QJsonObject &jsonObject) {
     this->_x = jsonObject["x"].toInt();
-    this->_y = jsonObject["x"].toInt();
+    this->_y = jsonObject["y"].toInt();
     this->_angle = jsonObject["angle"].toDouble();
     this->_status = jsonObject["status"].toString();
     this->_type = jsonObject["type"].toString();

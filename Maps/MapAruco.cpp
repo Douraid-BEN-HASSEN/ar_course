@@ -1,22 +1,22 @@
-#include "FieldAruco.h"
+#include "MapAruco.h"
 
-FieldAruco *FieldAruco::instance() {
-    static FieldAruco instance;
+MapAruco *MapAruco::instance() {
+    static MapAruco instance;
     return &instance;
 }
 
 // constructor
-FieldAruco::FieldAruco(): Field{}
+MapAruco::MapAruco(): Map{}
 {
 
 }
 
 // destructor
-FieldAruco::~FieldAruco()
+MapAruco::~MapAruco()
 {
 }
 
-bool FieldAruco::setMapInfo(cv::Mat &pImage)
+bool MapAruco::setMapInfo(cv::Mat &pImage)
 {
     bool success = false;
     std::vector< std::vector< cv::Point2f > > corners, rejected;
@@ -117,7 +117,7 @@ bool FieldAruco::setMapInfo(cv::Mat &pImage)
                     }
                 }
                 if(!contains) checkpoint->setTimeout(checkpoint->getTimeout()+1);
-                if(checkpoint->getId() >= timeoutLimit) checkpointIdTimedout.append(checkpoint->getId());
+                if(checkpoint->getTimeout() >= timeoutLimit) checkpointIdTimedout.append(checkpoint->getId());
             }
             // obstacle
             foreach(Obstacle *obstacle, *this->_obstacles) {
@@ -130,7 +130,7 @@ bool FieldAruco::setMapInfo(cv::Mat &pImage)
                     }
                 }
                 if(!contains) obstacle->setTimeout(obstacle->getTimeout()+1);
-                if(obstacle->getId() >= timeoutLimit) obstacleIdTimedout.append(obstacle->getId());
+                if(obstacle->getTimeout() >= timeoutLimit) obstacleIdTimedout.append(obstacle->getId());
             }
 
             // suppression des elements
