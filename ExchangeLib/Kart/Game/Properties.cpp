@@ -1,10 +1,22 @@
 #include "Properties.h"
 
-Properties::Properties(QObject *parent) : QObject{parent}
-{
-    MqttService::instance()->subscribe(Properties::topic);
+Properties *Properties::getInstance() {
+    static Properties *instance;
 
+    if (instance == nullptr) {
+        instance = new Properties();
+
+        MqttService::instance()->subscribe(instance->topic);
+
+        /* -- connect -- */
+        /* todo implmente an interface and methode to connect */
+        connect(MqttService::instance(), &MqttService::message, instance, &Properties::receivedMessage);
+    }
+
+    return instance;
 }
+
+Properties::Properties(QObject *parent) : QObject{parent} {}
 
 void Properties::receivedMessage(QJsonObject message, QString topic) {
     if (topic == Properties::topic) {

@@ -21,6 +21,7 @@
 class PROPERTIES_EXPORT Properties : public QObject {
     Q_OBJECT
 public:
+    static Properties *getInstance();
     explicit Properties(QObject *parent = nullptr);
 
     const QString topic = "game/properties";

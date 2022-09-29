@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
 
     Widget w;
 
+    Map *m = new Map();
+
     w.show();
     return a.exec();
 }

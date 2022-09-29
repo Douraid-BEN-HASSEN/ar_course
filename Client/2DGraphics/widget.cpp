@@ -21,7 +21,7 @@ Widget::Widget(QWidget *parent)
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
     // Pour finir sur this = Widget apperler updateMap
-    connect(Map::instance(), SIGNAL(mapUpadeted()), this, SLOT(updateMap()));
+    connect(Map::getInstance(), SIGNAL(mapUpadeted()), this, SLOT(updateMap()));
 
 }
 
@@ -37,7 +37,7 @@ void Widget::updateMap(){
     // Sur chaque obstacle on va devoir le créer + le placer
 
 
-    for (auto * iterObstacle : Map::instance()->getObstacles()->values()) {
+    for (auto * iterObstacle : Map::getInstance()->getObstacles()->values()) {
         // Verifier si l object ObstacleRect* obstaclerect  exist
 
         // Rentrer dands le if si sa existe
@@ -65,7 +65,7 @@ void Widget::updateMap(){
     }
 
 
-    for (auto * iterCheckout : Map::instance()->getCheckpoints()->values()) {
+    for (auto * iterCheckout : Map::getInstance()->getCheckpoints()->values()) {
         if(localCheckpoint.value(iterCheckout->getId())){
             qDebug() <<  "le checkpoint existe donc je dois vérifier la position";
             localCheckpoint.value(iterCheckout->getId())->setPos(iterCheckout->getX(),iterCheckout->getY());
@@ -88,8 +88,8 @@ void Widget::updateMap(){
 
 
     qDebug() << "Topic recu = " << MqttService::instance();
-    qDebug() << "Topic width = " << Map::instance()->getMapWidth();
-    qDebug() << "Topic recu = " << Map::instance()->getMapHeight();
+    qDebug() << "Topic width = " << Map::getInstance()->getMapWidth();
+    qDebug() << "Topic recu = " << Map::getInstance()->getMapHeight();
 
 }
 

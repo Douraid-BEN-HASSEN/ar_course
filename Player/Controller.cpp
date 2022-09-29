@@ -1,17 +1,7 @@
 #include "Controller.h"
 #include <QtMath>
 
-Controller::Controller(QObject *parent): QObject{parent}
-{
-    this->_properties = new Properties();
-    //Connect
-
-}
-
-Properties* Controller::getProperties()
-{
-    return this->_properties;
-}
+Controller::Controller(QObject *parent): QObject{parent} {}
 
 void Controller::sendMessageRegister(QString uuid, QString pseudo, QString controller, QString vehicle, QString team)
 {

@@ -104,7 +104,7 @@ void PlayerUi::updateLayoutToRegister()
     //this->nbBomb = this->_controller->getProperties()->bomb;
     //this->nbRocket = this->_controller->getProperties()->rocket;
     this->updateLabel();
-    qDebug() << this->_controller->getProperties()->vehicleOptions->size();
+    qDebug() << Properties::getInstance()->vehicleOptions->size();
 
     qDebug() << this->props->getBananaCooldown() << " eee ";
     for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
@@ -164,7 +164,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->nbRocket = 0 ;
     this->resize(500 , 300);
     this->uuid = QUuid::createUuid().toString();
-    this->props = new Properties;
+    this->props = Properties::getInstance();
 
     //Graphic content for loading page
     this->loadingLayout = new QHBoxLayout ;

@@ -29,7 +29,10 @@ class MAP_EXPORT Map : public QObject
 {
     Q_OBJECT
 public:
-    static Map *instance();
+    static Map *getInstance();
+
+    // constructor
+    explicit Map(QObject *parent = nullptr);
 
     const QString topic = "map";
 
@@ -56,12 +59,11 @@ public:
     QMap<int, Obstacle*>* getObstacles();
 
 private:
+
     float _mapWidth;
     float _mapHeight;
 
 protected:
-    // constructor
-    explicit Map(QObject *parent = nullptr);
     // destructor
     ~Map();
 
