@@ -11,6 +11,7 @@
 
 #include "ObstacleGraphics.h"
 #include "CheckpointGraphics.h"
+#include "PlayerGraphics.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -27,6 +28,7 @@ public:
 private:
     QMap<int, ObstacleGraphics*> localObstacles;
     QMap<int, CheckpointGraphics*> localCheckpoint;
+    QMap<QString, PlayerGraphics*> localPlayers;
 
     Ui::Widget *ui;
     QGraphicsScene* mScene;
@@ -35,5 +37,6 @@ private:
 private slots:
     void updateMap();
     void updateProperties();
+    void updateGameMode();
 };
 #endif // WIDGET_H

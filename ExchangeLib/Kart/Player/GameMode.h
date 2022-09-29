@@ -36,6 +36,9 @@ public:
 
     const QString topic = "game";
 
+    QMap<QString, Player*> *_players;
+    QList<Item*> *_items;
+
     // === UTILS ===
     void publish();
     void deserialize(const QJsonObject &);
@@ -53,9 +56,6 @@ public:
     QString getStatus();
 
 private:
-    Properties *_properties;
-    QMap<QString,Player*> *_players;
-    QList<Item*> *_items;
 
     int _elapsedTime;
     QString _infoMessage;
@@ -65,7 +65,7 @@ public slots:
     void receivedMessage(QJsonObject pMessage, QString pTopic);
 
 public: signals:
-    void mapUpadeted();
+    void updated();
 
 };
 
