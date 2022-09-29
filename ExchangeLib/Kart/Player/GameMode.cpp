@@ -120,20 +120,16 @@ QString GameMode::getStatus()
     return this->_status;
 }
 
-void GameMode::traitement()
-{
-
-}
-
 void GameMode::traitementMap(QJsonObject pMessage)
 {
-
+    this->_map->deserialize(pMessage);
 }
 
 void GameMode::traitementPlayerRegister(QJsonObject pMessage)
 {
     Player *player = new Player();
     player->deserialize(pMessage);
+    this->_players->remove(player->getUuid());
     this->_players->insert(player->getUuid(), player);
 }
 
@@ -144,12 +140,19 @@ void GameMode::traitementPlayerControl(QJsonObject pMessage)
     "angle": float, // en rad
     "power": int, // [-100%;100%]
     "buttons": { // état des boutons
-    "banana": bool,
-    "bomb": bool,
-    "rocket": bool
-    }
+        "banana": bool,
+        "bomb": bool,
+        "rocket": bool
+     }
 */
     QString uuid = pMessage["uuid"].toString();
+    float angle = pMessage["angle"].toDouble();
+    int power = pMessage["power"].toInt();
+
+    QMap<QString, bool> buttons;
+    buttons["banana"] = pMessage["banana"].toBool();
+    buttons["bomb"] = pMessage["bomb"].toBool();
+    buttons["rocket"] = pMessage["rocket"].toBool();
 
     Player *player = this->_players->value(uuid);
 
@@ -158,14 +161,55 @@ void GameMode::traitementPlayerControl(QJsonObject pMessage)
         return;
     }
 
-    //calcul new data
-    int newX;
-    int newY;
-    float newAngle;
-    int newSpeed;
+    Control control;
+    control.setUuid(uuid);
+    control.setAngle(angle);
+    control.setPower(power);
+    control.setButtons(buttons);
 
-    //check checkpoint
-    //bounded rect du checkpoint
+    this->_controls.remove(player->getUuid());
+    this->_controls.insert(player->getUuid(), control);
+}
+
+void GameMode::envoiGameInfo()
+{
+    QTimer::singleShot(100, this, &GameMode::envoiGameInfo);
+    this->_mqtt->publish("game", this->serialize());
+}
+
+void GameMode::control_th()
+{
+    QTimer::singleShot(1000, this, &GameMode::control_th);
+    // traitement
+    foreach(Control control, this->_controls) {
+        Player *player = this->_players->value(control.getUuid());
+        Vehicle vehicule(player->getVehicule());
+
+        float P = 1000;
+
+        float F = control.getPower() * P;
+        float C = 1.9;
+        float Ff = 0.5 * C * 1.09 * (player->getSpeed()*player->getSpeed());
+        float acceleration = (F-Ff) / (vehicule.getWeight()*1000); // acceleration
+        float speed = player->getSpeed() + acceleration;
+        // a faire
+        int x = speed * 25;
+        int y = speed * 25;
+        float angle = player->getAngle() + (player->getAngle()-control.getAngle());
+
+
+        player->setX(x);
+        player->setY(y);
+        player->setAngle(angle);
+        player->setSpeed(speed);
+
+        // gerer les checkpoints
+        // gerer les obstacles
+
+        this->_players->remove(player->getUuid());
+        this->_players->insert(player->getUuid(), player);
+
+    }
 
 }
 
