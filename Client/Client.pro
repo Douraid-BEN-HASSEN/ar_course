@@ -3,38 +3,41 @@ QT  += mqtt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
+
+DEPENDPATH += . ../ExchangeLib
+INCLUDEPATH += ../ExchangeLib
+
+unix {
+    LIBS += -L../ExchangeLib -lExchangeLib
+}
+
+win32 {
+    LIBS += -L../ExchangeLib/debug -lExchangeLib
+}
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Client2d/checkpointgraph.cpp \
-    Kart/Map/Checkpoint.cpp \
-    Kart/Map/Field.cpp \
-    Kart/Map/Obstacle.cpp \
-    Mqtt/MqttService.cpp \
+    2DGraphics/CheckpointGraphics.cpp \
+    2DGraphics/ObstacleGraphics.cpp \
+    2DGraphics/widget.cpp \
     Player.cpp \
-    main.cpp \
     interface.cpp \
-    Client2d/obstaclegraph.cpp \
-    Client2d/widget.cpp
+    main.cpp
 
 HEADERS += \
-    Client2d/checkpointgraph.h \
-    Kart/Map/Checkpoint.h \
-    Kart/Map/Field.h \
-    Kart/Map/Obstacle.h \
-    Mqtt/MqttService.h \
+    2DGraphics/CheckpointGraphics.h \
+    2DGraphics/ObstacleGraphics.h \
+    2DGraphics/widget.h \
     Player.h \
-    interface.h \
-    Client2d/obstaclegraph.h \
-    Client2d/widget.h
+    interface.h
 
 FORMS += \
     interface.ui \
-    Client2d/widget.ui
+    2DGraphics/widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -1,13 +1,21 @@
 #ifndef GAMEMODE_H
 #define GAMEMODE_H
 
+#if defined(GAMEMODE_LIBRARY)
+#  define GAMEMODE_EXPORT Q_DECL_EXPORT
+#else
+#  define GAMEMODE_EXPORT Q_DECL_IMPORT
+#endif
+
 #include <QObject>
 #include <QList>
-#include "Player.h"
-#include "Item.h"
 #include <QJsonObject>
 #include <QJsonArray>
-class GameMode : public QObject
+
+#include "Player.h"
+#include "Item.h"
+
+class GAMEMODE_EXPORT GameMode: public QObject
 {
     Q_OBJECT
 public:
@@ -38,8 +46,6 @@ private:
     int _elapsedTime;
     QString _infoMessage;
     QString _status;
-
-    void traitementPhysics(); // méthode qui gère la la physique
 
 public slots:
     void message(QJsonObject pMessage, QString pTopic);

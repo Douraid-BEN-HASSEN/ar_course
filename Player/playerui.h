@@ -13,13 +13,21 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QImage>
-#include <MqttService.h>
+#include <QVBoxLayout>
+
+#include <Mqtt/MqttService.h>
+#include <Kart/Game/Properties.h>
+
+#include "Controller.h"
 
 class PlayerUi : public QWidget
 {
     Q_OBJECT
 
 private :
+
+    Controller *_controller;
+
     QString uuid ;
     float angle ;
     int power ;
@@ -30,20 +38,11 @@ private :
     QString team ;
     QString vehicle ;
 
-    //Graphic component for game
-    QVBoxLayout *gameLayout ;
+    //Graphic component for the loading
+    QHBoxLayout *loadingLayout ;
+    QLabel *labelLoading ;
 
-    QLabel *labelAngle ;
-    QLabel *labelPower ;
-    QLabel *labelSelectionPseudo ;
-    QLabel *labelSelectionTeam ;
-    QLabel *labelSelectionController;
-    QLabel *labelSelectionVehicle ;
-    QLabel *labelBanana ;
-    QLabel *labelBomb ;
-    QLabel *labelRocket ;
-
-    //Component for the first modale ( select pseudo, select vehicle , select team )
+    //Component for register
     QVBoxLayout *registerLayout ;
     QHBoxLayout *horizontalLayout_1 ;
     QHBoxLayout *horizontalLayout_2 ;
@@ -66,12 +65,26 @@ private :
     QComboBox *comboBoxTeam ;
     QPushButton *registerButton ;
 
+    //Graphic component for game
+    QVBoxLayout *gameLayout ;
+
+    QLabel *labelAngle ;
+    QLabel *labelPower ;
+    QLabel *labelSelectionPseudo ;
+    QLabel *labelSelectionTeam ;
+    QLabel *labelSelectionController;
+    QLabel *labelSelectionVehicle ;
+    QLabel *labelBanana ;
+    QLabel *labelBomb ;
+    QLabel *labelRocket ;
+
 protected :
     void keyPressEvent(QKeyEvent *e) ;
 
-protected slots :
+private slots :
     //Call when the user validate the initial form
     void buttonPlayPressed() ;
+    void onRunFind() ;
 public:
     PlayerUi(QWidget *parent = nullptr);
     void catchKeyUp() ;
@@ -80,7 +93,10 @@ public:
     void catchKeyDown() ;
     void catchActionKey(int idKey);
     void makeMqttMessage(int angle , int power , int keyAction );
+    void updateLayoutToRegister() ;
     void updateLabel();
+    void connectToMqtt();
+
     ~PlayerUi();
 
 };

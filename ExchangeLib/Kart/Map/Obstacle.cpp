@@ -1,36 +1,41 @@
-#include "Checkpoint.h"
+#include "Obstacle.h"
 
 // constructor
-Checkpoint::Checkpoint(QObject *parent): QObject{ parent }
+Obstacle::Obstacle(QObject *parent): QObject{parent}
 {
-    this->_timeout = 0;
+
 }
 
 // destructor
-Checkpoint::~Checkpoint() {}
+Obstacle::~Obstacle()
+{
+
+}
 
 //  +-------+
 //  | UTILS |
 //  +-------+
-void Checkpoint::deserialize(const QJsonObject &jsonObject) {
+void Obstacle::deserialize(const QJsonObject &jsonObject) {
     this->_id = jsonObject["id"].toInt();
     this->_x = jsonObject["x"].toInt();
     this->_y = jsonObject["y"].toInt();
+    this->_angle = jsonObject["angle"].toDouble();
     this->_timeout = jsonObject["timeout"].toInt();
 }
 
-QString Checkpoint::serialize()
+QString Obstacle::serialize()
 {
     QJsonDocument doc(this->toJson());
     return QString(doc.toJson(QJsonDocument::Compact));
 }
 
-QJsonObject Checkpoint::toJson()
+QJsonObject Obstacle::toJson()
 {
     QJsonObject jObject;
     jObject["id"] = this->_id;
     jObject["x"] = this->_x;
     jObject["y"] = this->_y;
+    jObject["angle"] = this->_angle;
     jObject["timeout"] = this->_timeout;
 
     return jObject;
@@ -39,40 +44,56 @@ QJsonObject Checkpoint::toJson()
 //  +--------+
 //  | SETTER |
 //  +--------+
-void Checkpoint::setId(int pId) {
+void Obstacle::setId(int pId)
+{
     this->_id = pId;
 }
 
-void Checkpoint::setX(int pX) {
+void Obstacle::setX(int pX)
+{
     this->_x = pX;
 }
 
-void Checkpoint::setY(int pY) {
+void Obstacle::setY(int pY)
+{
     this->_y = pY;
 }
 
-void Checkpoint::setTimeout(int pTimeout)
+void Obstacle::setAngle(float pAngle)
+{
+    this->_angle = pAngle;
+}
+
+void Obstacle::setTimeout(int pTimeout)
 {
     this->_timeout = pTimeout;
 }
 
+
 //  +--------+
 //  | GETTER |
 //  +--------+
-int Checkpoint::getId() {
+int Obstacle::getId()
+{
     return this->_id;
 }
 
-int Checkpoint::getX() {
+int Obstacle::getX()
+{
     return this->_x;
 }
 
-int Checkpoint::getY() {
+int Obstacle::getY()
+{
     return this->_y;
 }
 
-int Checkpoint::getTimeout()
+float Obstacle::getAngle()
+{
+    return this->_angle;
+}
+
+int Obstacle::getTimeout()
 {
     return this->_timeout;
 }
-

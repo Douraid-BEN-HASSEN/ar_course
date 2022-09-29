@@ -1,5 +1,13 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-        Client \   # relative paths
-        Player
+    Client \
+    Player \
+    Engine \
+    ExchangeLib
+
+unix {
+}
+
+win32 {
+}
