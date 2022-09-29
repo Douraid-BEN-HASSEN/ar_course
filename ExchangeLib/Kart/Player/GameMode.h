@@ -14,6 +14,7 @@
 
 #include "Player.h"
 #include "Item.h"
+#include <Kart/Map/Map.h>
 #include <Mqtt/MqttService.h>
 
 class GAMEMODE_EXPORT GameMode: public QObject
@@ -41,7 +42,8 @@ public:
     QString getStatus();
 
 private:
-    QList<Player*> *_players;
+    Map *_map;
+    QMap<QString,Player*> *_players;
     QList<Item*> *_items;
 
     int _elapsedTime;
@@ -50,6 +52,9 @@ private:
     MqttService *_mqtt;
 
     void traitement();
+    void traitementMap(QJsonObject pMessage);
+    void traitementPlayerRegister(QJsonObject pMessage);
+    void traitementPlayerControl(QJsonObject pMessage);
 
 public slots:
     void message(QJsonObject pMessage, QString pTopic);
