@@ -52,6 +52,8 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
     this->_elapsedTime = jsonObject["elapsedTime"].toInt();
     this->_infoMessage = jsonObject["infoMessage"].toString();
     this->_status = jsonObject["status"].toString();
+
+    emit mapUpadeted();
 }
 
 QString GameMode::serialize()

@@ -6,6 +6,7 @@
 #include "CheckpointGraphics.h"
 #include "Kart/Map/Map.h"
 #include "Kart/Game/Properties.h"
+#include "Kart/Player/GameMode.h"
 
 #include "Mqtt/MqttService.h"
 
@@ -66,7 +67,6 @@ void Widget::updateMap(){
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(mView);
     setLayout(layout);
-
 
     qDebug() << "Topic recu = " << MqttService::instance();
     qDebug() << "Topic width = " << Map::instance()->getMapWidth();
