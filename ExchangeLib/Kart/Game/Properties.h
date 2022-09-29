@@ -24,7 +24,7 @@ public:
     static Properties *getInstance();
     explicit Properties(QObject *parent = nullptr);
 
-    const QString topic = "/game/properties";
+    const QString topic = "game/properties";
 
     QMap<QString, Vehicle *> *vehicleOptions = new QMap<QString, Vehicle *>;
 
