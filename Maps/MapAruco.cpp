@@ -117,7 +117,7 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
                     }
                 }
                 if(!contains) checkpoint->setTimeout(checkpoint->getTimeout()+1);
-                if(checkpoint->getId() >= timeoutLimit) checkpointIdTimedout.append(checkpoint->getId());
+                if(checkpoint->getTimeout() >= timeoutLimit) checkpointIdTimedout.append(checkpoint->getId());
             }
             // obstacle
             foreach(Obstacle *obstacle, *this->_obstacles) {
@@ -130,7 +130,7 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
                     }
                 }
                 if(!contains) obstacle->setTimeout(obstacle->getTimeout()+1);
-                if(obstacle->getId() >= timeoutLimit) obstacleIdTimedout.append(obstacle->getId());
+                if(obstacle->getTimeout() >= timeoutLimit) obstacleIdTimedout.append(obstacle->getId());
             }
 
             // suppression des elements
