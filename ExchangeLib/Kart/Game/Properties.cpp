@@ -1,16 +1,10 @@
 #include "Properties.h"
 
-Properties *Properties::getInstance() {
-    if (_instance == nullptr) {
-        _instance = new Properties;
-        MqttService::instance()->subscribe(_instance->topic);
-        connect(MqttService::instance(), &MqttService::message, _instance, &Properties::receivedMessage);
-    }
+Properties::Properties(QObject *parent) : QObject{parent}
+{
+    MqttService::instance()->subscribe(Properties::topic);
 
-    return _instance;
 }
-
-Properties::Properties(QObject *parent) : QObject{parent} {}
 
 void Properties::receivedMessage(QJsonObject message, QString topic) {
     if (topic == Properties::topic) {

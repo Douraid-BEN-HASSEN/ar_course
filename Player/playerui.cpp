@@ -57,10 +57,10 @@ void PlayerUi::buttonPlayPressed()
 void PlayerUi::onRunFind(QByteArray datas)
 {
     this->props->deserialize(QJsonDocument::fromJson(datas).object());
-    qDebug() << props->banana << props->bomb << props->rocket ;
-    this->nbBanana = props->banana ;
-    this->nbBomb = props->bomb ;
-    this->nbRocket = props->rocket;
+    qDebug() << props->getBanana() << props->getBomb() << props->getRocket() ;
+    this->nbBanana = props->getBanana() ;
+    this->nbBomb = props->getBomb() ;
+    this->nbRocket = props->getRocket();
     delete this->loadingLayout ;
     qDeleteAll(this->children());
     this->setLayout(this->registerLayout);
@@ -106,7 +106,7 @@ void PlayerUi::updateLayoutToRegister()
     this->updateLabel();
     qDebug() << this->_controller->getProperties()->vehicleOptions->size();
 
-    qDebug() << this->props->bananaCooldown << " eee ";
+    qDebug() << this->props->getBananaCooldown() << " eee ";
     for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
         qDebug() << "new vehicle" ;
         this->comboBoxVehicle->addItem(vehicle->toString());
