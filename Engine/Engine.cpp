@@ -2,34 +2,51 @@
 
 Engine::Engine(QObject *parent): QObject{parent}
 {
-
     this->_mqtt = MqttService::instance();
     this->_mqtt->subscribe("player/register");
     this->_mqtt->subscribe("player/control");
 
-    connect(this->_mqtt,
-                SIGNAL(message(QJsonObject,QString)),
-                this,
-                SLOT(receivedMessage(QJsonObject,QString)));
+    connect(this->_mqtt, SIGNAL(message(QJsonObject,QString)), this, SLOT(receivedMessage(QJsonObject,QString)));
 
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
+    this->_properties = new Properties(5);
 
     this->_players = new QMap<QString, Player*>;
     this->_controls = new QMap<QString, Control*>;
 
+    tempCp = new Checkpoint;
+    tempCp->setId(100);
+    tempCp->setX(200);
+    tempCp->setY(20);
+    this->g_engine.addCheckpoint(tempCp);
+
+
+    this->control_th();
+
+    this->g_engine.show();
+
+
+    _gameMode->publish();
+    _properties->publish();
+    envoiGameInfo();
 }
 
 void Engine::envoiGameInfo()
 {
     QTimer::singleShot(100, this, &Engine::envoiGameInfo);
-    this->_gameMode->publish();
+    this->_gameMode->publish();   
 }
 
 
 void Engine::control_th()
 {
     QTimer::singleShot(1000, this, &Engine::control_th);
+
+    qDebug() << "control_th";
+
+    this->tempCp->setX(this->tempCp->getX()+1);
+    this->g_engine.updateCheckpoint(tempCp);
 
     // traitement
     foreach(Control *control, this->_controls->values()) {
@@ -47,7 +64,6 @@ void Engine::control_th()
         int x = speed * 25;
         int y = speed * 25;
         float angle = player->getAngle() + (player->getAngle()-control->getAngle());
-
 
         player->setX(x);
         player->setY(y);
@@ -86,6 +102,7 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
         "rocket": bool
      }
 */
+    qDebug() << "data";
     QString uuid = pMessage["uuid"].toString();
     float angle = pMessage["angle"].toDouble();
     int power = pMessage["power"].toInt();

@@ -43,6 +43,10 @@ void MqttService::stateChange() {
                 this->subscribe(topic);
             }
 
+            for (QPair<QString, QString> message : *this->messageWait) {
+                this->publish(message.first, message.second);
+            }
+
             break;
     }
 
@@ -65,6 +69,10 @@ bool MqttService::subscribe(QString topic) {
 }
 
 void MqttService::publish(QString topic, QString message) {
+    if (client->state() != QMqttClient::Connected) {
+        messageWait->append(QPair<QString, QString>(topic, message));
+    }
+
     this->client->publish(topic, message.toUtf8());
 }
 

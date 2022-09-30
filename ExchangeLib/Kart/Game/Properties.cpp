@@ -18,6 +18,37 @@ Properties *Properties::getInstance() {
 
 Properties::Properties(QObject *parent) : QObject{parent} {}
 
+Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
+    this->laps = laps;
+    this->team = 2;
+
+    this->banana = 10;
+    this->bananaCooldown = 10;
+    this->bananaTTL = 10;
+    this->bananaRadius = 10;
+
+    this->bomb = 10;
+    this->bombCooldown = 10;
+    this->bombTTL = 10;
+    this->bombRadius = 10;
+    this->bombExplosionRadius = 10;
+
+    this->rocket = 10;
+    this->rocketCooldown = 10;
+    this->rocketSpeed = 10.0f;
+    this->rocketRadius = 10;
+
+    this->circleRadius = 50;
+    this->rectangleWidth = 50;
+    this->rectangleHeight = 50;
+    this->checkpointRadius = 50;
+
+    this->vehicleOptions->insert("bike", new Vehicle("bike"));
+    this->vehicleOptions->insert("bike", new Vehicle("car"));
+    this->vehicleOptions->insert("bike", new Vehicle("truck"));
+}
+
+
 void Properties::publish() {
     MqttService::instance()->publish(Properties::topic, this->serialize().toUtf8());
 }
@@ -53,13 +84,9 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
     rocketCooldown = jsonObject["rocketCd"].toInt();
     rocketSpeed = jsonObject["rocketSpeed"].toDouble();
     rocketRadius = jsonObject["rocketRadius"].toInt();
-
     QJsonObject vehicleOptionsJO = jsonObject["vehicleOptions"].toObject();
-
     for (const QString &key: vehicleOptionsJO.keys()) {
-        qDebug() << "new vehicle";
         QJsonObject userJsonObject = vehicleOptionsJO.value(key).toObject();
-
         Vehicle *vehicle = vehicleOptions->value(key);
 
         if (!vehicle) {
@@ -68,6 +95,9 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
 
         QJsonObject vehicleJO = vehicleOptionsJO[key].toObject();
         vehicle->deserialize(vehicleJO);
+        vehicle->setType(key);
+        this->vehicleOptions->insert(key , vehicle);
+
     }
 
     emit updated();

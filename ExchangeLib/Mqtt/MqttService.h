@@ -29,6 +29,7 @@ class MQTTSERVICE_EXPORT MqttService: public QObject
 public:
     static MqttService *instance();
     QMqttClient *client;
+
     bool subscribe(QString topic);
     void publish(QString topic, QString message);
 
@@ -36,6 +37,7 @@ private:
     explicit MqttService(QObject * parent = nullptr);
     QList<QMqttSubscription *> *subscribes;
     QList<QString> *subscribesWait = new QList<QString>();
+    QList<QPair<QString, QString>> *messageWait = new QList<QPair<QString, QString>>;
 
 private slots:
     void stateChange();

@@ -14,7 +14,7 @@
 #include <QSpinBox>
 #include <QImage>
 #include <QVBoxLayout>
-
+#include <QStackedWidget>
 #include <Mqtt/MqttService.h>
 #include <Kart/Game/Properties.h>
 
@@ -28,20 +28,24 @@ private :
 
     Controller *_controller;
 
+    QStackedWidget * stackedWidget;
     QString uuid ;
     float angle ;
     int power ;
     int nbBanana ;
     int nbBomb ;
     int nbRocket ;
+    int nbTurn ;
+    int nbTeam ;
     QString pseudo ;
     QString team ;
     QString vehicle ;
     Properties *props;
 
     //Graphic component for the loading
-    QHBoxLayout *loadingLayout ;
+    QVBoxLayout *loadingLayout ;
     QLabel *labelLoading ;
+    QPushButton *buttonClose ;
 
     //Component for register
     QVBoxLayout *registerLayout ;
@@ -53,6 +57,8 @@ private :
     QHBoxLayout *horizontalLayout_6 ;
     QHBoxLayout *horizontalLayout_7 ;
     QHBoxLayout *horizontalLayout_8 ;
+    QHBoxLayout *horizontalLayout_9 ;
+    QHBoxLayout *horizontalLayout_10;
 
     QLabel *labelTitle ;
     QLabel *labelPseudo ;
@@ -69,6 +75,8 @@ private :
     //Graphic component for game
     QVBoxLayout *gameLayout ;
 
+    QLabel *labelNbLaps ;
+    QLabel *labelNbTeam ;
     QLabel *labelAngle ;
     QLabel *labelPower ;
     QLabel *labelSelectionPseudo ;
@@ -78,6 +86,7 @@ private :
     QLabel *labelBanana ;
     QLabel *labelBomb ;
     QLabel *labelRocket ;
+    QPushButton *buttonExit ;
 
 protected :
     void keyPressEvent(QKeyEvent *e) ;
@@ -86,15 +95,11 @@ private slots :
     //Call when the user validate the initial form
     void buttonPlayPressed() ;
     void onRunFind(QByteArray datas) ;
+    void onExitRun();
+    void onCloseGame();
 public:
     PlayerUi(QWidget *parent = nullptr);
-    void catchKeyUp() ;
-    void catchKeyLeft() ;
-    void catchKeyRight();
-    void catchKeyDown() ;
-    void catchActionKey(int idKey);
     void makeMqttMessage(int angle , int power , int keyAction );
-    void updateLayoutToRegister() ;
     void updateLabel();
     void connectToMqtt();
 
