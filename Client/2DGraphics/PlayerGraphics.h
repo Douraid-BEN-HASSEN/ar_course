@@ -8,18 +8,19 @@
 #include <QtMath>
 
 #include <Kart/Player/Player.h>
+
 class PlayerGraphics : public QGraphicsObject
 {
     Q_OBJECT
 public:
     PlayerGraphics(Player *, QGraphicsItem *parent = nullptr);
-    QString getUuid() ;
+    QString getUuid();
     qreal getX();
     qreal getY();
     qreal getRadius();
-    qreal getAngle();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    Player* getPlayer();
 
 private:
     QString uuid;
@@ -27,7 +28,7 @@ private:
     qreal y;
     qreal heigth = 50;
     qreal width = 50;
-    qreal angle = 0;
+    Player *_player;
 signals:
 
 };

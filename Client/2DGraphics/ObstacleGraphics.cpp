@@ -48,7 +48,13 @@ qreal ObstacleGraphics::getRadius()
 
 QRectF ObstacleGraphics::boundingRect() const
 {
-    return QRectF(-50, -50,100.,100.);
+    if((int)this->id % 2 == 1){
+        return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
+    } else {
+        return QRectF(-this->heigth/2, -this->width/2,this->radius*2,this->radius*2);
+    }
+
+
 }
 
 void ObstacleGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -56,10 +62,8 @@ void ObstacleGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->setBrush(Qt::blue);
 
     if((int)this->getId() % 2 == 1){
-        //painter->drawRect(-this->getHeigth()/2,-this->getWidth()/2,this->heigth, this->width);
         painter->drawRect(boundingRect());
     } else {
-        //painter->drawEllipse(-this->getHeigth()/2,-this->getWidth()/2,this->radius*2, this->radius*2);
          painter->drawEllipse(boundingRect());
     }
 

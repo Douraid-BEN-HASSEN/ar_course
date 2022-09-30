@@ -42,6 +42,8 @@ void Widget::updateProperties() {
     ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
     ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
     ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
+
+    CheckpointGraphics::radiusCheckpoint = Properties::getInstance()->getCheckpointRadius();
 }
 
 void Widget::updateMap() {
@@ -95,9 +97,6 @@ void Widget::updateGameMode() {
             mScene->addItem(playerGraphics);
             localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
         }
-
-        qDebug() << "x = " << playerGraphics->getX();
-        qDebug() << "y = " << playerGraphics->getY();
 
         playerGraphics->setPos(iterPlayer->getX(), iterPlayer->getY());
     }
