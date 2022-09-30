@@ -34,6 +34,8 @@ private :
     int nbBanana ;
     int nbBomb ;
     int nbRocket ;
+    int nbTurn ;
+    int nbTeam ;
     QString pseudo ;
     QString team ;
     QString vehicle ;
@@ -53,6 +55,7 @@ private :
     QHBoxLayout *horizontalLayout_6 ;
     QHBoxLayout *horizontalLayout_7 ;
     QHBoxLayout *horizontalLayout_8 ;
+    QHBoxLayout *horizontalLayout_9 ;
 
     QLabel *labelTitle ;
     QLabel *labelPseudo ;
@@ -69,6 +72,8 @@ private :
     //Graphic component for game
     QVBoxLayout *gameLayout ;
 
+    QLabel *labelNbLaps ;
+    QLabel *labelNbTeam ;
     QLabel *labelAngle ;
     QLabel *labelPower ;
     QLabel *labelSelectionPseudo ;
@@ -88,13 +93,7 @@ private slots :
     void onRunFind(QByteArray datas) ;
 public:
     PlayerUi(QWidget *parent = nullptr);
-    void catchKeyUp() ;
-    void catchKeyLeft() ;
-    void catchKeyRight();
-    void catchKeyDown() ;
-    void catchActionKey(int idKey);
     void makeMqttMessage(int angle , int power , int keyAction );
-    void updateLayoutToRegister() ;
     void updateLabel();
     void connectToMqtt();
 

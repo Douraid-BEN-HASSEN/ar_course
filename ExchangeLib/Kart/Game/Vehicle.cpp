@@ -19,8 +19,7 @@ Vehicle::Vehicle(int maxSpeed, float acceleration, int weight, float steeringAng
 
 
 QString Vehicle::toString() {
-    return QString("Type : %1 | MS : %2 | A : %3 | W : %4 | SA : %5").arg(
-                this->type,
+    return QString("%1 | MS : %2 | A : %3 | W : %4 | SA : %5").arg(
                 QString::number(this->maxSpeed),
                 QString::number(this->acceleration),
                 QString::number(this->weight),
@@ -28,7 +27,6 @@ QString Vehicle::toString() {
                 QString::number(this->weight),
                 QString::number(this->height)
                 );
-
 }
 
 /**
@@ -57,6 +55,13 @@ QJsonObject Vehicle::toJson() {
 }
 
 
+void Vehicle::setType(QString type) {
+    this->type = type ;
+}
+
+QString Vehicle::getType() {
+    return this->type ;
+}
 QString Vehicle::serialize() {
     QJsonDocument doc(this->toJson());
     return QString(doc.toJson(QJsonDocument::Compact));

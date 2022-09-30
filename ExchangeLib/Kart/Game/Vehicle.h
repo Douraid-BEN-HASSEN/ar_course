@@ -31,6 +31,9 @@ public:
     QString serialize();
     QJsonObject toJson();
 
+    void setType(QString type);
+    QString getType() ;
+
 signals:
 
 };

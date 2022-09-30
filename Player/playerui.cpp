@@ -3,32 +3,7 @@
 
 //Catch event of key pressed
 void PlayerUi::keyPressEvent(QKeyEvent *key){
-    switch(key->key()) {
-    case Qt::Key_Z:
-        this->catchKeyUp();
-        break;
-    case Qt::Key_Q:
-        this->catchKeyLeft();
-        break ;
-    case Qt::Key_S:
-        this->catchKeyDown();
-        break ;
-    case Qt::Key_D:
-        this->catchKeyRight();
-        break ;
-    case Qt::Key_1:
-        this->catchActionKey(1);
-        break ;
-    case Qt::Key_2:
-        this->catchActionKey(2);
-        break ;
-    case Qt::Key_3:
-        this->catchActionKey(3);
-        break ;
-    case Qt::Key_4:
-        this->catchActionKey(4);
-        break ;
-    }
+    this->_controller->handleKeyEvent(this->uuid ,  key, &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket);
     this->updateLabel();
 
 }
@@ -44,7 +19,7 @@ void PlayerUi::buttonPlayPressed()
 
     if (this->lineEditPseudo->text() != "")
     {
-        this->_controller->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText() , this->comboBoxTeam->currentText());
+        this->_controller->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText().split(" ").at(0) , this->comboBoxTeam->currentText());
         this->team = this->comboBoxTeam->currentText();
         this->vehicle = this->comboBoxVehicle->currentText();
         delete this->registerLayout ;
@@ -57,39 +32,25 @@ void PlayerUi::buttonPlayPressed()
 void PlayerUi::onRunFind(QByteArray datas)
 {
     this->props->deserialize(QJsonDocument::fromJson(datas).object());
-    qDebug() << props->banana << props->bomb << props->rocket ;
     this->nbBanana = props->banana ;
     this->nbBomb = props->bomb ;
     this->nbRocket = props->rocket;
+    this->nbTurn = props->laps ;
+    this->nbTeam = props->team ;
+    for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
+        qDebug()  << vehicle ;
+        this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
+    }
     delete this->loadingLayout ;
     qDeleteAll(this->children());
     this->setLayout(this->registerLayout);
-    this->updateLayoutToRegister();
+    this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
+    this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
+    for (int i = 1 ; i < this->nbTeam+1 ; i++)
+       this->comboBoxTeam->addItem(QString::number(i));
     this->updateLabel();
 }
 
-
-void PlayerUi::catchKeyUp() {
-    if (this->power != 100)
-        this->power++ ;
-    this->makeMqttMessage(0 , this->power , 0 );
-
-}
-
-void PlayerUi::catchKeyDown() {
-    if (this->power != -100)
-        this->power--;
-    this->makeMqttMessage(0 , this->power , 0 );
-}
-
-void PlayerUi::catchActionKey(int idKey)
-{
-    qDebug() << idKey ;
-    if ((idKey == 1 && this->nbBanana > 0) || (idKey == 2 && this->nbBomb > 0) || (idKey == 3 && this->nbRocket > 0)) {
-        this->makeMqttMessage(0 , this->power , idKey );
-        idKey == 1 ? this->nbBanana-- : idKey == 2 ? this->nbBomb -- : this->nbRocket -- ;
-    }
-}
 
 //On action, make message for mqtt
 void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
@@ -97,27 +58,10 @@ void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
     this->_controller->sendMessageControl(this->uuid , this->angle , this->power , keyAction);
 }
 
-//After find à run , make the page for register
-void PlayerUi::updateLayoutToRegister()
-{
-    //this->nbBanana = this->_controller->getProperties()->banana;
-    //this->nbBomb = this->_controller->getProperties()->bomb;
-    //this->nbRocket = this->_controller->getProperties()->rocket;
-    this->updateLabel();
-    qDebug() << this->_controller->getProperties()->vehicleOptions->size();
-
-    qDebug() << this->props->bananaCooldown << " eee ";
-    for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
-        qDebug() << "new vehicle" ;
-        this->comboBoxVehicle->addItem(vehicle->toString());
-    }
-
-}
 
 //Function to update label when catching keyboard actions
 void PlayerUi::updateLabel()
 {
-    qDebug() << "dans update label banana | bomb | rocket " << this->nbBanana << " " << this->nbBomb << " " << this->nbRocket ;
     this->labelAngle->setText("<h4> Angle : " + QString::number(this->angle) + " </h4> ");
     this->labelPower->setText("<h4> Power : " + QString::number(this->power) + " </h4> ");
     this->labelBanana->setText(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
@@ -127,28 +71,8 @@ void PlayerUi::updateLabel()
 
 void PlayerUi::connectToMqtt()
 {
-    qDebug() << MqttService::instance()->client->state();
     MqttService::instance()->subscribe("/game/properties");
 }
-
-void PlayerUi::catchKeyLeft() {
-    qDebug() << "Catch key left" ;
-    if (this->angle == 0)
-        this->angle = 270;
-    else
-        this->angle -= 90 ;
-    this->makeMqttMessage(-90 , this->power , 0 );
-}
-
-void PlayerUi::catchKeyRight() {
-    qDebug() << "Catch key right" ;
-    if (this->angle == 270)
-        this->angle = 0 ;
-    else
-        this->angle += 90 ;
-    this->makeMqttMessage(+90 , this->power , 0 );
-}
-
 
 //Constructor
 PlayerUi::PlayerUi(QWidget *parent)
@@ -212,6 +136,12 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->labelTitle = new QLabel("<h1 text-align=\"center\" `> <font color=\"blue\"> > FIST </font> <font color=\"green\"> AND </font>  <font color=\"red\"> FURIOUS < </font> </h1> ");
     this->labelTitle->setAlignment(Qt::AlignCenter);
 
+    this->horizontalLayout_9 = new QHBoxLayout ;
+    this->labelNbLaps = new QLabel("");
+    this->labelNbTeam = new QLabel("");
+    this->horizontalLayout_9->addWidget(this->labelNbLaps);
+    this->horizontalLayout_9->addWidget(this->labelNbTeam);
+
     this->horizontalLayout_1 = new QHBoxLayout ;
     this->labelPseudo = new QLabel("<h3> Pseudo : </h3>");
     this->lineEditPseudo = new QLineEdit ;
@@ -232,9 +162,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->horizontalLayout_3 = new QHBoxLayout ;
     this->labelVehicle = new QLabel("<h3> Vehicle : </h3>");
     this->comboBoxVehicle = new QComboBox ;
-    this->comboBoxVehicle->addItem("car");
-    this->comboBoxVehicle->addItem("truck");
-    this->comboBoxVehicle->addItem("bike");
     this->horizontalLayout_3->addWidget(labelVehicle);
     this->horizontalLayout_3->addWidget(comboBoxVehicle);
 
@@ -242,14 +169,13 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->labelTeam = new QLabel("<h3> Team </h3>");
     this->comboBoxTeam = new QComboBox;
     this->comboBoxTeam->addItem("No team");
-    for (int i = 1 ; i < 101 ; i++)
-        this->comboBoxTeam->addItem(QString::number(i));
     this->horizontalLayout_4->addWidget(labelTeam);
     this->horizontalLayout_4->addWidget(comboBoxTeam);
 
     this->registerButton = new QPushButton("Warm up the engine !")  ;
 
     this->registerLayout->addWidget(labelTitle);
+    this->registerLayout->addLayout(this->horizontalLayout_9);
     this->registerLayout->addLayout(this->horizontalLayout_1);
     this->registerLayout->addLayout(this->horizontalLayout_2);
     this->registerLayout->addLayout(this->horizontalLayout_3);
@@ -257,8 +183,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->registerLayout->addWidget(registerButton);
 
     this->setLayout(this->loadingLayout);
-
-    //MqttService::instance()->
 
     //Connect
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));

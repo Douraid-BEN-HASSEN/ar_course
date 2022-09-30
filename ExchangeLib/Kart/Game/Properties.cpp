@@ -37,13 +37,9 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
     rocketCooldown = jsonObject["rocketCd"].toInt();
     rocketSpeed = jsonObject["rocketSpeed"].toDouble();
     rocketRadius = jsonObject["rocketRadius"].toInt();
-
     QJsonObject vehicleOptionsJO = jsonObject["vehicleOptions"].toObject();
-
     for (const QString &key: vehicleOptionsJO.keys()) {
-        qDebug() << "new vehicle";
         QJsonObject userJsonObject = vehicleOptionsJO.value(key).toObject();
-
         Vehicle *vehicle = vehicleOptions->value(key);
 
         if (!vehicle) {
@@ -52,6 +48,9 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
 
         QJsonObject vehicleJO = vehicleOptionsJO[key].toObject();
         vehicle->deserialize(vehicleJO);
+        vehicle->setType(key);
+        this->vehicleOptions->insert(key , vehicle);
+
     }
 }
 
