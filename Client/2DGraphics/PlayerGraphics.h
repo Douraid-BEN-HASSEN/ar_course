@@ -4,6 +4,8 @@
 #include <QGraphicsObject>
 #include <QObject>
 #include <QPainter>
+#include <QDebug>
+#include <QtMath>
 
 #include <Kart/Player/Player.h>
 class PlayerGraphics : public QGraphicsObject
@@ -15,6 +17,7 @@ public:
     qreal getX();
     qreal getY();
     qreal getRadius();
+    qreal getAngle();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -24,6 +27,7 @@ private:
     qreal y;
     qreal heigth = 50;
     qreal width = 50;
+    qreal angle = 0;
 signals:
 
 };
