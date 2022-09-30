@@ -38,13 +38,17 @@ void GameMode::publish() {
 //  +-------+
 void GameMode::deserialize(const QJsonObject &jsonObject)
 {
+
     this->_players = new QMap<QString, Player*>();
     this->_items = new QList<Item*>();
 
     QJsonArray jsonPlayers = jsonObject["players"].toArray();
 
-    foreach(const QJsonValue &value, jsonPlayers) {
+    for(const QJsonValue &value: jsonPlayers) {
+                qDebug() << " ---- here ---- ";
         QJsonObject playerJsonObject = value.toObject();
+
+        qDebug() << playerJsonObject["x"].toInt();
         Player *player = new Player();
         player->deserialize(playerJsonObject);
         this->_players->insert(player->getUuid(), player);
@@ -52,7 +56,7 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
 
     QJsonArray jsonItems = jsonObject["items"].toArray();
 
-    foreach(const QJsonValue &value, jsonItems) {
+    for(const QJsonValue &value: jsonItems) {
         QJsonObject itemJsonObject = value.toObject();
         Item *item = new Item();
         item->deserialize(itemJsonObject);

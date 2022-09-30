@@ -18,9 +18,12 @@ public:
     ~Player();
 
     // === UTILS ===
+    QString toString();
+
     void deserialize(const QJsonObject &);
     QString serialize();
     QJsonObject toJson();
+
 
     // === SETTER ===
     void setUuid(QString pUuid);
