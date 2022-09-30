@@ -17,7 +17,7 @@ void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, flo
 {
     int keyAction = key->key() == Qt::Key_1 ? 1 : key->key() == Qt::Key_2 ? 2 : key->key() == Qt::Key_3 ? 3 : 0  ;
 
-    bool isCorrectAction = ( keyAction == 1 && *nbBananas > 0) || (keyAction == 2 && *nbBomb > 0) || (keyAction ==3 && *nbRocket > 0) ? true : false  ;
+    bool isCorrectAction = ( keyAction == 1 && *nbBananas > 0) || (keyAction == 2 && *nbBomb > 0) || (keyAction ==3 && *nbRocket > 0) || (keyAction == 0) ? true : false  ;
     qDebug() << "test 1 ";
     switch(key->key()) {
     case Qt::Key_Z:
