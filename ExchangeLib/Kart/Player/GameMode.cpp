@@ -18,7 +18,7 @@ GameMode *GameMode::getInstance() {
 
 // constructor
 GameMode::GameMode(QObject *parent): QObject{parent}
-{
+{   
     this->_players = new QMap<QString, Player*>();
     this->_items = new QList<Item*>();
 }

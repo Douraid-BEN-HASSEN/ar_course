@@ -2,7 +2,6 @@
 
 Engine::Engine(QObject *parent): QObject{parent}
 {
-
     this->_mqtt = MqttService::instance();
     this->_mqtt->subscribe("player/register");
     this->_mqtt->subscribe("player/control");
@@ -17,6 +16,13 @@ Engine::Engine(QObject *parent): QObject{parent}
 
     this->_players = new QMap<QString, Player*>;
     this->_controls = new QMap<QString, Control*>;
+
+    Checkpoint *tempCp = new Checkpoint;
+    tempCp->setId(100);
+    tempCp->setX(200);
+    tempCp->setY(20);
+    this->g_engine.addCheckpoint(tempCp);
+    this->g_engine.show();
 
 }
 
@@ -47,7 +53,6 @@ void Engine::control_th()
         int x = speed * 25;
         int y = speed * 25;
         float angle = player->getAngle() + (player->getAngle()-control->getAngle());
-
 
         player->setX(x);
         player->setY(y);
@@ -86,6 +91,7 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
         "rocket": bool
      }
 */
+    qDebug() << "data";
     QString uuid = pMessage["uuid"].toString();
     float angle = pMessage["angle"].toDouble();
     int power = pMessage["power"].toInt();
