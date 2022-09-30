@@ -25,7 +25,6 @@ SOURCES += \
     2DGraphics/ObstacleGraphics.cpp \
     2DGraphics/PlayerGraphics.cpp \
     2DGraphics/widget.cpp \
-    Player.cpp \
     interface.cpp \
     main.cpp
 
@@ -34,7 +33,6 @@ HEADERS += \
     2DGraphics/ObstacleGraphics.h \
     2DGraphics/PlayerGraphics.h \
     2DGraphics/widget.h \
-    Player.h \
     interface.h
 
 FORMS += \

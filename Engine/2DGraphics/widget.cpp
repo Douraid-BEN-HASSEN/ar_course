@@ -21,10 +21,6 @@ Widget::Widget(QWidget *parent)
     mView = new QGraphicsView(this);
     mView->setScene(mScene);
 
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->addWidget(mView);
-    setLayout(layout);
-
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
     // Pour finir sur this = Widget apperler updateMap
@@ -36,6 +32,14 @@ Widget::Widget(QWidget *parent)
 Widget::~Widget()
 {
     delete ui;
+}
+
+void Widget::addCheckpoint(Checkpoint *pCheckpoint)
+{
+    CheckpointGraphics *checkpointGraphics = new CheckpointGraphics(pCheckpoint);
+    mScene->addItem(checkpointGraphics);
+    localCheckpoint.insert(checkpointGraphics->getId(), checkpointGraphics);
+    checkpointGraphics->setPos(pCheckpoint->getX(),pCheckpoint->getY());
 }
 
 void Widget::updateProperties() {
@@ -80,14 +84,20 @@ void Widget::updateMap() {
 
         checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
+
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->addWidget(mView);
+    setLayout(layout);
+
+    qDebug() << "Topic recu = " << MqttService::instance();
+    qDebug() << "Topic width = " << Map::getInstance()->getMapWidth();
+    qDebug() << "Topic recu = " << Map::getInstance()->getMapHeight();
+
 }
 
 void Widget::updateGameMode() {
 
-    qDebug() << "GameMode updated";
-
     for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
-
         PlayerGraphics *playerGraphics = localPlayers.value(iterPlayer->getUuid());
 
         if (!playerGraphics) {

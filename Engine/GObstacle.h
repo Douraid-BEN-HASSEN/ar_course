@@ -1,18 +1,18 @@
-#ifndef OBSTACLEGRAPH_H
-#define OBSTACLEGRAPH_H
+#ifndef GOBSTACLE_H
+#define GOBSTACLE_H
 
 #include <QGraphicsObject>
 #include <QObject>
 #include <QPainter>
+#include <QBrush>
 
 #include <Kart/Map/Obstacle.h>
 
-class ObstacleGraphics : public QGraphicsObject
+class GObstacle: public QGraphicsObject
 {
-    Q_OBJECT
 public:
-    ObstacleGraphics(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
-    ObstacleGraphics(Obstacle *, QGraphicsItem *parent = nullptr);
+    GObstacle(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
+    GObstacle(Obstacle *, QGraphicsItem *parent = nullptr);
 
     static qreal heigth;
     static qreal width;
@@ -32,7 +32,7 @@ private:
     qreal id;
     qreal x;
     qreal y;
-    // Récupérer depuis /game/properties
+
 };
 
-#endif // OBSTACLEGRAPH_H
+#endif // GOBSTACLE_H
