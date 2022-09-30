@@ -11,6 +11,7 @@
 
 #include "GCheckpoint.h"
 #include "GObstacle.h"
+#include "GPlayer.h"
 
 class GEngine: public QWidget
 {
@@ -21,9 +22,12 @@ public:
 
     void addCheckpoint(Checkpoint* pCheckpoint);
     void addObstacle(Obstacle* pObstacle);
+    void addPlayer(Player* pPlayer);
     void updateCheckpoint(Checkpoint* pCheckpoint);
     void updateObstacle(Obstacle* pObstacle);
+    void updatePlayer(Player* pPlayer);
     void updateGraphics();
+    QList<QGraphicsItem*> collision(QGraphicsItem* pGItem);
 
 private:
     // liste checkpoints
@@ -32,7 +36,7 @@ private:
     QGraphicsView* mView;
     QMap<int, GCheckpoint*> localCheckpoint;
     QMap<int, GObstacle*> localObstacles;
-    //QMap<QString, PlayerGraphics*> localPlayers;
+    QMap<QString, GPlayer*> localPlayers;
 
 };
 
