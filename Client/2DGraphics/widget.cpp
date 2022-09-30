@@ -34,6 +34,12 @@ Widget::~Widget()
     delete ui;
 }
 
+void Widget::updateProperties() {
+    ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
+    ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
+    ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
+}
+
 void Widget::updateMap() {
 
     qDebug() << "map";
@@ -80,12 +86,6 @@ void Widget::updateMap() {
     qDebug() << "Topic width = " << Map::getInstance()->getMapWidth();
     qDebug() << "Topic recu = " << Map::getInstance()->getMapHeight();
 
-}
-
-void Widget::updateProperties() {
-    ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
-    ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
-    ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
 }
 
 void Widget::updateGameMode() {

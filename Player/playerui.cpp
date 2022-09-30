@@ -1,5 +1,6 @@
 #include "playerui.h"
 #include <QDebug>
+#include <QtAlgorithms>
 
 //Catch event of key pressed
 void PlayerUi::keyPressEvent(QKeyEvent *key){
@@ -22,9 +23,7 @@ void PlayerUi::buttonPlayPressed()
         this->_controller->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText().split(" ").at(0) , this->comboBoxTeam->currentText());
         this->team = this->comboBoxTeam->currentText();
         this->vehicle = this->comboBoxVehicle->currentText();
-        delete this->registerLayout ;
-        qDeleteAll(this->children());
-        this->setLayout(gameLayout);
+        this->stackedWidget->setCurrentIndex(2);
     }
 }
 
@@ -42,9 +41,10 @@ void PlayerUi::onRunFind(QByteArray datas)
         this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
 
     }
-    delete this->loadingLayout ;
+    //delete this->loadingLayout ;
     //qDeleteAll(this->gameLayout);
-    this->setLayout(this->registerLayout);
+    this->stackedWidget->setCurrentIndex(1);
+    //this->setLayout(this->registerLayout);
     this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
     this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
     for (int i = 1 ; i < this->nbTeam+1 ; i++)
@@ -131,6 +131,8 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->gameLayout->addLayout(this->horizontalLayout_7);
     this->gameLayout->addLayout(this->horizontalLayout_8);
 
+
+
     //Graphic content for the register window
     this->registerLayout = new QVBoxLayout ;
 
@@ -183,7 +185,23 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->registerLayout->addLayout(this->horizontalLayout_4);
     this->registerLayout->addWidget(registerButton);
 
-    this->setLayout(this->loadingLayout);
+    this->stackedWidget = new QStackedWidget ;
+
+    QWidget * widget1 = new QWidget ;
+    QWidget * widget2 = new QWidget ;
+    QWidget * widget3 = new QWidget ;
+
+    widget1->setLayout(this->loadingLayout);
+    widget2->setLayout(this->registerLayout);
+    widget3->setLayout(this->gameLayout);
+
+    this->stackedWidget->addWidget(widget1);
+    this->stackedWidget->addWidget(widget2);
+    this->stackedWidget->addWidget(widget3);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(stackedWidget);
+    this->setLayout(mainLayout);
 
     //Connect
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));

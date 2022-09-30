@@ -33,7 +33,6 @@ private:
     qreal x;
     qreal y;
     // Récupérer depuis /game/properties
-
 };
 
 #endif // OBSTACLEGRAPH_H

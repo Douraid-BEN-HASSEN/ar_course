@@ -1,7 +1,47 @@
 #include "Controller.h"
 #include <QtMath>
 
-Controller::Controller(QObject *parent): QObject{parent} {}
+Controller::Controller(QObject *parent): QObject{parent}
+{
+    this->_properties = new Properties();
+
+    //Connect gamepad
+    QLoggingCategory::setFilterRules(QStringLiteral("qt.gamepad.debug=true"));
+    auto gamepads = QGamepadManager::instance()->connectedGamepads();
+    this->gamepad = new QGamepad(*gamepads.begin(), this);
+    //Connect
+
+    connect(gamepad, &QGamepad::buttonL1Changed, this, [](bool pressed){
+        qDebug() << "turn left" << pressed;
+    });
+    connect(gamepad, &QGamepad::buttonR1Changed, this, [](bool pressed){
+        qDebug() << "turn right" << pressed;
+    });
+    connect(gamepad, &QGamepad::buttonL2Changed, this, [](double value){
+        qDebug() << " speed - " << value;
+    });
+    connect(gamepad, &QGamepad::buttonR2Changed, this, [](double value){
+        qDebug() << "speed +" << value;
+    });
+    connect(gamepad, &QGamepad::buttonAChanged, this, [](bool pressed){
+        qDebug() << "key action 1" << pressed;
+    });
+    connect(gamepad, &QGamepad::buttonBChanged, this, [](bool pressed){
+        qDebug() << "key action 2" << pressed;
+    });
+    connect(gamepad, &QGamepad::buttonXChanged, this, [](bool pressed){
+        qDebug() << "key action 3" << pressed;
+    });
+    connect(gamepad, &QGamepad::buttonYChanged, this, [](bool pressed){
+        qDebug() << "key action 4" << pressed;
+    });
+
+}
+
+Properties* Controller::getProperties()
+{
+    return this->_properties;
+}
 
 void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, float *angle, int *nbBananas, int *nbBomb, int *nbRocket)
 {
