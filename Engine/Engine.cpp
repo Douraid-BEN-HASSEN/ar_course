@@ -1,6 +1,7 @@
 #include "Engine.h"
 
 // diviser les angles par 10 (à voir)
+// gestion graphique
 Engine::Engine(QObject *parent): QObject{parent}
 {
     this->_mqtt = MqttService::instance();
