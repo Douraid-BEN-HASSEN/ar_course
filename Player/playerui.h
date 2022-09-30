@@ -37,6 +37,8 @@ private :
     int nbRocket ;
     int nbTurn ;
     int nbTeam ;
+    bool isProperties ;
+    bool isGame ;
     QString pseudo ;
     QString team ;
     QString vehicle ;

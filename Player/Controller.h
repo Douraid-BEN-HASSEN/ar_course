@@ -29,7 +29,7 @@ private:
     Properties* _properties;
 
 public slots:
-    void handleTouchEvent();
+    void handleTouchEvent(QString gamepadMoove);
 
 
 signals:

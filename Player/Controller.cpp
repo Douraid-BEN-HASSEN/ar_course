@@ -3,58 +3,22 @@
 
 Controller::Controller(QObject *parent): QObject{parent}
 {
-    this->_properties = new Properties();
-
+    //this->_properties = new Properties();
+    this->_properties = Properties::getInstance();
     //Connect gamepad
     QLoggingCategory::setFilterRules(QStringLiteral("qt.gamepad.debug=true"));
     auto gamepads = QGamepadManager::instance()->connectedGamepads();
     this->gamepad = new QGamepad(*gamepads.begin(), this);
     //Connect
 
-    connect(gamepad, SIGNAL(buttonL1Changed(bool)), this, SLOT(handleTouchEvent()));
-
-    connect(gamepad, &QGamepad::buttonR1Changed, this, [](bool pressed){
-        if (pressed == true) {
-            qDebug() << "turn right" << pressed;
-        }
-    });
-
-    connect(gamepad, &QGamepad::buttonL2Changed, this, [](double value){
-        if (value > 0.0) {
-            qDebug() << " speed - " << value;
-
-        }
-    });
-    connect(gamepad, &QGamepad::buttonR2Changed, this, [](double value){
-        if (value > 0.0) {
-            qDebug() << "speed +" << value;
-
-        }
-    });
-
-    connect(gamepad, &QGamepad::buttonAChanged, this, [](bool pressed){
-        if (pressed == true) {
-            qDebug() << "key action 1" << pressed;
-
-        }
-    });
-    connect(gamepad, &QGamepad::buttonBChanged, this, [](bool pressed){
-        if (pressed == true) {
-            qDebug() << "key action 2" << pressed;
-
-        }
-    });
-    connect(gamepad, &QGamepad::buttonXChanged, this, [](bool pressed){
-        if (pressed == true) {
-            qDebug() << "key action 3" << pressed;
-        }
-    });
-    connect(gamepad, &QGamepad::buttonYChanged, this, [](bool pressed){
-        if (pressed == true) {
-            qDebug() << "key action 4" << pressed;
-
-        }
-    });
+    connect(gamepad, SIGNAL(buttonL1Changed(bool)), this, SLOT(handleTouchEvent('L1')));
+    connect(gamepad, SIGNAL(buttonR1Changed(bool)), this, SLOT(handleTouchEvent('R1')));
+    connect(gamepad,SIGNAL(buttonL2Changed(double)), this, SLOT(handleTouchEvent('L2')));
+    connect(gamepad,SIGNAL(buttonR2Changed(double)), this, SLOT(handleTouchEvent('R2')));
+    connect(gamepad,SIGNAL(buttonAChanged(bool)), this, SLOT(handleTouchEvent('A')));
+    connect(gamepad,SIGNAL(buttonBChanged(bool)), this, SLOT(handleTouchEvent('B')));
+    connect(gamepad,SIGNAL(buttonXChanged(bool)), this, SLOT(handleTouchEvent('X')));
+    connect(gamepad,SIGNAL(buttonYChanged(bool)), this, SLOT(handleTouchEvent('Y')));
 
 }
 
@@ -62,7 +26,6 @@ Properties* Controller::getProperties()
 {
     return this->_properties;
 }
-
 
 
 void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, float *angle, int *nbBananas, int *nbBomb, int *nbRocket)
