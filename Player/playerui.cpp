@@ -43,7 +43,7 @@ void PlayerUi::onRunFind(QByteArray datas)
 
     }
     delete this->loadingLayout ;
-    qDeleteAll(this->gameLayout);
+    //qDeleteAll(this->gameLayout);
     this->setLayout(this->registerLayout);
     this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
     this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");

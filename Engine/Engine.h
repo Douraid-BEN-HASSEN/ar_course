@@ -11,7 +11,7 @@
 #include <Kart/Game/Control.h>
 #include <Kart/Game/Vehicle.h>
 #include <Kart/Map/Map.h>
-
+#include "GEngine.h"
 
 class Engine : public QObject
 {
@@ -22,7 +22,7 @@ public:
 private:
     MqttService *_mqtt;
 
-    QMap<QString, Player*> *_players;
+    QMap<QString, Player*> *_players; // enlver et mettre la qmpa de gamemode
     QMap<QString, Control*> *_controls;
     Map *_map;
     GameMode *_gameMode;
@@ -34,7 +34,8 @@ private:
     void envoiGameInfo();
     void control_th();
 
-
+    // graphic
+    GEngine g_engine;
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);

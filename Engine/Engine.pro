@@ -1,6 +1,6 @@
 QT += core gamepad
 QT += mqtt
-QT -= gui
+QT += gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,12 +23,16 @@ win32 {
 
 SOURCES += \
     Engine.cpp \
-    main.cpp \
+    GCheckpoint.cpp \
+    GEngine.cpp \
+    GObstacle.cpp \
+    main.cpp
 
 HEADERS += \
-    Engine.h
-
-FORMS +=
+    Engine.h \
+    GCheckpoint.h \
+    GEngine.h \
+    GObstacle.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
