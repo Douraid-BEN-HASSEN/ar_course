@@ -29,6 +29,7 @@ qreal GCheckpoint::getRadius()
 
 QRectF GCheckpoint::boundingRect() const
 {
+    //return QRectF(this->x, this->y,100.,100.);
     return QRectF(-50, -50,100.,100.);
 }
 

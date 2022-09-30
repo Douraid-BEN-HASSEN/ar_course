@@ -11,7 +11,8 @@
 #include <Kart/Game/Control.h>
 #include <Kart/Game/Vehicle.h>
 #include <Kart/Map/Map.h>
-#include "GEngine.h"
+#include "2DGraphics/widget.h"
+
 
 class Engine : public QObject
 {
@@ -35,7 +36,7 @@ private:
     void control_th();
 
     // graphic
-    GEngine g_engine;
+    Widget g_engine;
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);

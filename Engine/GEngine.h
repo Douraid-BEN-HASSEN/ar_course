@@ -7,6 +7,10 @@
 #include <QGraphicsRectItem>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QHBoxLayout>
+
+#include "GCheckpoint.h"
+#include "GObstacle.h"
 
 class GEngine: public QWidget
 {
@@ -14,14 +18,19 @@ class GEngine: public QWidget
 public:
     GEngine(QWidget *parent = nullptr);
     ~GEngine();
+
+    void addCheckpoint(Checkpoint* pCheckpoint);
+    void addObstacle(Obstacle* pObstacle);
+    void updateGraphics();
+
 private:
     // liste checkpoints
     // liste obstacles
     QGraphicsScene* mScene;
     QGraphicsView* mView;
-    QMap<int, ObstacleGraphics*> localObstacles;
-    QMap<int, CheckpointGraphics*> localCheckpoint;
-    QMap<QString, PlayerGraphics*> localPlayers;
+    QMap<int, GCheckpoint*> localCheckpoint;
+    QMap<int, GObstacle*> localObstacles;
+    //QMap<QString, PlayerGraphics*> localPlayers;
 };
 
 #endif // GENGINE_H

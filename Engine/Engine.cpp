@@ -17,6 +17,11 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_players = new QMap<QString, Player*>;
     this->_controls = new QMap<QString, Control*>;
 
+    Checkpoint *tempCp = new Checkpoint;
+    tempCp->setId(100);
+    tempCp->setX(200);
+    tempCp->setY(20);
+    this->g_engine.addCheckpoint(tempCp);
     this->g_engine.show();
 
 }

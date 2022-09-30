@@ -34,6 +34,14 @@ Widget::~Widget()
     delete ui;
 }
 
+void Widget::addCheckpoint(Checkpoint *pCheckpoint)
+{
+    CheckpointGraphics *checkpointGraphics = new CheckpointGraphics(pCheckpoint);
+    mScene->addItem(checkpointGraphics);
+    localCheckpoint.insert(checkpointGraphics->getId(), checkpointGraphics);
+    checkpointGraphics->setPos(pCheckpoint->getX(),pCheckpoint->getY());
+}
+
 void Widget::updateProperties() {
     ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
     ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
