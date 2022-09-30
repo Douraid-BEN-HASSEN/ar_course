@@ -11,7 +11,6 @@
 #include <Kart/Game/Control.h>
 #include <Kart/Game/Vehicle.h>
 #include <Kart/Map/Map.h>
-#include "2DGraphics/widget.h"
 
 #include "GEngine.h"
 

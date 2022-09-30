@@ -32,6 +32,7 @@ private:
     qreal id;
     qreal x;
     qreal y;
+    // Récupérer depuis /game/properties
 
 };
 

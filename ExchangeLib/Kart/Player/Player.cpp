@@ -7,6 +7,7 @@
 // constructor
 Player::Player(QObject *parent): QObject{parent}
 {
+    this->_map = Map::getInstance();
     this->_items = new QMap<QString, int>();
     this->_x = 0;
     this->_y = 0;
@@ -230,9 +231,20 @@ QString Player::getController()
 void Player::update(Control *control)
 {
     qDebug() << this->getX() << " " << this->getY() << " " << this->getAngle() << " " << control->getAngle() << " " << control->getPower();
-    this->_angle += control->getAngle();
+    /*this->_angle += control->getAngle()/10;
     this->_x += control->getPower() * cos(this->_angle);
-    this->_y += -control->getPower() * sin(this->_angle);
+    this->_y += -control->getPower() * sin(this->_angle);*/
+
+    int newX = control->getPower() * cos(this->_angle);
+    int newY = -control->getPower() * sin(this->_angle);
+    this->_angle += control->getAngle()/10;
+    this->_x += newX;
+    this->_y += newY;
+
+    /*if((newX >= 0 && newX <= this->_map->getMapWidth()) && (newY >= 0 && newY <= this->_map->getMapHeight())) {
+        this->_x += newX;
+        this->_y += newY;
+    }*/
 
 }
 

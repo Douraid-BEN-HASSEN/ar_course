@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <QtMqtt/QtMqtt>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QHBoxLayout>
@@ -37,6 +38,9 @@ private:
     QMap<int, GCheckpoint*> localCheckpoint;
     QMap<int, GObstacle*> localObstacles;
     QMap<QString, GPlayer*> localPlayers;
+
+protected:
+    void resizeEvent(QResizeEvent *event);
 
 };
 

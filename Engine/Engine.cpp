@@ -17,7 +17,7 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_controls = new QMap<QString, Control*>;
 
     // ==== temp ====
-    testCheckpoint = new Checkpoint;
+    /*testCheckpoint = new Checkpoint;
     testCheckpoint->setId(150);
     testCheckpoint->setX(500);
     testCheckpoint->setY(20);
@@ -33,7 +33,7 @@ Engine::Engine(QObject *parent): QObject{parent}
     testPlayer->setUuid("testPlayer");
     testPlayer->setX(20);
     testPlayer->setY(20);
-    this->g_engine.addPlayer(testPlayer);
+    this->g_engine.addPlayer(testPlayer);*/
     // =======
 
     this->envoiGameInfo();
@@ -47,14 +47,14 @@ Engine::Engine(QObject *parent): QObject{parent}
 
 Engine::~Engine()
 {
-    delete this->testCheckpoint;
+    /*delete this->testCheckpoint;
     delete this->testObstacle;
-    delete this->testPlayer;
+    delete this->testPlayer;*/
 }
 
 void Engine::envoiGameProperties()
 {
-    QTimer::singleShot(100, this, &Engine::envoiGameProperties);
+    QTimer::singleShot(1000, this, &Engine::envoiGameProperties);
     _properties->publish();
 }
 
@@ -62,14 +62,27 @@ void Engine::envoiGameInfo()
 {
     QTimer::singleShot(100, this, &Engine::envoiGameInfo);
     this->_gameMode->publish();
+
+    // ajout dans le moteur graphique
+    for(Checkpoint *checkpoint: *this->_map->getCheckpoints()) {
+        this->g_engine.updateCheckpoint(checkpoint);
+    }
+
+    for(Obstacle *obstacle: *this->_map->getObstacles()) {
+        this->g_engine.updateObstacle(obstacle);
+    }
+
+    for(Player *player: *this->_gameMode->_players) {
+        this->g_engine.updatePlayer(player);
+    }
 }
 
 void Engine::control_th()
 {
     QTimer::singleShot(1000, this, &Engine::control_th);
 
-    testPlayer->setX(testPlayer->getX()+10);
-    this->g_engine.updatePlayer(testPlayer);
+    /*testPlayer->setX(testPlayer->getX()+10);
+    this->g_engine.updatePlayer(testPlayer);*/
 
     // traitement
     for(Control *control: this->_controls->values()) {
@@ -139,9 +152,6 @@ void Engine::traitementPlayerRegister(QJsonObject pMessage)
     this->_gameMode->_players->insert(player->getUuid(), player);
 
     qDebug() << player->serialize();
-
-    // ajout dans le moteur graphique
-    this->g_engine.addPlayer(player);
 }
 
 

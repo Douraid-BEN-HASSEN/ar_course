@@ -1,11 +1,18 @@
 #include "GEngine.h"
-
+// Maps : avoir les angles, update toutes les 1s
+// Egine : limite map
 GEngine::GEngine(QWidget *parent): QWidget(parent)
 {
     this->mScene = new QGraphicsScene(this);
     this->mScene->setSceneRect(0, 0, 1000,1000);
     this->mView = new QGraphicsView(this);
     this->mView->setScene(mScene);
+
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->addWidget(mView);
+    setLayout(layout);
+
+    mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);
 }
 
 GEngine::~GEngine()
@@ -102,4 +109,9 @@ QList<QGraphicsItem *> GEngine::collision(QGraphicsItem *pGItem)
     }*/
 
     return gitems;
+}
+
+void GEngine::resizeEvent(QResizeEvent *event)
+{
+    mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);
 }
