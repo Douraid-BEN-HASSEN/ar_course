@@ -26,11 +26,7 @@ Widget::Widget(QWidget *parent)
     // Pour finir sur this = Widget apperler updateMap
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
     connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
-<<<<<<< HEAD
-
-=======
     connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode()));
->>>>>>> dev
 }
 
 Widget::~Widget()
@@ -38,20 +34,15 @@ Widget::~Widget()
     delete ui;
 }
 
-<<<<<<< HEAD
-void Widget::updateProperties(){
+void Widget::updateProperties() {
     ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
     ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
     ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
-
 }
 
-void Widget::updateMap(){
-=======
 void Widget::updateMap() {
 
     qDebug() << "map";
->>>>>>> dev
     //new QMap<int, Obstacle*>();
     // Faire une boucle sur tous les obstacles
     // Sur chaque obstacle on va devoir le créer + le placer
@@ -95,12 +86,6 @@ void Widget::updateMap() {
     qDebug() << "Topic width = " << Map::getInstance()->getMapWidth();
     qDebug() << "Topic recu = " << Map::getInstance()->getMapHeight();
 
-}
-
-void Widget::updateProperties() {
-    ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
-    ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
-    ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
 }
 
 void Widget::updateGameMode() {

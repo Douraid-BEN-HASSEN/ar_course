@@ -1,10 +1,6 @@
 #include "Map.h"
 
 Map *Map::getInstance() {
-<<<<<<< HEAD
-    static Map instance;
-    return &instance;
-=======
     static Map *instance;
 
     if (instance == nullptr) {
@@ -19,10 +15,7 @@ Map *Map::getInstance() {
         qDebug() << "Map connected";
     }
 
-
-
     return instance;
->>>>>>> dev
 }
 
 // constructor
@@ -95,11 +88,7 @@ void Map::deserialize(const QJsonObject &jsonObject) {
         _obstacles->insert(obstacle->getId(), obstacle);
     }
 
-<<<<<<< HEAD
-    emit upadeted();
-=======
     emit updated();
->>>>>>> dev
 }
 
 QString Map::serialize() {

@@ -76,11 +76,7 @@ private slots:
     void receivedMessage(QJsonObject message, QString topic);
 
 public: signals:
-<<<<<<< HEAD
-    void upadeted();
-=======
     void updated();
->>>>>>> dev
 
 };
 #endif // MAP_H
