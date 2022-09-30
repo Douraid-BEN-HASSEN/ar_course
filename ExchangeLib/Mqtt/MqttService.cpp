@@ -74,7 +74,6 @@ void MqttService::publish(QString topic, QString message) {
     }
 
     this->client->publish(topic, message.toUtf8());
-    qDebug() << "PUBLISH ! " ;
 }
 
 /**

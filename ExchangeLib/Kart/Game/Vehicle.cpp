@@ -20,12 +20,12 @@ Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
     if(this->type == "bike") {
         this->maxSpeed = 300;
         this->acceleration = 10;
-        this->weight = 0.2;
+        this->weight = 0;
         this->steeringAngle = -1;
     } else if(this->type == "car") {
         this->maxSpeed = 300;
         this->acceleration = 10;
-        this->weight = 1.5;
+        this->weight = 2;
         this->steeringAngle = -1;
     } else if(this->type == "truck") {
         this->maxSpeed = 300;
