@@ -4,11 +4,12 @@
 #include <QHBoxLayout>
 #include "ObstacleGraphics.h"
 #include "CheckpointGraphics.h"
-#include "Kart/Map/Map.h"
-#include "Kart/Game/Properties.h"
-#include "Kart/Player/GameMode.h"
 
-#include "Mqtt/MqttService.h"
+#include <Kart/Map/Map.h>
+#include <Kart/Game/Properties.h>
+#include <Kart/Player/GameMode.h>
+
+#include <Mqtt/MqttService.h>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -25,7 +26,11 @@ Widget::Widget(QWidget *parent)
     // Pour finir sur this = Widget apperler updateMap
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
     connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
+<<<<<<< HEAD
 
+=======
+    connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode()));
+>>>>>>> dev
 }
 
 Widget::~Widget()
@@ -33,6 +38,7 @@ Widget::~Widget()
     delete ui;
 }
 
+<<<<<<< HEAD
 void Widget::updateProperties(){
     ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
     ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
@@ -41,35 +47,43 @@ void Widget::updateProperties(){
 }
 
 void Widget::updateMap(){
+=======
+void Widget::updateMap() {
+
+    qDebug() << "map";
+>>>>>>> dev
     //new QMap<int, Obstacle*>();
     // Faire une boucle sur tous les obstacles
     // Sur chaque obstacle on va devoir le créer + le placer
 
-    for (auto * iterObstacle : Map::getInstance()->getObstacles()->values()) {
+    for (Obstacle *iterObstacle : Map::getInstance()->getObstacles()->values()) {
         // Verifier si l object ObstacleRect* obstaclerect  exist
 
-        // Rentrer dands le if si sa existe
-        if(localObstacles.value(iterObstacle->getId())){
-            localObstacles.value(iterObstacle->getId())->setPos(iterObstacle->getX(),iterObstacle->getY());
-        } else {
-            ObstacleGraphics* obstaclegraph = new ObstacleGraphics(iterObstacle);
-            mScene->addItem(obstaclegraph);
-            obstaclegraph->setPos(iterObstacle->getX(), iterObstacle->getY());
-            localObstacles.insert(obstaclegraph->getId(),obstaclegraph);
+        ObstacleGraphics *obstacleGraphics = localObstacles.value(iterObstacle->getId());
+
+        if (!obstacleGraphics) {
+            obstacleGraphics = new ObstacleGraphics(iterObstacle);
+            mScene->addItem(obstacleGraphics);
+            localObstacles.insert(obstacleGraphics->getId(), obstacleGraphics);
         }
+
+        obstacleGraphics->setPos(iterObstacle->getX(),iterObstacle->getY());
     }
 
 
-    for (auto * iterCheckout : Map::getInstance()->getCheckpoints()->values()) {
-        if(localCheckpoint.value(iterCheckout->getId())){
-            qDebug() <<  "le checkpoint existe donc je dois vérifier la position";
-            localCheckpoint.value(iterCheckout->getId())->setPos(iterCheckout->getX(),iterCheckout->getY());
-        } else {
-            CheckpointGraphics* checkpointgraph = new CheckpointGraphics(iterCheckout);
-            mScene->addItem(checkpointgraph);
-            checkpointgraph->setPos(iterCheckout->getX(), iterCheckout->getY());
-            localCheckpoint.insert(checkpointgraph->getId(), checkpointgraph);
+    for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+
+        CheckpointGraphics *checkpointGraphics = localCheckpoint.value(iterCheckpoint->getId());
+
+        if (!checkpointGraphics) {
+            checkpointGraphics = new CheckpointGraphics(iterCheckpoint);
+            checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
+
+            mScene->addItem(checkpointGraphics);
+            localCheckpoint.insert(checkpointGraphics->getId(), checkpointGraphics);
         }
+
+        checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
 
 
@@ -83,3 +97,25 @@ void Widget::updateMap(){
 
 }
 
+void Widget::updateProperties() {
+    ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
+    ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
+    ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
+}
+
+void Widget::updateGameMode() {
+
+    for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
+        PlayerGraphics *playerGraphics = localPlayers.value(iterPlayer->getUuid());
+
+        if (!playerGraphics) {
+            playerGraphics = new PlayerGraphics(iterPlayer);
+            playerGraphics->setPos(playerGraphics->getX(), playerGraphics->getY());
+
+            mScene->addItem(playerGraphics);
+            localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
+        }
+
+        playerGraphics->setPos(playerGraphics->getX(), playerGraphics->getY());
+    }
+}

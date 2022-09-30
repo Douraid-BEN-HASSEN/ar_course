@@ -28,6 +28,8 @@ public:
 
     QMap<QString, Vehicle *> *vehicleOptions = new QMap<QString, Vehicle *>;
 
+    void publish();
+
     void deserialize(const QJsonObject &);
     QString serialize();
     QJsonObject toJson();

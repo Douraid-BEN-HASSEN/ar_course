@@ -23,6 +23,7 @@ win32 {
 SOURCES += \
     2DGraphics/CheckpointGraphics.cpp \
     2DGraphics/ObstacleGraphics.cpp \
+    2DGraphics/PlayerGraphics.cpp \
     2DGraphics/widget.cpp \
     Player.cpp \
     interface.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
 HEADERS += \
     2DGraphics/CheckpointGraphics.h \
     2DGraphics/ObstacleGraphics.h \
+    2DGraphics/PlayerGraphics.h \
     2DGraphics/widget.h \
     Player.h \
     interface.h

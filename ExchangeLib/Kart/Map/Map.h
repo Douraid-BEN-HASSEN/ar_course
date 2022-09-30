@@ -43,6 +43,8 @@ public:
     QString serialize();
     QJsonObject toJson();
 
+    void publish();
+
     // === SETTER ===
     void setMapWidth(float pMapWidth);
     void setMapHeight(float pMapHeight);
@@ -74,7 +76,11 @@ private slots:
     void receivedMessage(QJsonObject message, QString topic);
 
 public: signals:
+<<<<<<< HEAD
     void upadeted();
+=======
+    void updated();
+>>>>>>> dev
 
 };
 #endif // MAP_H

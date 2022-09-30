@@ -1,8 +1,28 @@
 #include "Map.h"
 
 Map *Map::getInstance() {
+<<<<<<< HEAD
     static Map instance;
     return &instance;
+=======
+    static Map *instance;
+
+    if (instance == nullptr) {
+        instance = new Map();
+
+        MqttService::instance()->subscribe(instance->topic);
+
+        /* -- connect -- */
+        /* todo implmente an interface and methode to connect */
+        connect(MqttService::instance(), &MqttService::message, instance, &Map::receivedMessage);
+
+        qDebug() << "Map connected";
+    }
+
+
+
+    return instance;
+>>>>>>> dev
 }
 
 // constructor
@@ -24,6 +44,10 @@ Map::Map(QObject *parent): QObject{parent}
 Map::~Map() {
     delete this->_checkpoints;
     delete this->_obstacles;
+}
+
+void Map::publish() {
+    MqttService::instance()->publish(Map::topic, this->serialize().toUtf8());
 }
 
 void Map::receivedMessage(QJsonObject message, QString topic) {
@@ -71,7 +95,11 @@ void Map::deserialize(const QJsonObject &jsonObject) {
         _obstacles->insert(obstacle->getId(), obstacle);
     }
 
+<<<<<<< HEAD
     emit upadeted();
+=======
+    emit updated();
+>>>>>>> dev
 }
 
 QString Map::serialize() {
