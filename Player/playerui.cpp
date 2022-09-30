@@ -99,7 +99,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     //Init parameters
     this->isProperties = false ;
     this->isGame = false ;
-    this->angle = 180 ;
+    this->angle = 0 ;
     this->power = 0 ;
     this->nbBanana = 0 ;
     this->nbBomb = 0 ;

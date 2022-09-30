@@ -10,8 +10,8 @@ Controller::Controller(QObject *parent): QObject{parent}
     auto gamepads = QGamepadManager::instance()->connectedGamepads();
     this->gamepad = new QGamepad(*gamepads.begin(), this);
     //Connect
-
-    connect(gamepad, SIGNAL(buttonL1Changed(bool)), this, SLOT(handleTouchEvent('L1')));
+    qDebug() << "connect gamepad" ;
+    connect(gamepad, SIGNAL(buttonL1Changed(bool)), this, SLOT(handleTouchEvent("L1")));
     connect(gamepad, SIGNAL(buttonR1Changed(bool)), this, SLOT(handleTouchEvent('R1')));
     connect(gamepad,SIGNAL(buttonL2Changed(double)), this, SLOT(handleTouchEvent('L2')));
     connect(gamepad,SIGNAL(buttonR2Changed(double)), this, SLOT(handleTouchEvent('R2')));
@@ -20,6 +20,11 @@ Controller::Controller(QObject *parent): QObject{parent}
     connect(gamepad,SIGNAL(buttonXChanged(bool)), this, SLOT(handleTouchEvent('X')));
     connect(gamepad,SIGNAL(buttonYChanged(bool)), this, SLOT(handleTouchEvent('Y')));
 
+}
+
+void Controller::handleTouchEvent(QString gamepadMoove)
+{
+    qDebug() << "handleTouchEvent" ;
 }
 
 Properties* Controller::getProperties()
@@ -38,7 +43,7 @@ void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, flo
         this->catchKeyUp(power);
         break;
     case Qt::Key_Q:
-        this->catchKeyLeft(angle);
+        this->catwchKeyLeft(angle);
         break ;
     case Qt::Key_S:
         this->catchKeyDown(power);
@@ -69,10 +74,7 @@ void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, flo
         this->sendMessageControl(uuid , *angle , *power , keyAction);
 }
 
-void Controller::handleTouchEvent(QString gamepadMoove)
-{
-    qDebug() << "handleTouchEvent" ;
-}
+
 
 void Controller::catchKeyUp(int *power)
 {
@@ -89,18 +91,14 @@ void Controller::catchKeyDown(int *power)
 
 void Controller::catchKeyRight(float *angle)
 {
-    if (*angle == 0)
-        *angle = 270 ;
-    else
-        *angle -= 90;
+    if (*angle != 90 )
+        *angle += 90;
 }
 
-void Controller::catchKeyLeft(float *angle)
+void Controller::catwchKeyLeft(float *angle)
 {
-    if (*angle == 270)
-        *angle = 0 ;
-    else
-        *angle += 90;
+    if (*angle != -90)
+        *angle -= 90;
 }
 
 void Controller::catchKeyAction( int idKey, int *nbBanana, int *nbBomb, int *nbRocket)
