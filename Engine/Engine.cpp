@@ -13,6 +13,7 @@ Engine::Engine(QObject *parent): QObject{parent}
 
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
+    this->_properties = new Properties(5);
 
     this->_players = new QMap<QString, Player*>;
     this->_controls = new QMap<QString, Control*>;
@@ -24,12 +25,15 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->g_engine.addCheckpoint(tempCp);
     this->g_engine.show();
 
+
+    _gameMode->publish();
+    _properties->publish();
 }
 
 void Engine::envoiGameInfo()
 {
     QTimer::singleShot(100, this, &Engine::envoiGameInfo);
-    this->_gameMode->publish();
+    this->_gameMode->publish();   
 }
 
 

@@ -18,6 +18,33 @@ Properties *Properties::getInstance() {
 
 Properties::Properties(QObject *parent) : QObject{parent} {}
 
+Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
+    this->laps = laps;
+    this->team = 2;
+
+    this->banana = 10;
+    this->bananaCooldown = 10;
+    this->bananaTTL = 10;
+    this->bananaRadius = 10;
+
+    this->bomb = 10;
+    this->bombCooldown = 10;
+    this->bombTTL = 10;
+    this->bombRadius = 10;
+    this->bombExplosionRadius = 10;
+
+    this->rocket = 10;
+    this->rocketCooldown = 10;
+    this->rocketSpeed = 10.0f;
+    this->rocketRadius = 10;
+
+    this->circleRadius = 50;
+    this->rectangleWidth = 50;
+    this->rectangleHeight = 50;
+    this->checkpointRadius = 50;
+}
+
+
 void Properties::publish() {
     MqttService::instance()->publish(Properties::topic, this->serialize().toUtf8());
 }

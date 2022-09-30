@@ -27,6 +27,7 @@ private:
     QMap<QString, Control*> *_controls;
     Map *_map;
     GameMode *_gameMode;
+    Properties *_properties;
 
 
     void traitementPlayerRegister(QJsonObject pMessage);
