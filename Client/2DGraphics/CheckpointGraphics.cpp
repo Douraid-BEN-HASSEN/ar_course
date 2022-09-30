@@ -1,5 +1,7 @@
 #include "CheckpointGraphics.h"
 
+qreal CheckpointGraphics::radiusCheckpoint = 50;
+
 CheckpointGraphics::CheckpointGraphics(Checkpoint *checkpoint, QGraphicsItem *parent):QGraphicsObject(parent)
 {
     this->id = checkpoint->getId();
@@ -24,12 +26,13 @@ qreal CheckpointGraphics::getY()        //painter->drawEllipse(0,0,this->heigth,
 
 qreal CheckpointGraphics::getRadius()
 {
-    return radius;
+    return radiusCheckpoint;
 }
 
 QRectF CheckpointGraphics::boundingRect() const
 {
-    return QRectF(-50, -50,100.,100.);
+    return QRectF(-this->radiusCheckpoint, -this->radiusCheckpoint,this->radiusCheckpoint*2,this->radiusCheckpoint*2);
+
 }
 
 void CheckpointGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
