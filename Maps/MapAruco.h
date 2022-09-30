@@ -15,6 +15,7 @@ public:
 private:
     MapAruco();
     ~MapAruco();
+    int _timeoutLimit;
 };
 
 #endif // MAPARUCO_H
