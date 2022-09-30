@@ -28,6 +28,9 @@ public:
 private:
     Properties* _properties;
 
+public slots:
+    void handleTouchEvent();
+
 
 signals:
 

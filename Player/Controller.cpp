@@ -11,11 +11,8 @@ Controller::Controller(QObject *parent): QObject{parent}
     this->gamepad = new QGamepad(*gamepads.begin(), this);
     //Connect
 
-    connect(gamepad, &QGamepad::buttonL1Changed, this, [](bool pressed){
-        if (pressed == true) {
-            qDebug() << "turn left" << pressed;
-        }
-    });
+    connect(gamepad, SIGNAL(buttonL1Changed(bool)), this, SLOT(handleTouchEvent()));
+
     connect(gamepad, &QGamepad::buttonR1Changed, this, [](bool pressed){
         if (pressed == true) {
             qDebug() << "turn right" << pressed;
@@ -66,12 +63,13 @@ Properties* Controller::getProperties()
     return this->_properties;
 }
 
+
+
 void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, float *angle, int *nbBananas, int *nbBomb, int *nbRocket)
 {
     int keyAction = key->key() == Qt::Key_1 ? 1 : key->key() == Qt::Key_2 ? 2 : key->key() == Qt::Key_3 ? 3 : 0  ;
 
     bool isCorrectAction = ( keyAction == 1 && *nbBananas > 0) || (keyAction == 2 && *nbBomb > 0) || (keyAction ==3 && *nbRocket > 0) || (keyAction == 0) ? true : false  ;
-    qDebug() << "test 1 ";
     switch(key->key()) {
     case Qt::Key_Z:
         this->catchKeyUp(power);
@@ -106,6 +104,11 @@ void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, flo
 
     if (isCorrectAction == true )
         this->sendMessageControl(uuid , *angle , *power , keyAction);
+}
+
+void Controller::handleTouchEvent()
+{
+    qDebug() << "handleTouchEvent" ;
 }
 
 void Controller::catchKeyUp(int *power)
