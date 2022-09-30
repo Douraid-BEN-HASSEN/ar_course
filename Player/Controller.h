@@ -22,7 +22,7 @@ public:
     void handleKeyEvent(QString uuid , QKeyEvent *key,  int *power , float *angle , int *nbBananas , int *nbBomb , int *nbRocket);
     void catchKeyUp(int *power);
     void catchKeyDown(int *power);
-    void catchKeyLeft(float *angle);
+    void catwchKeyLeft(float *angle);
     void catchKeyRight(float *angle);
     void catchKeyAction( int idKey , int *nbBanana , int *nbBomb , int *nbRocket);
 private:

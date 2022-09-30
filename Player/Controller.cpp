@@ -69,7 +69,7 @@ void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, flo
         this->sendMessageControl(uuid , *angle , *power , keyAction);
 }
 
-void Controller::handleTouchEvent()
+void Controller::handleTouchEvent(QString gamepadMoove)
 {
     qDebug() << "handleTouchEvent" ;
 }
