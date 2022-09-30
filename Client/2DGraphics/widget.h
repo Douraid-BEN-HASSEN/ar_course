@@ -38,5 +38,9 @@ private slots:
     void updateMap();
     void updateProperties();
     void updateGameMode();
+
+    // QWidget interface
+protected:
+    void resizeEvent(QResizeEvent *event);
 };
 #endif // WIDGET_H

@@ -72,7 +72,6 @@ void Widget::updateMap() {
 
         if (!checkpointGraphics) {
             checkpointGraphics = new CheckpointGraphics(iterCheckpoint);
-            checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
 
             mScene->addItem(checkpointGraphics);
             localCheckpoint.insert(checkpointGraphics->getId(), checkpointGraphics);
@@ -80,6 +79,7 @@ void Widget::updateMap() {
 
         checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
+
 }
 
 void Widget::updateGameMode() {
@@ -92,12 +92,19 @@ void Widget::updateGameMode() {
 
         if (!playerGraphics) {
             playerGraphics = new PlayerGraphics(iterPlayer);
-            playerGraphics->setPos(playerGraphics->getX(), playerGraphics->getY());
-
             mScene->addItem(playerGraphics);
             localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
         }
 
-        playerGraphics->setPos(playerGraphics->getX(), playerGraphics->getY());
+        qDebug() << "x = " << playerGraphics->getX();
+        qDebug() << "y = " << playerGraphics->getY();
+
+        playerGraphics->setPos(iterPlayer->getX(), iterPlayer->getY());
     }
+
+}
+
+void Widget::resizeEvent(QResizeEvent *event)
+{
+    mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);
 }

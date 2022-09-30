@@ -11,29 +11,49 @@ Controller::Controller(QObject *parent): QObject{parent}
     this->gamepad = new QGamepad(*gamepads.begin(), this);
     //Connect
 
-    connect(gamepad, &QGamepad::buttonL1Changed, this, [](bool pressed){
-        qDebug() << "turn left" << pressed;
-    });
+    connect(gamepad, SIGNAL(buttonL1Changed(bool)), this, SLOT(handleTouchEvent()));
+
     connect(gamepad, &QGamepad::buttonR1Changed, this, [](bool pressed){
-        qDebug() << "turn right" << pressed;
+        if (pressed == true) {
+            qDebug() << "turn right" << pressed;
+        }
     });
+
     connect(gamepad, &QGamepad::buttonL2Changed, this, [](double value){
-        qDebug() << " speed - " << value;
+        if (value > 0.0) {
+            qDebug() << " speed - " << value;
+
+        }
     });
     connect(gamepad, &QGamepad::buttonR2Changed, this, [](double value){
-        qDebug() << "speed +" << value;
+        if (value > 0.0) {
+            qDebug() << "speed +" << value;
+
+        }
     });
+
     connect(gamepad, &QGamepad::buttonAChanged, this, [](bool pressed){
-        qDebug() << "key action 1" << pressed;
+        if (pressed == true) {
+            qDebug() << "key action 1" << pressed;
+
+        }
     });
     connect(gamepad, &QGamepad::buttonBChanged, this, [](bool pressed){
-        qDebug() << "key action 2" << pressed;
+        if (pressed == true) {
+            qDebug() << "key action 2" << pressed;
+
+        }
     });
     connect(gamepad, &QGamepad::buttonXChanged, this, [](bool pressed){
-        qDebug() << "key action 3" << pressed;
+        if (pressed == true) {
+            qDebug() << "key action 3" << pressed;
+        }
     });
     connect(gamepad, &QGamepad::buttonYChanged, this, [](bool pressed){
-        qDebug() << "key action 4" << pressed;
+        if (pressed == true) {
+            qDebug() << "key action 4" << pressed;
+
+        }
     });
 
 }
@@ -43,12 +63,13 @@ Properties* Controller::getProperties()
     return this->_properties;
 }
 
+
+
 void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, float *angle, int *nbBananas, int *nbBomb, int *nbRocket)
 {
     int keyAction = key->key() == Qt::Key_1 ? 1 : key->key() == Qt::Key_2 ? 2 : key->key() == Qt::Key_3 ? 3 : 0  ;
 
     bool isCorrectAction = ( keyAction == 1 && *nbBananas > 0) || (keyAction == 2 && *nbBomb > 0) || (keyAction ==3 && *nbRocket > 0) || (keyAction == 0) ? true : false  ;
-    qDebug() << "test 1 ";
     switch(key->key()) {
     case Qt::Key_Z:
         this->catchKeyUp(power);
@@ -83,6 +104,11 @@ void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, flo
 
     if (isCorrectAction == true )
         this->sendMessageControl(uuid , *angle , *power , keyAction);
+}
+
+void Controller::handleTouchEvent()
+{
+    qDebug() << "handleTouchEvent" ;
 }
 
 void Controller::catchKeyUp(int *power)
@@ -134,7 +160,7 @@ void Controller::sendMessageRegister(QString uuid, QString pseudo, QString contr
     QJsonDocument doc(messageJsonObject);
     QString strJson(doc.toJson(QJsonDocument::Compact));
 
-    MqttService::instance()->publish("/player/register" , strJson);
+    MqttService::instance()->publish("player/register" , strJson);
 }
 
 void Controller::sendMessageControl(QString uuid, int angle, int power, int keyAction)
@@ -152,7 +178,7 @@ void Controller::sendMessageControl(QString uuid, int angle, int power, int keyA
     QJsonDocument doc(messageJsonObject);
     QString strJson(doc.toJson(QJsonDocument::Compact));
 
-    MqttService::instance()->publish("/player/control" , strJson);
+    MqttService::instance()->publish("player/control" , strJson);
 }
 
 

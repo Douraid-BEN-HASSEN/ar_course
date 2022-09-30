@@ -22,10 +22,15 @@ while true; do
     sleep 1
 
     mosquitto_pub -h 127.0.0.1 \
-    -m '{"players":[{"uuid":"1211sqsdsq22112","pseudo":"Alexis","color":"red","team":"1","x":95,"y":256,"angle":0.2,"speed":0,"vehicle":"string","items":{"banana":1,"bomb":2,"rocket":3},"lastCheckpoint":0,"currentLap":0,"status":"string","controller":"keyboard"}],"items":[{"x":1,"y":2,"angle":1,"status":"string","type":"string"}],"elapsedTime":1,"infoMessage":"string","status":"string"}' \
+    -m '{"players":[{"uuid":"1211sqsdsq22112","pseudo":"Alexis","color":"red","team":"1","x":95,"y":256,"angle":90,"speed":0,"vehicle":"string","items":{"banana":1,"bomb":2,"rocket":3},"lastCheckpoint":0,"currentLap":0,"status":"string","controller":"keyboard"}],"items":[{"x":1,"y":2,"angle":1,"status":"string","type":"string"}],"elapsedTime":1,"infoMessage":"string","status":"string"}' \
+    -t game
+    
+    sleep 1
+   
+    mosquitto_pub -h 127.0.0.1 \
+    -m '{"players":[{"uuid":"1211sqsdsq22112","pseudo":"Alexis","color":"red","team":"1","x":150,"y":300,"angle":90,"speed":0,"vehicle":"string","items":{"banana":1,"bomb":2,"rocket":3},"lastCheckpoint":0,"currentLap":0,"status":"string","controller":"keyboard"}],"items":[{"x":1,"y":2,"angle":1,"status":"string","type":"string"}],"elapsedTime":1,"infoMessage":"string","status":"string"}' \
     -t game
 
-    mosquitto_pub -h 127.0.0.1 \
-    -m '{}' \
-    -t /game/properties
+
+
 done

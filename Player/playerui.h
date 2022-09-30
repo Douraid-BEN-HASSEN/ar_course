@@ -43,8 +43,9 @@ private :
     Properties *props;
 
     //Graphic component for the loading
-    QHBoxLayout *loadingLayout ;
+    QVBoxLayout *loadingLayout ;
     QLabel *labelLoading ;
+    QPushButton *buttonClose ;
 
     //Component for register
     QVBoxLayout *registerLayout ;
@@ -57,6 +58,7 @@ private :
     QHBoxLayout *horizontalLayout_7 ;
     QHBoxLayout *horizontalLayout_8 ;
     QHBoxLayout *horizontalLayout_9 ;
+    QHBoxLayout *horizontalLayout_10;
 
     QLabel *labelTitle ;
     QLabel *labelPseudo ;
@@ -84,6 +86,7 @@ private :
     QLabel *labelBanana ;
     QLabel *labelBomb ;
     QLabel *labelRocket ;
+    QPushButton *buttonExit ;
 
 protected :
     void keyPressEvent(QKeyEvent *e) ;
@@ -92,6 +95,8 @@ private slots :
     //Call when the user validate the initial form
     void buttonPlayPressed() ;
     void onRunFind(QByteArray datas) ;
+    void onExitRun();
+    void onCloseGame();
 public:
     PlayerUi(QWidget *parent = nullptr);
     void makeMqttMessage(int angle , int power , int keyAction );

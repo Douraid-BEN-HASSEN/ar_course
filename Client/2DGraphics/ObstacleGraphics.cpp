@@ -56,9 +56,11 @@ void ObstacleGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->setBrush(Qt::blue);
 
     if((int)this->getId() % 2 == 1){
-        painter->drawRect(-this->getHeigth()/2,-this->getWidth()/2,this->heigth, this->width);
+        //painter->drawRect(-this->getHeigth()/2,-this->getWidth()/2,this->heigth, this->width);
+        painter->drawRect(boundingRect());
     } else {
-        painter->drawEllipse(-this->getHeigth()/2,-this->getWidth()/2,this->radius*2, this->radius*2);
+        //painter->drawEllipse(-this->getHeigth()/2,-this->getWidth()/2,this->radius*2, this->radius*2);
+         painter->drawEllipse(boundingRect());
     }
 
     painter->setPen(Qt::black);

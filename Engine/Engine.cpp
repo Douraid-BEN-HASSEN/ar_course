@@ -6,10 +6,7 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_mqtt->subscribe("player/register");
     this->_mqtt->subscribe("player/control");
 
-    connect(this->_mqtt,
-                SIGNAL(message(QJsonObject,QString)),
-                this,
-                SLOT(receivedMessage(QJsonObject,QString)));
+    connect(this->_mqtt, SIGNAL(message(QJsonObject,QString)), this, SLOT(receivedMessage(QJsonObject,QString)));
 
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
@@ -44,6 +41,7 @@ Engine::Engine(QObject *parent): QObject{parent}
 
     _gameMode->publish();
     _properties->publish();
+    envoiGameInfo();
 }
 
 Engine::~Engine()

@@ -42,6 +42,10 @@ Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
     this->rectangleWidth = 50;
     this->rectangleHeight = 50;
     this->checkpointRadius = 50;
+
+    this->vehicleOptions->insert("bike", new Vehicle("bike"));
+    this->vehicleOptions->insert("bike", new Vehicle("car"));
+    this->vehicleOptions->insert("bike", new Vehicle("truck"));
 }
 
 
