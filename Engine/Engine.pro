@@ -30,6 +30,7 @@ SOURCES += \
     GCheckpoint.cpp \
     GEngine.cpp \
     GObstacle.cpp \
+    GPlayer.cpp \
     main.cpp
 
 HEADERS += \
@@ -40,7 +41,8 @@ HEADERS += \
     Engine.h \
     GCheckpoint.h \
     GEngine.h \
-    GObstacle.h
+    GObstacle.h \
+    GPlayer.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

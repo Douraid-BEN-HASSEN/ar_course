@@ -29,6 +29,14 @@ void GEngine::addObstacle(Obstacle *pObstacle)
     g_obstacle->setPos(pObstacle->getX(),pObstacle->getY());
 }
 
+void GEngine::addPlayer(Player* pPlayer)
+{
+    GPlayer *g_player = new GPlayer(pPlayer);
+    this->mScene->addItem(g_player);
+    this->localPlayers.insert(g_player->getUuid(), g_player);
+    g_player->setPos(pPlayer->getX(),pPlayer->getY());
+}
+
 void GEngine::updateCheckpoint(Checkpoint *pCheckpoint)
 {
     GCheckpoint *g_checkpoint = this->localCheckpoint.value(pCheckpoint->getId());
@@ -55,6 +63,19 @@ void GEngine::updateObstacle(Obstacle *pObstacle)
     g_obstacle->setPos(pObstacle->getX(),pObstacle->getY());
 }
 
+void GEngine::updatePlayer(Player *pPlayer)
+{
+    GPlayer *g_player = this->localPlayers.value(pPlayer->getUuid());
+
+    this->mScene->removeItem(g_player);
+    this->localPlayers.remove(pPlayer->getUuid());
+
+    g_player = new GPlayer(pPlayer);
+    this->mScene->addItem(g_player);
+    this->localPlayers.insert(g_player->getUuid(), g_player);
+    g_player->setPos(pPlayer->getX(),pPlayer->getY());
+}
+
 void GEngine::updateGraphics()
 {
     /*this->mScene = new QGraphicsScene(this);
@@ -71,4 +92,14 @@ void GEngine::updateGraphics()
     }
 
 
+}
+
+QList<QGraphicsItem *> GEngine::collision(QGraphicsItem *pGItem)
+{
+    QList<QGraphicsItem*> gitems;
+    /*foreach(GCheckpoint g_checkpoint; this->localCheckpoint) {
+
+    }*/
+
+    return gitems;
 }

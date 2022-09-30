@@ -15,44 +15,60 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_gameMode = new GameMode();
     this->_properties = new Properties(5);
 
-    this->_players = new QMap<QString, Player*>;
     this->_controls = new QMap<QString, Control*>;
 
-    tempCp = new Checkpoint;
-    tempCp->setId(100);
-    tempCp->setX(200);
-    tempCp->setY(20);
-    this->g_engine.addCheckpoint(tempCp);
+    // ==== temp ====
+    testCheckpoint = new Checkpoint;
+    testCheckpoint->setId(150);
+    testCheckpoint->setX(500);
+    testCheckpoint->setY(20);
+    this->g_engine.addCheckpoint(testCheckpoint);
 
+    testObstacle = new Obstacle;
+    testObstacle->setId(210);
+    testObstacle->setX(800);
+    testObstacle->setY(20);
+    this->g_engine.addObstacle(testObstacle);
 
+    testPlayer = new Player;
+    testPlayer->setUuid("testPlayer");
+    testPlayer->setX(20);
+    testPlayer->setY(20);
+    this->g_engine.addPlayer(testPlayer);
+    // =======
+
+    this->envoiGameInfo();
     this->control_th();
 
     this->g_engine.show();
-
 
     _gameMode->publish();
     _properties->publish();
 }
 
+Engine::~Engine()
+{
+    delete this->testCheckpoint;
+    delete this->testObstacle;
+    delete this->testPlayer;
+}
+
 void Engine::envoiGameInfo()
 {
     QTimer::singleShot(100, this, &Engine::envoiGameInfo);
-    this->_gameMode->publish();   
+    this->_gameMode->publish();
 }
-
 
 void Engine::control_th()
 {
     QTimer::singleShot(1000, this, &Engine::control_th);
 
-    qDebug() << "control_th";
-
-    this->tempCp->setX(this->tempCp->getX()+1);
-    this->g_engine.updateCheckpoint(tempCp);
+    testPlayer->setX(testPlayer->getX()+10);
+    this->g_engine.updatePlayer(testPlayer);
 
     // traitement
     foreach(Control *control, this->_controls->values()) {
-        Player *player = this->_players->value("sdsd");
+        Player *player = this->_gameMode->_players->value(control->getUuid());
         Vehicle *vehicule = new Vehicle(player->getVehicule());
 
         float P = 1000;
@@ -75,11 +91,32 @@ void Engine::control_th()
         // gerer les checkpoints
         // gerer les obstacles
 
-        this->_players->remove(player->getUuid());
-        this->_players->insert(player->getUuid(), player);
+        this->_gameMode->_players->remove(player->getUuid());
+        this->_gameMode->_players->insert(player->getUuid(), player);
 
     }
 
+}
+
+int Engine::getNextCheckpointId(int pCurrentCheckpoint)
+{
+    /*QList<int> ids;
+    foreach(Checkpoint *checkpoint, this->_map->getCheckpoints()) {
+        ids.append(checkpoint->getId());
+    }
+
+    std::sort(ids.begin(), ids.end());
+
+    for(int iCheckpoint=0; iCheckpoint<ids.count(); iCheckpoint++) {
+        if(ids[iCheckpoint] == pCurrentCheckpoint) {
+            if(iCheckpoint+1 >= ids.count()) {
+                return -1;
+            } else return ids[iCheckpoint+1];
+            break;
+        }
+    }*/
+
+    return -1;
 }
 
 
@@ -87,24 +124,19 @@ void Engine::traitementPlayerRegister(QJsonObject pMessage)
 {
     Player *player = new Player();
     player->deserialize(pMessage);
-    this->_players->remove(player->getUuid());
-    this->_players->insert(player->getUuid(), player);
+    this->_gameMode->_players->remove(player->getUuid());
+    this->_gameMode->_players->insert(player->getUuid(), player);
+
+    qDebug() << player->serialize();
+
+    // ajout dans le moteur graphique
+    this->g_engine.addPlayer(player);
 }
 
 
 void Engine::traitementPlayerControl(QJsonObject pMessage)
 {
-/*
-    "uuid": str,
-    "angle": float, // en rad
-    "power": int, // [-100%;100%]
-    "buttons": { // état des boutons
-        "banana": bool,
-        "bomb": bool,
-        "rocket": bool
-     }
-*/
-    qDebug() << "data";
+    qDebug() << pMessage;
     QString uuid = pMessage["uuid"].toString();
     float angle = pMessage["angle"].toDouble();
     int power = pMessage["power"].toInt();
@@ -114,7 +146,7 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
     buttons["bomb"] = pMessage["bomb"].toBool();
     buttons["rocket"] = pMessage["rocket"].toBool();
 
-    Player *player = this->_players->value(uuid);
+    Player *player = this->_gameMode->_players->value(uuid);
 
     if(!player) {
         qDebug() << "[ERROR] traitementPlayerControl player not found";

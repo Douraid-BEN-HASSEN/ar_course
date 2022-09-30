@@ -20,11 +20,12 @@ class Engine : public QObject
     Q_OBJECT
 public:
     explicit Engine(QObject *parent = nullptr);
+    ~Engine();
 
 private:
     MqttService *_mqtt;
 
-    QMap<QString, Player*> *_players; // enlver et mettre la qmpa de gamemode
+    //QMap<QString, Player*> *_players; // enlver et mettre la qmpa de gamemode
     QMap<QString, Control*> *_controls;
     Map *_map;
     GameMode *_gameMode;
@@ -36,11 +37,14 @@ private:
 
     void envoiGameInfo();
     void control_th();
+    int getNextCheckpointId(int pCurrentCheckpoint);
 
     // graphic
-    //Widget g_engine;
     GEngine g_engine;
-    Checkpoint *tempCp;
+
+    Checkpoint *testCheckpoint;
+    Obstacle *testObstacle;
+    Player *testPlayer;
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
