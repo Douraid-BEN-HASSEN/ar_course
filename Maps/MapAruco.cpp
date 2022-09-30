@@ -78,9 +78,6 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
         this->setMapWidth(topRight.x);
         this->setMapHeight(topRight.y);
 
-        qDebug() << topleft.x << " - " << topRight.x;
-        qDebug() << topleft.y << " - " << bottomLeft.y;
-
         itId = 0; // reset
 
         // gestion des elements
@@ -96,7 +93,7 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
             }
 
             if((itemPos.x >= topleft.x && itemPos.x <= topRight.x) &&
-                    (itemPos.y >= topleft.y && itemPos.y <= bottomLeft.y)) {
+                    (itemPos.y >= bottomLeft.y && itemPos.y <= topleft.y)) {
                 if(ids[itId] > 9 && ids[itId] < 200) {
                     Checkpoint *checkpoint = new Checkpoint();
                     checkpoint->setId(ids[itId]);
@@ -119,6 +116,9 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
                 }
 
             }
+            else if(ids[itId] > 9 && ids[itId] < 200) this->_checkpoints->remove(ids[itId]); // remove si il est en dehors de la map
+            else if(ids[itId] > 9 && ids[itId] < 250) this->_obstacles->remove(ids[itId]); // remove si il est en dehors de la map
+
             itId++;
         }
 
