@@ -1,5 +1,6 @@
 #include "Engine.h"
 
+// diviser les angles par 10 (à voir)
 Engine::Engine(QObject *parent): QObject{parent}
 {
     this->_mqtt = MqttService::instance();
@@ -39,9 +40,8 @@ Engine::Engine(QObject *parent): QObject{parent}
 
     this->g_engine.show();
 
-    _gameMode->publish();
-    _properties->publish();
-    envoiGameInfo();
+    this->envoiGameProperties();
+    this->envoiGameInfo();
 }
 
 Engine::~Engine()
@@ -49,6 +49,12 @@ Engine::~Engine()
     delete this->testCheckpoint;
     delete this->testObstacle;
     delete this->testPlayer;
+}
+
+void Engine::envoiGameProperties()
+{
+    QTimer::singleShot(100, this, &Engine::envoiGameProperties);
+    _properties->publish();
 }
 
 void Engine::envoiGameInfo()
@@ -65,11 +71,11 @@ void Engine::control_th()
     this->g_engine.updatePlayer(testPlayer);
 
     // traitement
-    foreach(Control *control, this->_controls->values()) {
+    for(Control *control: this->_controls->values()) {
         Player *player = this->_gameMode->_players->value(control->getUuid());
-        Vehicle *vehicule = new Vehicle(player->getVehicule());
+        //Vehicle *vehicule = new Vehicle(player->getVehicule());
 
-        float P = 1000;
+        /*float P = 1000;
 
         float F = control->getPower() * P;
         float C = 1.9;
@@ -77,20 +83,27 @@ void Engine::control_th()
         float acceleration = (F-Ff) / (vehicule->getWeight()*1000); // acceleration
         float speed = player->getSpeed() + acceleration;
         // a faire
-        int x = speed * 25;
-        int y = speed * 25;
-        float angle = player->getAngle() + (player->getAngle()-control->getAngle());
+        int x = player->getX() + (control->getPower()) * cos(player->getAngle());
+        int y = player->getY() + (control->getPower()) * -sin(player->getAngle());
+        float angle = player->getAngle() + (player->getAngle()-control->getAngle());*/
 
+        /*int x = player->getX() + (control->getPower()) * cos(control->getAngle());
+        int y = player->getY() + (control->getPower()) * -sin(control->getAngle());
+        float angle = player->getAngle();
+        int speed = player->getSpeed();*/
+        player->update(control);
+
+        /*
         player->setX(x);
         player->setY(y);
         player->setAngle(angle);
-        player->setSpeed(speed);
+        player->setSpeed(speed);*/
 
         // gerer les checkpoints
         // gerer les obstacles
 
-        this->_gameMode->_players->remove(player->getUuid());
-        this->_gameMode->_players->insert(player->getUuid(), player);
+        /*this->_gameMode->_players->remove(player->getUuid());
+        this->_gameMode->_players->insert(player->getUuid(), player);*/
 
     }
 
@@ -116,7 +129,6 @@ int Engine::getNextCheckpointId(int pCurrentCheckpoint)
 
     return -1;
 }
-
 
 void Engine::traitementPlayerRegister(QJsonObject pMessage)
 {
@@ -147,8 +159,8 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
     Player *player = this->_gameMode->_players->value(uuid);
 
     if(!player) {
-        qDebug() << "[ERROR] traitementPlayerControl player not found";
-        return;
+        player = new Player();
+        player->deserialize(pMessage);
     }
 
     Control *control = new Control();

@@ -35,6 +35,7 @@ private:
     void traitementPlayerRegister(QJsonObject pMessage);
     void traitementPlayerControl(QJsonObject pMessage);
 
+    void envoiGameProperties();
     void envoiGameInfo();
     void control_th();
     int getNextCheckpointId(int pCurrentCheckpoint);
