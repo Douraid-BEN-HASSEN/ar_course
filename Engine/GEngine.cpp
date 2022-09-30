@@ -16,15 +16,43 @@ GEngine::~GEngine()
 void GEngine::addCheckpoint(Checkpoint *pCheckpoint)
 {
     GCheckpoint *g_checkpoint = new GCheckpoint(pCheckpoint);
-    //CheckpointGraphics *checkpointGraphics = new CheckpointGraphics(pCheckpoint);
-
-    this->localCheckpoint.insert(pCheckpoint->getId(), g_checkpoint);
+    this->mScene->addItem(g_checkpoint);
+    this->localCheckpoint.insert(g_checkpoint->getId(), g_checkpoint);
+    g_checkpoint->setPos(pCheckpoint->getX(),pCheckpoint->getY());
 }
 
 void GEngine::addObstacle(Obstacle *pObstacle)
 {
     GObstacle *g_obstacle = new GObstacle(pObstacle);
-    this->localObstacles.insert(pObstacle->getId(), g_obstacle);
+    this->mScene->addItem(g_obstacle);
+    this->localObstacles.insert(g_obstacle->getId(), g_obstacle);
+    g_obstacle->setPos(pObstacle->getX(),pObstacle->getY());
+}
+
+void GEngine::updateCheckpoint(Checkpoint *pCheckpoint)
+{
+    GCheckpoint *g_checkpoint = this->localCheckpoint.value(pCheckpoint->getId());
+
+    this->mScene->removeItem(g_checkpoint);
+    this->localObstacles.remove(pCheckpoint->getId());
+
+    g_checkpoint = new GCheckpoint(pCheckpoint);
+    this->mScene->addItem(g_checkpoint);
+    this->localCheckpoint.insert(g_checkpoint->getId(), g_checkpoint);
+    g_checkpoint->setPos(pCheckpoint->getX(),pCheckpoint->getY());
+}
+
+void GEngine::updateObstacle(Obstacle *pObstacle)
+{
+    GObstacle *g_obstacle = this->localObstacles.value(pObstacle->getId());
+
+    this->mScene->removeItem(g_obstacle);
+    this->localObstacles.remove(pObstacle->getId());
+
+    g_obstacle = new GObstacle(pObstacle);
+    this->mScene->addItem(g_obstacle);
+    this->localObstacles.insert(g_obstacle->getId(), g_obstacle);
+    g_obstacle->setPos(pObstacle->getX(),pObstacle->getY());
 }
 
 void GEngine::updateGraphics()

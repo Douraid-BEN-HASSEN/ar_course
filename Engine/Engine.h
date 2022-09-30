@@ -13,6 +13,7 @@
 #include <Kart/Map/Map.h>
 #include "2DGraphics/widget.h"
 
+#include "GEngine.h"
 
 class Engine : public QObject
 {
@@ -37,7 +38,9 @@ private:
     void control_th();
 
     // graphic
-    Widget g_engine;
+    //Widget g_engine;
+    GEngine g_engine;
+    Checkpoint *tempCp;
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
