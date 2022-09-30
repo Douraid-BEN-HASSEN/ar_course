@@ -9,6 +9,7 @@
 
 #include <QObject>
 #include <QMap>
+#include "Kart/Game/Control.h"
 
 class PLAYER_EXPORT Player : public QObject
 {
@@ -55,6 +56,8 @@ public:
     int getCurrentLap();
     QString getStatus();
     QString getController();
+
+    void update(Control *control);
 
 private:
     QString _uuid;
