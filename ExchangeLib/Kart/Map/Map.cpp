@@ -15,18 +15,22 @@ Map *Map::getInstance() {
         qDebug() << "Map connected";
     }
 
-
-
     return instance;
 }
 
 // constructor
 Map::Map(QObject *parent): QObject{parent}
 {
+    MqttService::instance()->subscribe(Map::topic);
+
     this->_mapWidth = -1;
     this->_mapHeight = -1;
     this->_checkpoints = new QMap<int, Checkpoint*>();
     this->_obstacles = new QMap<int, Obstacle*>();
+
+    /* -- connect -- */
+    /* todo implmente an interface and methode to connect */
+    connect(MqttService::instance(), &MqttService::message, this, &Map::receivedMessage);
 }
 
 // destructor

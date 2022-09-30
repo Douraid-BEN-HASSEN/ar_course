@@ -1,4 +1,5 @@
 #include "ObstacleGraphics.h"
+#include "Kart/Game/Properties.h"
 
 #include <QBrush>
 
@@ -11,6 +12,8 @@ ObstacleGraphics::ObstacleGraphics(Obstacle *obstacle, QGraphicsItem *parent): Q
     this->id = obstacle->getId();
     this->x = obstacle->getX();
     this->y = obstacle->getY();
+    //this->heigth = Properties::getInstance()->getRectangleWidth();
+    //this->width = Properties::getInstance()->getRectangleHeight();
 }
 
 
