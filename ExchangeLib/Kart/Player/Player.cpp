@@ -17,7 +17,8 @@ Player::~Player() {
 //  +-------+
 //  | UTILS |
 //  +-------+
-void Player::deserialize(const QJsonObject &jsonObject) {
+void Player::deserialize(const QJsonObject &jsonObject)
+{
     this->_uuid = jsonObject["uuid"].toString();
     this->_pseudo = jsonObject["pseudo"].toString();
     this->_color = jsonObject["color"].toString();
@@ -38,6 +39,10 @@ void Player::deserialize(const QJsonObject &jsonObject) {
     this->_currentLap = jsonObject["currentLap"].toInt();
     this->_status = jsonObject["status"].toString();
     this->_controller = jsonObject["controller"].toString();
+}
+
+QString Player::toString() {
+    return QString("uuid: %1, x: %2, y: %3, angle: %4").arg(_uuid, QString::number(_x), QString::number(_y), QString::number(_angle));
 }
 
 QString Player::serialize() {

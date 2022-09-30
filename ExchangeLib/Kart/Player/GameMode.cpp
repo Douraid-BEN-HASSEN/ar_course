@@ -21,6 +21,10 @@ GameMode::GameMode(QObject *parent): QObject{parent}
 {   
     this->_players = new QMap<QString, Player*>();
     this->_items = new QList<Item*>();
+
+    this->_elapsedTime = 0;
+    this->_infoMessage = "Init";
+    this->_status = "Init";
 }
 
 // destructor
@@ -43,8 +47,9 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
 
     QJsonArray jsonPlayers = jsonObject["players"].toArray();
 
-    foreach(const QJsonValue &value, jsonPlayers) {
+    for(const QJsonValue &value: jsonPlayers) {
         QJsonObject playerJsonObject = value.toObject();
+
         Player *player = new Player();
         player->deserialize(playerJsonObject);
         this->_players->insert(player->getUuid(), player);
@@ -52,7 +57,7 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
 
     QJsonArray jsonItems = jsonObject["items"].toArray();
 
-    foreach(const QJsonValue &value, jsonItems) {
+    for(const QJsonValue &value: jsonItems) {
         QJsonObject itemJsonObject = value.toObject();
         Item *item = new Item();
         item->deserialize(itemJsonObject);
