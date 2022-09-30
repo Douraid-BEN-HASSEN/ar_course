@@ -21,6 +21,8 @@ public:
 
     void addCheckpoint(Checkpoint* pCheckpoint);
     void addObstacle(Obstacle* pObstacle);
+    void updateCheckpoint(Checkpoint* pCheckpoint);
+    void updateObstacle(Obstacle* pObstacle);
     void updateGraphics();
 
 private:
@@ -31,6 +33,7 @@ private:
     QMap<int, GCheckpoint*> localCheckpoint;
     QMap<int, GObstacle*> localObstacles;
     //QMap<QString, PlayerGraphics*> localPlayers;
+
 };
 
 #endif // GENGINE_H

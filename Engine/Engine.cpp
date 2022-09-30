@@ -17,11 +17,15 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_players = new QMap<QString, Player*>;
     this->_controls = new QMap<QString, Control*>;
 
-    Checkpoint *tempCp = new Checkpoint;
+    tempCp = new Checkpoint;
     tempCp->setId(100);
     tempCp->setX(200);
     tempCp->setY(20);
     this->g_engine.addCheckpoint(tempCp);
+
+
+    this->control_th();
+
     this->g_engine.show();
 
 }
@@ -36,6 +40,11 @@ void Engine::envoiGameInfo()
 void Engine::control_th()
 {
     QTimer::singleShot(1000, this, &Engine::control_th);
+
+    qDebug() << "control_th";
+
+    this->tempCp->setX(this->tempCp->getX()+1);
+    this->g_engine.updateCheckpoint(tempCp);
 
     // traitement
     foreach(Control *control, this->_controls->values()) {
