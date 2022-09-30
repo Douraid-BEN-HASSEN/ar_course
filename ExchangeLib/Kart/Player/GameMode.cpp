@@ -1,9 +1,25 @@
 ﻿#include "GameMode.h"
 
+GameMode *GameMode::getInstance() {
+    static GameMode *instance;
+
+    if (instance == nullptr) {
+        instance = new GameMode();
+
+        MqttService::instance()->subscribe(instance->topic);
+
+        /* -- connect -- */
+        /* todo implmente an interface and methode to connect */
+        connect(MqttService::instance(), &MqttService::message, instance, &GameMode::receivedMessage);
+    }
+
+    return instance;
+}
+
 // constructor
 GameMode::GameMode(QObject *parent): QObject{parent}
 {
-    this->_players = new QList<Player*>();
+    this->_players = new QMap<QString, Player*>();
     this->_items = new QList<Item*>();
 }
 
@@ -13,12 +29,16 @@ GameMode::~GameMode() {
     delete this->_items;
 }
 
+void GameMode::publish() {
+    MqttService::instance()->publish(GameMode::topic, this->serialize().toUtf8());
+}
+
 //  +-------+
 //  | UTILS |
 //  +-------+
 void GameMode::deserialize(const QJsonObject &jsonObject)
 {
-    this->_players = new QList<Player*>();
+    this->_players = new QMap<QString, Player*>();
     this->_items = new QList<Item*>();
 
     QJsonArray jsonPlayers = jsonObject["players"].toArray();
@@ -27,7 +47,7 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
         QJsonObject playerJsonObject = value.toObject();
         Player *player = new Player();
         player->deserialize(playerJsonObject);
-        this->_players->append(player);
+        this->_players->insert(player->getUuid(), player);
     }
 
     QJsonArray jsonItems = jsonObject["items"].toArray();
@@ -42,6 +62,8 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
     this->_elapsedTime = jsonObject["elapsedTime"].toInt();
     this->_infoMessage = jsonObject["infoMessage"].toString();
     this->_status = jsonObject["status"].toString();
+
+    emit updated();
 }
 
 QString GameMode::serialize()
@@ -72,6 +94,12 @@ QJsonObject GameMode::toJson()
     jsonObject["status"] = this->_status;
 
     return jsonObject;
+}
+
+void GameMode::receivedMessage(QJsonObject message, QString topic) {
+    if (topic == GameMode::topic) {
+        this->deserialize(message);
+    }
 }
 
 //  +--------+
@@ -108,12 +136,4 @@ QString GameMode::getInfoMessage()
 QString GameMode::getStatus()
 {
     return this->_status;
-}
-
-//  +------+
-//  | SLOT |
-//  +------+
-void GameMode::message(QJsonObject pMessage, QString pTopic)
-{
-    if (pTopic == "/map") this->deserialize(pMessage);
 }

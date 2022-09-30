@@ -29,9 +29,12 @@ class MAP_EXPORT Map : public QObject
 {
     Q_OBJECT
 public:
-    static Map *instance();
+    static Map *getInstance();
 
-    const QString topic = "/map";
+    // constructor
+    explicit Map(QObject *parent = nullptr);
+
+    const QString topic = "map";
 
     // === UTILS ===
     void deserialize(const QJsonObject &);
@@ -39,6 +42,8 @@ public:
     // méthode pour transformer l'objet en QString
     QString serialize();
     QJsonObject toJson();
+
+    void publish();
 
     // === SETTER ===
     void setMapWidth(float pMapWidth);
@@ -56,12 +61,11 @@ public:
     QMap<int, Obstacle*>* getObstacles();
 
 private:
+
     float _mapWidth;
     float _mapHeight;
 
 protected:
-    // constructor
-    explicit Map(QObject *parent = nullptr);
     // destructor
     ~Map();
 
@@ -72,7 +76,7 @@ private slots:
     void receivedMessage(QJsonObject message, QString topic);
 
 public: signals:
-    void mapUpadeted();
+    void updated();
 
 };
 #endif // MAP_H
