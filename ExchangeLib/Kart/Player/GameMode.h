@@ -12,16 +12,16 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-#include "Player.h"
-#include "Item.h"
 #include <Kart/Map/Map.h>
 #include <Mqtt/MqttService.h>
 #include <Kart/Game/Properties.h>
 #include <Kart/Game/Control.h>
-#include <QTimer>
 #include <Kart/Game/Vehicle.h>
 
+#include <QTimer>
 
+#include "Player.h"
+#include "Item.h"
 
 class GAMEMODE_EXPORT GameMode: public QObject
 {
