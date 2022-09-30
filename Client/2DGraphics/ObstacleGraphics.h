@@ -13,6 +13,11 @@ class ObstacleGraphics : public QGraphicsObject
 public:
     ObstacleGraphics(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
     ObstacleGraphics(Obstacle *, QGraphicsItem *parent = nullptr);
+
+    static qreal heigth;
+    static qreal width;
+    static qreal radius;
+
     qreal getId() ;
     qreal getX();
     qreal getY();
@@ -22,14 +27,13 @@ public:
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+
 private:
     qreal id;
     qreal x;
     qreal y;
     // Récupérer depuis /game/properties
-    qreal heigth = 100;
-    qreal width = 100;
-    qreal radius = 50;
+
 };
 
 #endif // OBSTACLEGRAPH_H

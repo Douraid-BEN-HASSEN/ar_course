@@ -32,17 +32,18 @@ void PlayerUi::buttonPlayPressed()
 void PlayerUi::onRunFind(QByteArray datas)
 {
     this->props->deserialize(QJsonDocument::fromJson(datas).object());
-    this->nbBanana = props->banana ;
-    this->nbBomb = props->bomb ;
-    this->nbRocket = props->rocket;
-    this->nbTurn = props->laps ;
-    this->nbTeam = props->team ;
+    this->nbBanana = props->getBanana() ;
+    this->nbBomb = props->getBomb() ;
+    this->nbRocket = props->getRocket();
+    this->nbTurn = props->getLaps() ;
+    this->nbTeam = props->getTeam() ;
     for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
         qDebug()  << vehicle ;
         this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
+
     }
     delete this->loadingLayout ;
-    qDeleteAll(this->children());
+    qDeleteAll(this->gameLayout);
     this->setLayout(this->registerLayout);
     this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
     this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
@@ -88,7 +89,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->nbRocket = 0 ;
     this->resize(500 , 300);
     this->uuid = QUuid::createUuid().toString();
-    this->props = new Properties;
+    this->props = Properties::getInstance();
 
     //Graphic content for loading page
     this->loadingLayout = new QHBoxLayout ;

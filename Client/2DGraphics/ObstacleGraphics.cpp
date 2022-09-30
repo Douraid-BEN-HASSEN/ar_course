@@ -2,9 +2,11 @@
 
 #include <QBrush>
 
+qreal ObstacleGraphics::heigth = 100;
+qreal ObstacleGraphics::width = 100;
+qreal ObstacleGraphics::radius = 50;
 
-
-ObstacleGraphics::ObstacleGraphics(Obstacle *obstacle, QGraphicsItem *parent):QGraphicsObject(parent)
+ObstacleGraphics::ObstacleGraphics(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject(parent)
 {
     this->id = obstacle->getId();
     this->x = obstacle->getX();

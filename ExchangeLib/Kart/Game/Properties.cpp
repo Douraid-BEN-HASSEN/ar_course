@@ -1,9 +1,25 @@
 #include "Properties.h"
 
-Properties::Properties(QObject *parent) : QObject{parent}
-{
-    MqttService::instance()->subscribe(Properties::topic);
+Properties *Properties::getInstance() {
+    static Properties *instance;
 
+    if (instance == nullptr) {
+        instance = new Properties();
+
+        MqttService::instance()->subscribe(instance->topic);
+
+        /* -- connect -- */
+        /* todo implmente an interface and methode to connect */
+        connect(MqttService::instance(), &MqttService::message, instance, &Properties::receivedMessage);
+    }
+
+    return instance;
+}
+
+Properties::Properties(QObject *parent) : QObject{parent} {}
+
+void Properties::publish() {
+    MqttService::instance()->publish(Properties::topic, this->serialize().toUtf8());
 }
 
 void Properties::receivedMessage(QJsonObject message, QString topic) {
@@ -43,7 +59,7 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
         Vehicle *vehicle = vehicleOptions->value(key);
 
         if (!vehicle) {
-            vehicle = new Vehicle();
+            vehicle = new Vehicle("car");
         }
 
         QJsonObject vehicleJO = vehicleOptionsJO[key].toObject();
@@ -52,6 +68,8 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
         this->vehicleOptions->insert(key , vehicle);
 
     }
+
+    emit updated();
 }
 
 QJsonObject Properties::toJson() {
@@ -96,4 +114,162 @@ QJsonObject Properties::toJson() {
 QString Properties::serialize() {
     QJsonDocument doc(this->toJson());
     return QString(doc.toJson(QJsonDocument::Compact));
+}
+
+
+/**
+ * |-------------------|
+ * | getter and setter |
+ * |-------------------|
+ */
+int Properties::getLaps() const {
+    return laps;
+}
+
+void Properties::setLaps(int laps) {
+    this->laps = laps;
+}
+
+int Properties::getTeam() const {
+    return team;
+}
+
+void Properties::setTeam(int team) {
+    this->team = team;
+}
+
+int Properties::getBanana() const {
+    return banana;
+}
+
+void Properties::setBanana(int banana) {
+    this->banana = banana;
+}
+
+int Properties::getBananaCooldown() const {
+    return bananaCooldown;
+}
+
+void Properties::setBananaCooldown(int bananaCooldown) {
+    this->bananaCooldown = bananaCooldown;
+}
+
+int Properties::getBananaTtl() const {
+    return bananaTTL;
+}
+
+void Properties::setBananaTtl(int bananaTtl) {
+    bananaTTL = bananaTtl;
+}
+
+int Properties::getBananaRadius() const {
+    return bananaRadius;
+}
+
+void Properties::setBananaRadius(int bananaRadius) {
+    this->bananaRadius = bananaRadius;
+}
+
+int Properties::getBomb() const {
+    return bomb;
+}
+
+void Properties::setBomb(int bomb) {
+    this->bomb = bomb;
+}
+
+int Properties::getBombCooldown() const {
+    return bombCooldown;
+}
+
+void Properties::setBombCooldown(int bombCooldown) {
+    this->bombCooldown = bombCooldown;
+}
+
+int Properties::getBombTtl() const {
+    return bombTTL;
+}
+
+void Properties::setBombTtl(int bombTtl) {
+    bombTTL = bombTtl;
+}
+
+int Properties::getBombRadius() const {
+    return bombRadius;
+}
+
+void Properties::setBombRadius(int bombRadius) {
+    this->bombRadius = bombRadius;
+}
+
+int Properties::getBombExplosionRadius() const {
+    return bombExplosionRadius;
+}
+
+void Properties::setBombExplosionRadius(int bombExplosionRadius) {
+    this->bombExplosionRadius = bombExplosionRadius;
+}
+
+int Properties::getRocket() const {
+    return rocket;
+}
+
+void Properties::setRocket(int rocket) {
+    this->rocket = rocket;
+}
+
+int Properties::getRocketCooldown() const {
+    return rocketCooldown;
+}
+
+void Properties::setRocketCooldown(int rocketCooldown) {
+    this->rocketCooldown = rocketCooldown;
+}
+
+float Properties::getRocketSpeed() const {
+    return rocketSpeed;
+}
+
+void Properties::setRocketSpeed(float rocketSpeed) {
+    this->rocketSpeed = rocketSpeed;
+}
+
+int Properties::getRocketRadius() const {
+    return rocketRadius;
+}
+
+void Properties::setRocketRadius(int rocketRadius) {
+    this->rocketRadius = rocketRadius;
+}
+
+int Properties::getCircleRadius() const {
+    return circleRadius;
+}
+
+void Properties::setCircleRadius(int circleRadius) {
+    this->circleRadius = circleRadius;
+}
+
+int Properties::getRectangleWidth() const {
+    return rectangleWidth;
+}
+
+void Properties::setRectangleWidth(int rectangleWidth) {
+    this->rectangleWidth = rectangleWidth;
+}
+
+int Properties::getRectangleHeight() const {
+    return rectangleHeight;
+}
+
+void Properties::setRectangleHeight(int rectangleHeight) {
+    this->rectangleHeight = rectangleHeight;
+}
+
+int Properties::getCheckpointRadius() const {
+    return checkpointRadius;
+}
+
+void Properties::setCheckpointRadius(int checkpointRadius) {
+    this->checkpointRadius = checkpointRadius;
 }

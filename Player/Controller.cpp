@@ -1,17 +1,7 @@
 #include "Controller.h"
 #include <QtMath>
 
-Controller::Controller(QObject *parent): QObject{parent}
-{
-    this->_properties = new Properties();
-    //Connect
-
-}
-
-Properties* Controller::getProperties()
-{
-    return this->_properties;
-}
+Controller::Controller(QObject *parent): QObject{parent} {}
 
 void Controller::handleKeyEvent(QString uuid , QKeyEvent *key ,  int *power, float *angle, int *nbBananas, int *nbBomb, int *nbRocket)
 {

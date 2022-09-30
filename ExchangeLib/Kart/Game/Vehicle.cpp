@@ -4,19 +4,36 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
-Vehicle::Vehicle(QObject *parent): QObject{parent}
-{
-}
-
 Vehicle::Vehicle(int maxSpeed, float acceleration, int weight, float steeringAngle , QString type, QObject *parent): QObject{parent}
 {
     this->maxSpeed = maxSpeed;
     this->acceleration = acceleration ;
     this->weight = weight ;
     this->steeringAngle = steeringAngle ;
-    this->type = type ;
+    this->type = type;
 }
 
+Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
+{
+    this->type = type;
+
+    if(this->type == "bike") {
+        this->maxSpeed = 300;
+        this->acceleration = 10;
+        this->weight = 0.2;
+        this->steeringAngle = -1;
+    } else if(this->type == "car") {
+        this->maxSpeed = 300;
+        this->acceleration = 10;
+        this->weight = 1.5;
+        this->steeringAngle = -1;
+    } else if(this->type == "truck") {
+        this->maxSpeed = 300;
+        this->acceleration = 10;
+        this->weight = 38;
+        this->steeringAngle = -1;
+    }
+}
 
 QString Vehicle::toString() {
     return QString("%1 | MS : %2 | A : %3 | W : %4 | SA : %5").arg(
@@ -52,6 +69,36 @@ QJsonObject Vehicle::toJson() {
     jObject["height"] = this->height;
 
     return jObject;
+}
+
+float Vehicle::getMaxSpeed()
+{
+    return this->maxSpeed;
+}
+
+float Vehicle::getAcceleration()
+{
+    return this->acceleration;
+}
+
+float Vehicle::getWeight()
+{
+    return this->weight;
+}
+
+float Vehicle::getSteeringAngle()
+{
+    return this->steeringAngle;
+}
+
+int Vehicle::getWidth()
+{
+    return this->width;
+}
+
+int Vehicle::getHeight()
+{
+    return this->height;
 }
 
 

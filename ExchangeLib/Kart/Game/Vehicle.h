@@ -15,15 +15,15 @@ class VEHICLE_EXPORT Vehicle : public QObject
 public:
     explicit Vehicle(QObject *parent = nullptr);
     Vehicle(int maxSpeed, float acceleration , int weight , float steeringAngle , QString type, QObject *parent = nullptr);
+    Vehicle(QString type, QObject *parent = nullptr);
 
-    int maxSpeed = 0;
-    float acceleration = 0.0f;
-    int weight = 0.0f;
-    float steeringAngle = 0.0f;
-    int width = 0;
-    int height = 0;
-
-    QString type = "";
+    // === GETTER ===
+    float getMaxSpeed();
+    float getAcceleration();
+    float getWeight();
+    float getSteeringAngle();
+    int getWidth();
+    int getHeight();
 
     QString toString();
 
@@ -33,6 +33,16 @@ public:
 
     void setType(QString type);
     QString getType() ;
+
+private:
+    int maxSpeed = 0;
+    float acceleration = 0.0f;
+    int weight = 0.0f;
+    float steeringAngle = 0.0f;
+    int width = 0;
+    int height = 0;
+
+    QString type;
 
 signals:
 

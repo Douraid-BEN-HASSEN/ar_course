@@ -4,9 +4,12 @@
 #include <QHBoxLayout>
 #include "ObstacleGraphics.h"
 #include "CheckpointGraphics.h"
-#include "Kart/Map/Map.h"
 
-#include "Mqtt/MqttService.h"
+#include <Kart/Map/Map.h>
+#include <Kart/Game/Properties.h>
+#include <Kart/Player/GameMode.h>
+
+#include <Mqtt/MqttService.h>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -21,8 +24,9 @@ Widget::Widget(QWidget *parent)
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
     // Pour finir sur this = Widget apperler updateMap
-    connect(Map::instance(), SIGNAL(mapUpadeted()), this, SLOT(updateMap()));
-
+    connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
+    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
+    connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode()));
 }
 
 Widget::~Widget()
@@ -30,55 +34,41 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::updateMap(){
+void Widget::updateMap() {
 
+    qDebug() << "map";
     //new QMap<int, Obstacle*>();
     // Faire une boucle sur tous les obstacles
     // Sur chaque obstacle on va devoir le créer + le placer
 
-
-    for (auto * iterObstacle : Map::instance()->getObstacles()->values()) {
+    for (Obstacle *iterObstacle : Map::getInstance()->getObstacles()->values()) {
         // Verifier si l object ObstacleRect* obstaclerect  exist
 
-        // Rentrer dands le if si sa existe
-        if(localObstacles.value(iterObstacle->getId())){
-            localObstacles.value(iterObstacle->getId())->setPos(iterObstacle->getX(),iterObstacle->getY());
-        } else {
-            ObstacleGraphics* obstaclegraph = new ObstacleGraphics(iterObstacle);
-            mScene->addItem(obstaclegraph);
-            obstaclegraph->setPos(iterObstacle->getX(), iterObstacle->getY());
-            localObstacles.insert(obstaclegraph->getId(),obstaclegraph);
+        ObstacleGraphics *obstacleGraphics = localObstacles.value(iterObstacle->getId());
+
+        if (!obstacleGraphics) {
+            obstacleGraphics = new ObstacleGraphics(iterObstacle);
+            mScene->addItem(obstacleGraphics);
+            localObstacles.insert(obstacleGraphics->getId(), obstacleGraphics);
         }
 
-        /*
-        if(localObstacles.empty()){
-            ObstacleGraphics* obstaclegraph = new ObstacleGraphics(iter);
-            mScene->addItem(obstaclegraph);
-            obstaclegraph->setPos(iter->getX(), iter->getY());
-            localObstacles.insert(iter->getId(),iter);
-        } else {
-            localObstacles.value(1);
-              for (auto * iterlocal : localObstacles) {
-                  iterlocal->getId();
-              }
-        } */
+        obstacleGraphics->setPos(iterObstacle->getX(),iterObstacle->getY());
     }
 
 
-    for (auto * iterCheckout : Map::instance()->getCheckpoints()->values()) {
-        if(localCheckpoint.value(iterCheckout->getId())){
-            qDebug() <<  "le checkpoint existe donc je dois vérifier la position";
-            localCheckpoint.value(iterCheckout->getId())->setPos(iterCheckout->getX(),iterCheckout->getY());
-        } else {
-            CheckpointGraphics* checkpointgraph = new CheckpointGraphics(iterCheckout);
-            mScene->addItem(checkpointgraph);
-            checkpointgraph->setPos(iterCheckout->getX(), iterCheckout->getY());
-            localCheckpoint.insert(checkpointgraph->getId(), checkpointgraph);
+    for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+
+        CheckpointGraphics *checkpointGraphics = localCheckpoint.value(iterCheckpoint->getId());
+
+        if (!checkpointGraphics) {
+            checkpointGraphics = new CheckpointGraphics(iterCheckpoint);
+            checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
+
+            mScene->addItem(checkpointGraphics);
+            localCheckpoint.insert(checkpointGraphics->getId(), checkpointGraphics);
         }
-         //Verifier si l object Checkpointgraph* obstaclerect  existe
-        //CheckpointGraphics* checkpointgraph = new CheckpointGraphics(iter);
-        //mScene->addItem(checkpointgraph);
-        //checkpointgraph->setPos(iter->getX(), iter->getY());
+
+        checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
 
 
@@ -86,10 +76,31 @@ void Widget::updateMap(){
     layout->addWidget(mView);
     setLayout(layout);
 
-
     qDebug() << "Topic recu = " << MqttService::instance();
-    qDebug() << "Topic width = " << Map::instance()->getMapWidth();
-    qDebug() << "Topic recu = " << Map::instance()->getMapHeight();
+    qDebug() << "Topic width = " << Map::getInstance()->getMapWidth();
+    qDebug() << "Topic recu = " << Map::getInstance()->getMapHeight();
 
 }
 
+void Widget::updateProperties() {
+    ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
+    ObstacleGraphics::width = Properties::getInstance()->getRectangleWidth();
+    ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
+}
+
+void Widget::updateGameMode() {
+
+    for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
+        PlayerGraphics *playerGraphics = localPlayers.value(iterPlayer->getUuid());
+
+        if (!playerGraphics) {
+            playerGraphics = new PlayerGraphics(iterPlayer);
+            playerGraphics->setPos(playerGraphics->getX(), playerGraphics->getY());
+
+            mScene->addItem(playerGraphics);
+            localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
+        }
+
+        playerGraphics->setPos(playerGraphics->getX(), playerGraphics->getY());
+    }
+}

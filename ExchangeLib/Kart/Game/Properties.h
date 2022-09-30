@@ -21,9 +21,20 @@
 class PROPERTIES_EXPORT Properties : public QObject {
     Q_OBJECT
 public:
+    static Properties *getInstance();
     explicit Properties(QObject *parent = nullptr);
 
-    const QString topic = "/game/properties";
+    const QString topic = "game/properties";
+
+    QMap<QString, Vehicle *> *vehicleOptions = new QMap<QString, Vehicle *>;
+
+    void publish();
+
+    void deserialize(const QJsonObject &);
+    QString serialize();
+    QJsonObject toJson();
+
+private:
 
     int laps = 0;
     int team = 0;
@@ -49,16 +60,70 @@ public:
     int rectangleHeight = 0;
     int checkpointRadius = 0;
 
-    QMap<QString, Vehicle *> *vehicleOptions = new QMap<QString, Vehicle *>;
+public:
+    int getLaps() const;
+    void setLaps(int laps);
 
-    void deserialize(const QJsonObject &);
-    QString serialize();
-    QJsonObject toJson();
+    int getTeam() const;
+    void setTeam(int team);
 
-signals:
+    int getBanana() const;
+    void setBanana(int banana);
+
+    int getBananaCooldown() const;
+    void setBananaCooldown(int bananaCooldown);
+
+    int getBananaTtl() const;
+    void setBananaTtl(int bananaTtl);
+
+    int getBananaRadius() const;
+    void setBananaRadius(int bananaRadius);
+
+    int getBomb() const;
+    void setBomb(int bomb);
+
+    int getBombCooldown() const;
+    void setBombCooldown(int bombCooldown);
+
+    int getBombTtl() const;
+    void setBombTtl(int bombTtl);
+
+    int getBombRadius() const;
+    void setBombRadius(int bombRadius);
+
+    int getBombExplosionRadius() const;
+    void setBombExplosionRadius(int bombExplosionRadius);
+
+    int getRocket() const;
+    void setRocket(int rocket);
+
+    int getRocketCooldown() const;
+    void setRocketCooldown(int rocketCooldown);
+
+    float getRocketSpeed() const;
+    void setRocketSpeed(float rocketSpeed);
+
+    int getRocketRadius() const;
+    void setRocketRadius(int rocketRadius);
+
+    int getCircleRadius() const;
+    void setCircleRadius(int circleRadius);
+
+    int getRectangleWidth() const;
+    void setRectangleWidth(int rectangleWidth);
+
+    int getRectangleHeight() const;
+    void setRectangleHeight(int rectangleHeight);
+
+    int getCheckpointRadius() const;
+    void setCheckpointRadius(int checkpointRadius);
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
+
+public: signals:
+    void updated();
+
 };
 
 #endif // PROPERTIES_H

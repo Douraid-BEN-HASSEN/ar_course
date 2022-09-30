@@ -51,12 +51,13 @@ void MqttService::stateChange() {
 }
 
 bool MqttService::subscribe(QString topic) {
-    qDebug( ) << "Dans MqttService : subscribe" ;
 
     if (client->state() != QMqttClient::Connected) {
         subscribesWait->append(topic);
         return true;
     }
+
+    qDebug() << QString("MqttService : subscribe to topic : %1").arg(topic);
 
     subscribes->append(client->subscribe(topic));
 
@@ -77,6 +78,8 @@ void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicNam
 
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
+
+    qDebug() << QString("Topic %1 : %2").arg(topic.name(), "message");
 
     emit this->message(jsonObject, topic.name());
 }
