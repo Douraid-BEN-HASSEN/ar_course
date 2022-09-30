@@ -52,6 +52,16 @@ void PlayerUi::onRunFind(QByteArray datas)
     this->updateLabel();
 }
 
+void PlayerUi::onExitRun()
+{
+    this->stackedWidget->setCurrentIndex(0);
+}
+
+void PlayerUi::onCloseGame()
+{
+    this->close();
+}
+
 
 //On action, make message for mqtt
 void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
@@ -79,8 +89,6 @@ void PlayerUi::connectToMqtt()
 PlayerUi::PlayerUi(QWidget *parent)
     : QWidget(parent)
 {
-    _controller = new Controller;
-
     //Init parameters
     this->angle = 180 ;
     this->power = 0 ;
@@ -91,12 +99,17 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->uuid = QUuid::createUuid().toString();
     this->props = Properties::getInstance();
 
+    qDebug() << "before" ;
+    _controller = new Controller ;
+    qDebug() << "after" ;
+
     //Graphic content for loading page
-    this->loadingLayout = new QHBoxLayout ;
+    this->loadingLayout = new QVBoxLayout ;
 
     this->labelLoading = new QLabel("<h1> Trying to find a ride... </h1> ");
+    this->buttonClose = new QPushButton("Close game");
     this->loadingLayout->addWidget(labelLoading);
-
+    this->loadingLayout->addWidget(buttonClose);
     //Graphic content for the game
     this->gameLayout = new QVBoxLayout ;
 
@@ -126,10 +139,15 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->horizontalLayout_8->addWidget(this->labelPower);
     this->horizontalLayout_8->addWidget(this->labelAngle);
 
+    this->horizontalLayout_10 = new QHBoxLayout ;
+    this->buttonExit = new QPushButton("EXIT THE GAME");
+    this->horizontalLayout_10->addWidget(this->buttonExit);
+
     this->gameLayout->addLayout(this->horizontalLayout_5);
     this->gameLayout->addLayout(this->horizontalLayout_6);
     this->gameLayout->addLayout(this->horizontalLayout_7);
     this->gameLayout->addLayout(this->horizontalLayout_8);
+    this->gameLayout->addLayout(this->horizontalLayout_10);
 
 
 
@@ -154,11 +172,11 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->horizontalLayout_2 = new QHBoxLayout ;
     this->labelController = new QLabel("<h3> Controller : </h3>");
     this->comboBoxController = new QComboBox ;
-    this->comboBoxController->addItem("ia");
+    //this->comboBoxController->addItem("ia");
     this->comboBoxController->addItem("keyboard");
-    this->comboBoxController->addItem("controller");
-    this->comboBoxController->addItem("vr");
-    this->comboBoxController->addItem("phone");
+    //this->comboBoxController->addItem("controller");
+    //this->comboBoxController->addItem("vr");
+    //this->comboBoxController->addItem("phone");
     this->horizontalLayout_2->addWidget(this->labelController);
     this->horizontalLayout_2->addWidget(this->comboBoxController);
 
@@ -204,10 +222,11 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->setLayout(mainLayout);
 
     //Connect
+    this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
+    this->connect(this->buttonExit , SIGNAL(clicked()) , this , SLOT(onExitRun()));
     this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind(QByteArray)) );
     this->connectToMqtt();
-
 }
 
 

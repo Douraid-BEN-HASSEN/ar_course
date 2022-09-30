@@ -12,28 +12,51 @@ Controller::Controller(QObject *parent): QObject{parent}
     //Connect
 
     connect(gamepad, &QGamepad::buttonL1Changed, this, [](bool pressed){
-        qDebug() << "turn left" << pressed;
+        if (pressed == true) {
+            qDebug() << "turn left" << pressed;
+        }
     });
     connect(gamepad, &QGamepad::buttonR1Changed, this, [](bool pressed){
-        qDebug() << "turn right" << pressed;
+        if (pressed == true) {
+            qDebug() << "turn right" << pressed;
+        }
     });
+
     connect(gamepad, &QGamepad::buttonL2Changed, this, [](double value){
-        qDebug() << " speed - " << value;
+        if (value > 0.0) {
+            qDebug() << " speed - " << value;
+
+        }
     });
     connect(gamepad, &QGamepad::buttonR2Changed, this, [](double value){
-        qDebug() << "speed +" << value;
+        if (value > 0.0) {
+            qDebug() << "speed +" << value;
+
+        }
     });
+
     connect(gamepad, &QGamepad::buttonAChanged, this, [](bool pressed){
-        qDebug() << "key action 1" << pressed;
+        if (pressed == true) {
+            qDebug() << "key action 1" << pressed;
+
+        }
     });
     connect(gamepad, &QGamepad::buttonBChanged, this, [](bool pressed){
-        qDebug() << "key action 2" << pressed;
+        if (pressed == true) {
+            qDebug() << "key action 2" << pressed;
+
+        }
     });
     connect(gamepad, &QGamepad::buttonXChanged, this, [](bool pressed){
-        qDebug() << "key action 3" << pressed;
+        if (pressed == true) {
+            qDebug() << "key action 3" << pressed;
+        }
     });
     connect(gamepad, &QGamepad::buttonYChanged, this, [](bool pressed){
-        qDebug() << "key action 4" << pressed;
+        if (pressed == true) {
+            qDebug() << "key action 4" << pressed;
+
+        }
     });
 
 }
@@ -134,7 +157,7 @@ void Controller::sendMessageRegister(QString uuid, QString pseudo, QString contr
     QJsonDocument doc(messageJsonObject);
     QString strJson(doc.toJson(QJsonDocument::Compact));
 
-    MqttService::instance()->publish("/player/register" , strJson);
+    MqttService::instance()->publish("player/register" , strJson);
 }
 
 void Controller::sendMessageControl(QString uuid, int angle, int power, int keyAction)
@@ -152,7 +175,7 @@ void Controller::sendMessageControl(QString uuid, int angle, int power, int keyA
     QJsonDocument doc(messageJsonObject);
     QString strJson(doc.toJson(QJsonDocument::Compact));
 
-    MqttService::instance()->publish("/player/control" , strJson);
+    MqttService::instance()->publish("player/control" , strJson);
 }
 
 
