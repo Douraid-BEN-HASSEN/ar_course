@@ -14,7 +14,7 @@
 #include <QSpinBox>
 #include <QImage>
 #include <QVBoxLayout>
-
+#include <QStackedWidget>
 #include <Mqtt/MqttService.h>
 #include <Kart/Game/Properties.h>
 
@@ -28,6 +28,7 @@ private :
 
     Controller *_controller;
 
+    QStackedWidget * stackedWidget;
     QString uuid ;
     float angle ;
     int power ;
