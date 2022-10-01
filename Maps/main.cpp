@@ -11,7 +11,6 @@ void publish_th() {
     QTimer::singleShot(1000, publish_th);
     QString result = MapAruco::instance()->serialize();
     MqttService::instance()->publish(topicMap, result);
-    qDebug() << "ici";
 }
 
 int main(int argc, char *argv[])
