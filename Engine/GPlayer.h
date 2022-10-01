@@ -19,6 +19,8 @@ public:
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     Player* getPlayer();
+    QString className();
+
 private:
     QString uuid;
     qreal x;

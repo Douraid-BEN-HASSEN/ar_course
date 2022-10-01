@@ -13,6 +13,11 @@ Player* GPlayer::getPlayer()
     return _player;
 }
 
+QString GPlayer::className()
+{
+    return "className";
+}
+
 QString GPlayer::getUuid()
 {
     return uuid;

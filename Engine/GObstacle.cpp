@@ -8,6 +8,7 @@ qreal GObstacle::radius = 50;
 
 GObstacle::GObstacle(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject(parent)
 {
+    this->obstacle = obstacle;
     this->id = obstacle->getId();
     this->x = obstacle->getX();
     this->y = obstacle->getY();
@@ -52,8 +53,6 @@ QRectF GObstacle::boundingRect() const
     } else {
         return QRectF(-this->heigth/2, -this->width/2,this->radius*2,this->radius*2);
     }
-
-
 }
 
 void GObstacle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -69,4 +68,9 @@ void GObstacle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setPen(Qt::black);
     painter->drawText(0,0,QString::number(this->getId()));
 
+}
+
+Obstacle *GObstacle::getObstacle()
+{
+    return this->obstacle;
 }

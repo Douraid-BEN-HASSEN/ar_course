@@ -230,7 +230,7 @@ QString Player::getController()
 
 void Player::update(Control *control)
 {
-    qDebug() << this->getX() << " " << this->getY() << " " << this->getAngle() << " " << control->getAngle() << " " << control->getPower();
+    //qDebug() << this->getX() << " " << this->getY() << " " << this->getAngle() << " " << control->getAngle() << " " << control->getPower();
     /*this->_angle += control->getAngle()/10;
     this->_x += control->getPower() * cos(this->_angle);
     this->_y += -control->getPower() * sin(this->_angle);*/

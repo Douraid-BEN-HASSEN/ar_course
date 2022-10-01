@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QHBoxLayout>
+#include <typeinfo>
 
 #include "GCheckpoint.h"
 #include "GObstacle.h"
@@ -27,8 +28,8 @@ public:
     void updateCheckpoint(Checkpoint* pCheckpoint);
     void updateObstacle(Obstacle* pObstacle);
     void updatePlayer(Player* pPlayer);
-    void updateGraphics();
-    QList<QGraphicsItem*> collision(QGraphicsItem* pGItem);
+
+    QList<QGraphicsItem*> collision(Player* pPlayer);
 
 private:
     // liste checkpoints
