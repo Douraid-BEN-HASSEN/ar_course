@@ -20,6 +20,7 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
 {
     bool success = false;
     std::vector< std::vector< cv::Point2f > > corners, rejected;
+    std::vector<cv::Point2f> cornerCenter;
     std::vector< std::vector< cv::Point2f > > corners_final, rejected_final;
     std::vector< cv::Vec3d > rvecs_final, tvecs_final;
     cv::Mat imageCopy,circuit,idimage;
@@ -55,7 +56,12 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
 
         // gestion limite map
         for (std::vector<std::vector< cv::Point2f >>::iterator nCorner = corners.begin(); nCorner != corners.end(); nCorner++) {
+            int centerX = 0;
+            int centerY = 0;
             for (std::vector< cv::Point2f >::iterator nPoint = nCorner->begin(); nPoint != nCorner->end(); nPoint++) {
+                centerX += nPoint->x;
+                centerY += nPoint->y;
+
                 if(ids[itId] < 10) {
                     // utile pour le calcul de maxHeight & maxWidth
                     if(nPoint->x < topleft.x) topleft.x = nPoint->x;
@@ -71,6 +77,10 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
                     if(nPoint->y < bottomRight.y) bottomRight.y = nPoint->y;
                 }
             }
+
+            centerX = centerX / 4;
+            centerY = centerY / 4;
+            cornerCenter.push_back(cv::Point2f(centerX, centerY));
             itId++;
         }
 
@@ -92,6 +102,16 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
                 }
             }
 
+            // calcul angle
+            QPoint v1 = QPoint(topRight.x - cornerCenter[itId].x, topRight.y - cornerCenter[itId].y);
+            QPoint v2 = QPoint(itemPos.x - cornerCenter[itId].x, itemPos.y - cornerCenter[itId].y);
+            float num = (v1.x() * v2.x()) + (v1 .y() * v2.y());
+            float den = sqrt(v1.x()*v1.x() + v1.y()*v1.y()) * sqrt(v2.x()*v2.x() + v2.y()*v2.y());
+            float angleRad = qAcos(num/den);
+            float angleDeg = angleRad * (180.0/3.141592653589793238463);
+
+            if(ids[itId] == 5) std::cout << angleDeg << std::endl;
+
             if((itemPos.x >= topleft.x && itemPos.x <= topRight.x) &&
                     (itemPos.y >= bottomLeft.y && itemPos.y <= topleft.y)) {
                 if(ids[itId] > 9 && ids[itId] < 200) {
@@ -108,7 +128,7 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
                     obstacle->setId(ids[itId]);
                     obstacle->setX(itemPos.x);
                     obstacle->setY(itemPos.y);
-                    obstacle->setAngle(0);
+                    obstacle->setAngle(int(angleDeg));
                     if(this->_obstacles->contains(obstacle->getId())) {
                         this->_obstacles->remove(obstacle->getId());
                         this->_obstacles->insert(obstacle->getId(), obstacle);
