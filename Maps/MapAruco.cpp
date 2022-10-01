@@ -1,10 +1,5 @@
 #include "MapAruco.h"
 
-MapAruco *MapAruco::instance() {
-    static MapAruco instance;
-    return &instance;
-}
-
 // constructor
 MapAruco::MapAruco(): Map{}
 {
@@ -14,6 +9,11 @@ MapAruco::MapAruco(): Map{}
 // destructor
 MapAruco::~MapAruco()
 {
+}
+
+MapAruco *MapAruco::instance() {
+    static MapAruco instance;
+    return &instance;
 }
 
 bool MapAruco::setMapInfo(cv::Mat &pImage)

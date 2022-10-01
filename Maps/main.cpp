@@ -2,13 +2,25 @@
 #include <Mqtt/MqttService.h>
 #include "MapAruco.h"
 #include <QDebug>
+#include <QTimer>
+
+void publish_th();
+const QString topicMap = "/map";
+
+void publish_th() {
+    QTimer::singleShot(1000, publish_th);
+    QString result = MapAruco::instance()->serialize();
+    MqttService::instance()->publish(topicMap, result);
+    qDebug() << "ici";
+}
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
+    MapAruco *mapAruco= MapAruco::instance();
     MqttService *mqtt = MqttService::instance();
-    MapAruco *map = MapAruco::instance();
+    publish_th();
 
     cv::VideoCapture inputVideo(4);
     cv::Mat image;
@@ -17,11 +29,7 @@ int main(int argc, char *argv[])
     {
         inputVideo.grab();
         inputVideo.retrieve(image);
-
-        map->setMapInfo(image);
-        QString result = map->serialize();
-        mqtt->publish("/map", result);
-
+        mapAruco->setMapInfo(image);
         cv::waitKey(1);
     }
 
