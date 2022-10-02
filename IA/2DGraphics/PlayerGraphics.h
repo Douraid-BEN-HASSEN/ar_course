@@ -14,6 +14,8 @@ class PlayerGraphics : public QGraphicsObject
     Q_OBJECT
 public:
     PlayerGraphics(Player *, QGraphicsItem *parent = nullptr);
+    void updatePlayer(Player *);
+
     QString getUuid();
     qreal getX();
     qreal getY();

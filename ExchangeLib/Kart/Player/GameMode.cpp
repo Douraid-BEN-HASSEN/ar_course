@@ -49,8 +49,12 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
 
     for(const QJsonValue &value: jsonPlayers) {
         QJsonObject playerJsonObject = value.toObject();
+        Player *player = this->_players->value(playerJsonObject["uuid"].toString());
 
-        Player *player = new Player();
+        if (!player) {
+            player = new Player();
+        }
+
         player->deserialize(playerJsonObject);
         this->_players->insert(player->getUuid(), player);
     }

@@ -11,6 +11,12 @@ PlayerGraphics::PlayerGraphics(Player *player, QGraphicsItem *parent): QGraphics
     this->_player = player;
 }
 
+void PlayerGraphics::updatePlayer(Player *player) {
+    this->_player = player;
+    this->setPos(player->getX(), player->getY());
+    this->setRotation(qRadiansToDegrees(-player->getAngle()));
+}
+
 Player* PlayerGraphics::getPlayer()
 {
     return _player;
@@ -34,16 +40,15 @@ qreal PlayerGraphics::getY()        //painter->drawEllipse(0,0,this->heigth, thi
 
 QRectF PlayerGraphics::boundingRect() const
 {
-    //this->_player->getVehicule()->
-    return QRectF(-50, -50,100.,100.);
+    return QRectF(-50, -50, 100., 100.);
 }
 
 void PlayerGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    painter->setBrush(Qt::red);
+    painter->drawRect(50, 0, 10, 10);
     painter->setBrush(Qt::yellow);
-   // painter->drawRect(-this->heigth/2, -this->width/2, this->heigth*2, this->width*2);
     painter->drawRect(boundingRect());
-    this->setRotation(this->_player->getAngle());
 
     painter->setPen(Qt::black);
     painter->drawText(0, 0, this->_player->getPseudo());

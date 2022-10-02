@@ -25,6 +25,7 @@ SOURCES += \
     Kart/Player/GameMode.cpp \
     Kart/Player/Item.cpp \
     Kart/Player/Player.cpp \
+    Kart/Player/Register.cpp \
     Mqtt/MqttService.cpp
 
 HEADERS += \
@@ -37,6 +38,7 @@ HEADERS += \
     Kart/Player/GameMode.h \
     Kart/Player/Item.h \
     Kart/Player/Player.h \
+    Kart/Player/Register.h \
     Mqtt/MqttService.h
 
 # Default rules for deployment.

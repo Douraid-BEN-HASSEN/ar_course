@@ -5,7 +5,7 @@ Window::Window(QWidget *parent): QMainWindow(parent), ui(new Ui::Window)
 {
     ui->setupUi(this);
     MapWidget *mapWidget = new MapWidget;
-    ui->verticalLayout_main->addWidget(mapWidget);
+    ui->verticalLayout_map->addWidget(mapWidget);
 }
 
 Window::~Window()

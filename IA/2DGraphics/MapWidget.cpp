@@ -95,7 +95,14 @@ void MapWidget::updateGameMode() {
             localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
         }
 
-        playerGraphics->setPos(iterPlayer->getX(), iterPlayer->getY());
+        qDebug() << QString("Angle : %1, X : %2, Y : %3").arg(
+                        QString::number(iterPlayer->getAngle()),
+                        QString::number(iterPlayer->getX()),
+                        QString::number(iterPlayer->getY())
+                        );
+
+        playerGraphics->updatePlayer(iterPlayer);
+//        playerGraphics->setPos(iterPlayer->getX(), iterPlayer->getY());
     }
 
 }

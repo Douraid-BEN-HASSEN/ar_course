@@ -1,5 +1,4 @@
 #include "window.h"
-#include "2DGraphics/MapWidget.h"
 
 #include <QApplication>
 
