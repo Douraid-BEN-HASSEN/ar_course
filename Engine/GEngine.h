@@ -5,9 +5,11 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <QtMqtt/QtMqtt>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QHBoxLayout>
+#include <typeinfo>
 
 #include "GCheckpoint.h"
 #include "GObstacle.h"
@@ -26,8 +28,8 @@ public:
     void updateCheckpoint(Checkpoint* pCheckpoint);
     void updateObstacle(Obstacle* pObstacle);
     void updatePlayer(Player* pPlayer);
-    void updateGraphics();
-    QList<QGraphicsItem*> collision(QGraphicsItem* pGItem);
+
+    QList<QGraphicsItem*> collision(Player* pPlayer);
 
 private:
     // liste checkpoints
@@ -37,6 +39,9 @@ private:
     QMap<int, GCheckpoint*> localCheckpoint;
     QMap<int, GObstacle*> localObstacles;
     QMap<QString, GPlayer*> localPlayers;
+
+protected:
+    void resizeEvent(QResizeEvent *event);
 
 };
 

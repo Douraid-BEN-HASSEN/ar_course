@@ -4,22 +4,29 @@
 
 //Catch event of key pressed
 void PlayerUi::keyPressEvent(QKeyEvent *key){
-    if (this->isGame == true ) {
-        this->_controller->handleKeyEvent(this->uuid ,  key, &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket);
+    qDebug() << "PlayerUi::keyPressEvent()";
+    if (this->isGame == true && this->controllerType == "keyboard" ) {
+        this->_controller->handleKeyEvent(key);
         this->updateLabel();
     }
-
 }
+
+void PlayerUi::keyReleaseEvent(QKeyEvent *key){
+    qDebug() << "PlayerUi::keyReleaseEvent()" ;
+}
+
 
 //Callback when start button is pressed
 void PlayerUi::buttonPlayPressed()
 {
+    qDebug() << "PlayerUi::buttonPlayPressed()" ;
     this->pseudo = this->lineEditPseudo->text();
     this->labelSelectionPseudo->setText("<h1> " + this->pseudo + " </h1> ");
     this->labelSelectionTeam->setText(" <h2> " + this->comboBoxTeam->currentText() + "</h2>");
     this->labelSelectionController->setText( " <h3> " + this->comboBoxController->currentText() + " </h3> ");
     this->labelSelectionVehicle->setText(" <h3> " + this->comboBoxVehicle->currentText() + " </h3> ");
-
+    this->controllerType = this->comboBoxController->currentText();
+    this->_controller->setControllerType(this->controllerType);
     if (this->lineEditPseudo->text() != "")
     {
         this->_controller->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText().split(" ").at(0) , this->comboBoxTeam->currentText());
@@ -33,8 +40,8 @@ void PlayerUi::buttonPlayPressed()
 //When receive mqtt message on topic /game/properties
 void PlayerUi::onRunFind(QByteArray datas)
 {
+    qDebug() << "PlayerUi::onRunFind()" ;
     if ( this->isProperties == false ) {
-        qDebug() << "on run find" ;
         this->props->deserialize(QJsonDocument::fromJson(datas).object());
         this->nbBanana = props->getBanana() ;
         this->nbBomb = props->getBomb() ;
@@ -44,7 +51,6 @@ void PlayerUi::onRunFind(QByteArray datas)
         for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
             qDebug()  << vehicle ;
             this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
-
         }
         this->stackedWidget->setCurrentIndex(1);
         this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
@@ -58,21 +64,34 @@ void PlayerUi::onRunFind(QByteArray datas)
 
 void PlayerUi::onExitRun()
 {
+    qDebug() << "PlayerUi::onExitRun()" ;
     this->isGame = false ;
     this->isProperties = false ;
     this->stackedWidget->setCurrentIndex(0);
+    this->controllerType = "" ;
+    this->_controller->setControllerType("");
 }
 
 void PlayerUi::onCloseGame()
 {
+    qDebug() << "PlayerUi::onCloseGame()" ;
     this->isProperties = false ;
     this->close();
 }
 
+void PlayerUi::onGamepadUse()
+{
+    qDebug() << "PlayerUi::onGamepadUse()" ;
+    if (this->controllerType == "controller") {
+        this->updateLabel();
+    }
+}
+
 
 //On action, make message for mqtt
-void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
+void PlayerUi::makeMqttMessage( int keyAction)
 {
+    qDebug() << "PlayerUi::makeMqttMessage()";
     this->_controller->sendMessageControl(this->uuid , this->angle , this->power , keyAction);
 }
 
@@ -80,6 +99,7 @@ void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
 //Function to update label when catching keyboard actions
 void PlayerUi::updateLabel()
 {
+    qDebug() << "PlayerUi::updateLabel()" ;
     this->labelAngle->setText("<h4> Angle : " + QString::number(this->angle) + " </h4> ");
     this->labelPower->setText("<h4> Power : " + QString::number(this->power) + " </h4> ");
     this->labelBanana->setText(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
@@ -89,6 +109,7 @@ void PlayerUi::updateLabel()
 
 void PlayerUi::connectToMqtt()
 {
+    qDebug() << "PlayerUi::connectToMqtt()" ;
     MqttService::instance()->subscribe("/game/properties");
 }
 
@@ -104,13 +125,10 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->nbBanana = 0 ;
     this->nbBomb = 0 ;
     this->nbRocket = 0 ;
+
     this->resize(500 , 300);
     this->uuid = QUuid::createUuid().toString();
     this->props = Properties::getInstance();
-
-    qDebug() << "before" ;
-    _controller = new Controller ;
-    qDebug() << "after" ;
 
     //Graphic content for loading page
     this->loadingLayout = new QVBoxLayout ;
@@ -183,7 +201,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->comboBoxController = new QComboBox ;
     //this->comboBoxController->addItem("ia");
     this->comboBoxController->addItem("keyboard");
-    //this->comboBoxController->addItem("controller");
+    this->comboBoxController->addItem("controller");
     //this->comboBoxController->addItem("vr");
     //this->comboBoxController->addItem("phone");
     this->horizontalLayout_2->addWidget(this->labelController);
@@ -229,11 +247,23 @@ PlayerUi::PlayerUi(QWidget *parent)
     mainLayout->addWidget(stackedWidget);
     this->setLayout(mainLayout);
 
+    _controller = new Controller(&this->uuid , &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket) ;
     //Connect
     this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(this->buttonExit , SIGNAL(clicked()) , this , SLOT(onExitRun()));
     this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind(QByteArray)) );
+    //Connect for the gamepad
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonR1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonR2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonL2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonAChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
+
+
     this->connectToMqtt();
 }
 

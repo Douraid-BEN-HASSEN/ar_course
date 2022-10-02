@@ -7,14 +7,29 @@
 #  define CONTROL_EXPORT Q_DECL_IMPORT
 #endif
 
+#include <QObject>
 
 #include <QString>
 #include <QMap>
+#include <QJsonObject>
+#include <QJsonDocument>
 
-class CONTROL_EXPORT Control
+#include <Mqtt/MqttService.h>
+
+class CONTROL_EXPORT Control: public QObject
 {
+    Q_OBJECT
 public:
-    Control();
+    Control(QObject *parent = nullptr);
+    Control(QString uuid, QObject *parent = nullptr);
+
+    const QString topic = "player/control";
+
+    void publish();
+
+    void deserialize(const QJsonObject &);
+    QString serialize();
+    QJsonObject toJson();
 
     void setUuid(QString pUuid);
     void setAngle(float pAngle);
@@ -29,9 +44,9 @@ public:
     QMap<QString, bool> getButtons();
 
 private:
-    QString _uuid;
-    float _angle;
-    int _power;
+    QString _uuid = "";
+    float _angle = 0.f;
+    int _power = 0;
     QMap<QString, bool> _buttons;
 
 };

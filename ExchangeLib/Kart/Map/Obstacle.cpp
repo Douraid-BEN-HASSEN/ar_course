@@ -3,7 +3,7 @@
 // constructor
 Obstacle::Obstacle(QObject *parent): QObject{parent}
 {
-
+    qDebug() << "new Instance Obstacle";
 }
 
 // destructor
