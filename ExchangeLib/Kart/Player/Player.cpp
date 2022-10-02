@@ -228,6 +228,11 @@ QString Player::getController()
     return this->_controller;
 }
 
+QPoint Player::getPosition()
+{
+    return QPoint(_x, _y);
+}
+
 void Player::update(Control *control)
 {
     //qDebug() << this->getX() << " " << this->getY() << " " << this->getAngle() << " " << control->getAngle() << " " << control->getPower();

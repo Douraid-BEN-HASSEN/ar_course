@@ -4,6 +4,7 @@ Map *Map::getInstance() {
     static Map *instance;
 
     if (instance == nullptr) {
+        qDebug() << "new instance Map";
         instance = new Map();
 
         MqttService::instance()->subscribe(instance->topic);
@@ -21,8 +22,6 @@ Map *Map::getInstance() {
 // constructor
 Map::Map(QObject *parent): QObject{parent}
 {
-    MqttService::instance()->subscribe(Map::topic);
-
     this->_mapWidth = -1;
     this->_mapHeight = -1;
     this->_checkpoints = new QMap<int, Checkpoint*>();

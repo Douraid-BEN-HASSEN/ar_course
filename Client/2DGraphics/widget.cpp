@@ -11,11 +11,8 @@
 
 #include <Mqtt/MqttService.h>
 
-Widget::Widget(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::Widget)
+Widget::Widget(QWidget *parent): QWidget(parent)
 {
-    ui->setupUi(this);
     mScene = new QGraphicsScene(this);
     mScene->setSceneRect(0, 0, 1000,1000);
     mView = new QGraphicsView(this);
@@ -33,10 +30,7 @@ Widget::Widget(QWidget *parent)
     connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode()));
 }
 
-Widget::~Widget()
-{
-    delete ui;
-}
+Widget::~Widget() {}
 
 void Widget::updateProperties() {
     ObstacleGraphics::heigth = Properties::getInstance()->getRectangleHeight();
@@ -85,8 +79,6 @@ void Widget::updateMap() {
 }
 
 void Widget::updateGameMode() {
-
-    qDebug() << "GameMode updated";
 
     for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
 
