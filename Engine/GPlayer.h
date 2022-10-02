@@ -12,12 +12,14 @@ class GPlayer: public QGraphicsObject
     Q_OBJECT
 public:
     GPlayer(Player *, QGraphicsItem *parent = nullptr);
-    QString getUuid() ;
+    QString getUuid();
     qreal getX();
     qreal getY();
     qreal getRadius();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    Player* getPlayer();
+    QString className();
 
 private:
     QString uuid;
@@ -25,6 +27,7 @@ private:
     qreal y;
     qreal heigth = 50;
     qreal width = 50;
+    Player *_player;
 };
 
 #endif // GPLAYER_H

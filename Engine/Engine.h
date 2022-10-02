@@ -11,7 +11,6 @@
 #include <Kart/Game/Control.h>
 #include <Kart/Game/Vehicle.h>
 #include <Kart/Map/Map.h>
-#include "2DGraphics/widget.h"
 
 #include "GEngine.h"
 
@@ -25,12 +24,10 @@ public:
 private:
     MqttService *_mqtt;
 
-    //QMap<QString, Player*> *_players; // enlver et mettre la qmpa de gamemode
     QMap<QString, Control*> *_controls;
     Map *_map;
     GameMode *_gameMode;
     Properties *_properties;
-
 
     void traitementPlayerRegister(QJsonObject pMessage);
     void traitementPlayerControl(QJsonObject pMessage);

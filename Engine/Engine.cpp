@@ -1,6 +1,7 @@
 #include "Engine.h"
 
 // diviser les angles par 10 (à voir)
+// gestion graphique
 Engine::Engine(QObject *parent): QObject{parent}
 {
     this->_mqtt = MqttService::instance();
@@ -15,26 +16,6 @@ Engine::Engine(QObject *parent): QObject{parent}
 
     this->_controls = new QMap<QString, Control*>;
 
-    // ==== temp ====
-    testCheckpoint = new Checkpoint;
-    testCheckpoint->setId(150);
-    testCheckpoint->setX(500);
-    testCheckpoint->setY(20);
-    this->g_engine.addCheckpoint(testCheckpoint);
-
-    testObstacle = new Obstacle;
-    testObstacle->setId(210);
-    testObstacle->setX(800);
-    testObstacle->setY(20);
-    this->g_engine.addObstacle(testObstacle);
-
-    testPlayer = new Player;
-    testPlayer->setUuid("testPlayer");
-    testPlayer->setX(20);
-    testPlayer->setY(20);
-    this->g_engine.addPlayer(testPlayer);
-    // =======
-
     this->envoiGameInfo();
     this->control_th();
 
@@ -46,14 +27,11 @@ Engine::Engine(QObject *parent): QObject{parent}
 
 Engine::~Engine()
 {
-    delete this->testCheckpoint;
-    delete this->testObstacle;
-    delete this->testPlayer;
 }
 
 void Engine::envoiGameProperties()
 {
-    QTimer::singleShot(100, this, &Engine::envoiGameProperties);
+    QTimer::singleShot(1000, this, &Engine::envoiGameProperties);
     _properties->publish();
 }
 
@@ -61,18 +39,66 @@ void Engine::envoiGameInfo()
 {
     QTimer::singleShot(100, this, &Engine::envoiGameInfo);
     this->_gameMode->publish();
+
+    // ajout dans le moteur graphique
+    for(Checkpoint *checkpoint: *this->_map->getCheckpoints()) {
+        this->g_engine.updateCheckpoint(checkpoint);
+    }
+
+    for(Obstacle *obstacle: *this->_map->getObstacles()) {
+        this->g_engine.updateObstacle(obstacle);
+    }
+
+    for(Player *player: *this->_gameMode->_players) {
+        this->g_engine.updatePlayer(player);
+    }
 }
 
 void Engine::control_th()
 {
     QTimer::singleShot(1000, this, &Engine::control_th);
 
-    testPlayer->setX(testPlayer->getX()+10);
-    this->g_engine.updatePlayer(testPlayer);
-
     // traitement
     for(Control *control: this->_controls->values()) {
         Player *player = this->_gameMode->_players->value(control->getUuid());
+
+
+        QList<QGraphicsItem*> g_items = this->g_engine.collision(player);
+        if(g_items.count() > 0) {
+            for(int iItem=0; iItem<g_items.count(); iItem++) {
+                GPlayer* g_player = (GPlayer*)g_items[iItem];
+                GCheckpoint* g_checkpoint = (GCheckpoint*)g_items[iItem];
+                GObstacle* g_obstacle = (GObstacle*)g_items[iItem];
+
+                // collision avec player
+                if(g_player->getPlayer()) {
+
+                }
+
+                // collision avec checkpoint
+                if(g_checkpoint->getCheckpoint()) {
+                    int nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
+                    if(g_checkpoint->getId() == nextCheckpoint) {
+                        player->setLastCheckpoint(nextCheckpoint);
+                        nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
+                        if(nextCheckpoint == -1) {
+                            qDebug() << "new checkpoint";
+                            player->setCurrentLap(player->getCurrentLap()+1);
+                        }
+                    }
+                }
+
+                // collision avec obstacle
+                if(g_obstacle->getObstacle()) {
+                    player->setSpeed(0);
+                }
+
+
+            }
+        }
+
+        player->update(control);
+
         //Vehicle *vehicule = new Vehicle(player->getVehicule());
 
         /*float P = 1000;
@@ -91,7 +117,7 @@ void Engine::control_th()
         int y = player->getY() + (control->getPower()) * -sin(control->getAngle());
         float angle = player->getAngle();
         int speed = player->getSpeed();*/
-        player->update(control);
+
 
         /*
         player->setX(x);
@@ -111,12 +137,14 @@ void Engine::control_th()
 
 int Engine::getNextCheckpointId(int pCurrentCheckpoint)
 {
-    /*QList<int> ids;
-    foreach(Checkpoint *checkpoint, this->_map->getCheckpoints()) {
+    QList<int> ids;
+    foreach(Checkpoint *checkpoint, this->_map->getCheckpoints()->values()) {
         ids.append(checkpoint->getId());
     }
 
     std::sort(ids.begin(), ids.end());
+
+    if(pCurrentCheckpoint == 0) return ids[0];
 
     for(int iCheckpoint=0; iCheckpoint<ids.count(); iCheckpoint++) {
         if(ids[iCheckpoint] == pCurrentCheckpoint) {
@@ -125,7 +153,7 @@ int Engine::getNextCheckpointId(int pCurrentCheckpoint)
             } else return ids[iCheckpoint+1];
             break;
         }
-    }*/
+    }
 
     return -1;
 }
@@ -138,11 +166,7 @@ void Engine::traitementPlayerRegister(QJsonObject pMessage)
     this->_gameMode->_players->insert(player->getUuid(), player);
 
     qDebug() << player->serialize();
-
-    // ajout dans le moteur graphique
-    this->g_engine.addPlayer(player);
 }
-
 
 void Engine::traitementPlayerControl(QJsonObject pMessage)
 {
@@ -180,7 +204,5 @@ void Engine::receivedMessage(QJsonObject pMessage, QString pTopic)
 {
     if (pTopic == "player/register") this->traitementPlayerRegister(pMessage);
     if (pTopic == "player/control") this->traitementPlayerControl(pMessage);
-
-    qDebug() << "message";
 }
 

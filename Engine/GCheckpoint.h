@@ -12,10 +12,12 @@ class GCheckpoint: public QGraphicsObject
 {
     Q_OBJECT
 public:
+    static qreal radiusCheckpoint;
     GCheckpoint();
     GCheckpoint(Checkpoint *, QGraphicsItem *parent = nullptr);
+    Checkpoint *getCheckpoint();
 
-    qreal getId();
+    qreal getId() ;
     qreal getX();
     qreal getY();
     qreal getRadius();
@@ -23,11 +25,10 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
+    Checkpoint *checkpoint;
     qreal id;
     qreal x;
     qreal y;
-    // Récupérer depuis /game/properties
-    qreal radius = 50;
 };
 
 #endif // GCHECKPOINT_H

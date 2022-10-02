@@ -1,14 +1,9 @@
 #include "MapAruco.h"
 
-MapAruco *MapAruco::instance() {
-    static MapAruco instance;
-    return &instance;
-}
-
 // constructor
-MapAruco::MapAruco(): Map{}
+MapAruco::MapAruco(QObject *parent): Map{parent}
 {
-
+    this->_timeoutLimit = 5000;
 }
 
 // destructor
@@ -16,10 +11,20 @@ MapAruco::~MapAruco()
 {
 }
 
+MapAruco *MapAruco::getInstance() {
+    static MapAruco instance;
+    return &instance;
+}
+
+void MapAruco::publish() {
+    MqttService::instance()->publish(MapAruco::Map::topic, this->serialize().toUtf8());
+}
+
 bool MapAruco::setMapInfo(cv::Mat &pImage)
 {
     bool success = false;
     std::vector< std::vector< cv::Point2f > > corners, rejected;
+    std::vector<cv::Point2f> cornerCenter;
     std::vector< std::vector< cv::Point2f > > corners_final, rejected_final;
     std::vector< cv::Vec3d > rvecs_final, tvecs_final;
     cv::Mat imageCopy,circuit,idimage;
@@ -53,12 +58,14 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
 
         cv::Point2f itemPos(9999, 0); // correspond aux cordonnées d'un item (checkpoint ou obstacle)
 
-        // remplissage tableau result
+        // gestion limite map
         for (std::vector<std::vector< cv::Point2f >>::iterator nCorner = corners.begin(); nCorner != corners.end(); nCorner++) {
-            // reset pos
-            itemPos.x = 9999;
-            itemPos.y = 0;
+            int centerX = 0;
+            int centerY = 0;
             for (std::vector< cv::Point2f >::iterator nPoint = nCorner->begin(); nPoint != nCorner->end(); nPoint++) {
+                centerX += nPoint->x;
+                centerY += nPoint->y;
+
                 if(ids[itId] < 10) {
                     // utile pour le calcul de maxHeight & maxWidth
                     if(nPoint->x < topleft.x) topleft.x = nPoint->x;
@@ -72,83 +79,116 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
 
                     if(nPoint->x > bottomRight.x) bottomRight.x = nPoint->x;
                     if(nPoint->y < bottomRight.y) bottomRight.y = nPoint->y;
-                } else {
-                    if(nPoint->x < itemPos.x) itemPos.x = nPoint->x;
-                    if(nPoint->y > itemPos.y) itemPos.y = nPoint->y;
                 }
             }
 
-            if(ids[itId] > 9 && ids[itId] < 200) {
-                Checkpoint *checkpoint = new Checkpoint();
-                checkpoint->setId(ids[itId]);
-                checkpoint->setX(itemPos.x);
-                checkpoint->setY(itemPos.y);
-                if(this->_checkpoints->contains(checkpoint->getId())) {
-                    this->_checkpoints->remove(checkpoint->getId());
-                    this->_checkpoints->insert(checkpoint->getId(), checkpoint);
-                } else this->_checkpoints->insert(checkpoint->getId(), checkpoint);
-            } else if(ids[itId] > 9 && ids[itId] < 250) {
-                Obstacle *obstacle = new Obstacle();
-                obstacle->setId(ids[itId]);
-                obstacle->setX(itemPos.x);
-                obstacle->setY(itemPos.y);
-                obstacle->setAngle(0);
-                if(this->_obstacles->contains(obstacle->getId())) {
-                    this->_obstacles->remove(obstacle->getId());
-                    this->_obstacles->insert(obstacle->getId(), obstacle);
-                } else this->_obstacles->insert(obstacle->getId(), obstacle);
-            }
-
-            // === gestion des timeout ===
-            bool contains;
-            // liste contenant les ids à supprimer
-            int timeoutLimit = 5000;
-            QList<int> checkpointIdTimedout;
-            QList<int> obstacleIdTimedout;
-
-            // checkpoint
-            foreach(Checkpoint *checkpoint, *this->_checkpoints) {
-                contains = false;
-                for(std::vector<int>::iterator id = ids.begin(); id != ids.end(); id++) {
-                    contains = checkpoint->getId() == *id;
-                    if(contains) {
-                        checkpoint->setTimeout(0); // reset timeout
-                        break;
-                    }
-                }
-                if(!contains) checkpoint->setTimeout(checkpoint->getTimeout()+1);
-                if(checkpoint->getTimeout() >= timeoutLimit) checkpointIdTimedout.append(checkpoint->getId());
-            }
-            // obstacle
-            foreach(Obstacle *obstacle, *this->_obstacles) {
-                contains = false;
-                for(std::vector<int>::iterator id = ids.begin(); id != ids.end(); id++) {
-                    contains = obstacle->getId() == *id;
-                    if(contains) {
-                        obstacle->setTimeout(0); // reset timeout
-                        break;
-                    }
-                }
-                if(!contains) obstacle->setTimeout(obstacle->getTimeout()+1);
-                if(obstacle->getTimeout() >= timeoutLimit) obstacleIdTimedout.append(obstacle->getId());
-            }
-
-            // suppression des elements
-            foreach (int id, checkpointIdTimedout) {
-                this->_checkpoints->remove(id);
-            }
-
-            foreach (int id, obstacleIdTimedout) {
-                this->_obstacles->remove(id);
-            }
-            // ============================
-
+            centerX = centerX / 4;
+            centerY = centerY / 4;
+            cornerCenter.push_back(cv::Point2f(centerX, centerY));
             itId++;
         }
 
         // enregistrement des limites map
         this->setMapWidth(topRight.x);
         this->setMapHeight(topRight.y);
+
+        itId = 0; // reset
+
+        // gestion des elements
+        for (std::vector<std::vector< cv::Point2f >>::iterator nCorner = corners.begin(); nCorner != corners.end(); nCorner++) {
+            // reset pos
+            itemPos.x = 9999;
+            itemPos.y = 0;
+            for (std::vector< cv::Point2f >::iterator nPoint = nCorner->begin(); nPoint != nCorner->end(); nPoint++) {
+                if(ids[itId] > 9) {
+                    if(nPoint->x < itemPos.x) itemPos.x = nPoint->x;
+                    if(nPoint->y > itemPos.y) itemPos.y = nPoint->y;
+                }
+            }
+
+            // calcul angle
+            QPoint v1 = QPoint(topRight.x - cornerCenter[itId].x, topRight.y - cornerCenter[itId].y);
+            QPoint v2 = QPoint(itemPos.x - cornerCenter[itId].x, itemPos.y - cornerCenter[itId].y);
+            float num = (v1.x() * v2.x()) + (v1 .y() * v2.y());
+            float den = sqrt(v1.x()*v1.x() + v1.y()*v1.y()) * sqrt(v2.x()*v2.x() + v2.y()*v2.y());
+            float angleRad = qAcos(num/den);
+            float angleDeg = angleRad * (180.0/3.141592653589793238463);
+
+            if(ids[itId] == 5) std::cout << angleDeg << std::endl;
+
+            if((itemPos.x >= topleft.x && itemPos.x <= topRight.x) &&
+                    (itemPos.y >= bottomLeft.y && itemPos.y <= topleft.y)) {
+                if(ids[itId] > 9 && ids[itId] < 200) {
+                    Checkpoint *checkpoint = new Checkpoint();
+                    checkpoint->setId(ids[itId]);
+                    checkpoint->setX(itemPos.x);
+                    checkpoint->setY(itemPos.y);
+                    if(this->_checkpoints->contains(checkpoint->getId())) {
+                        this->_checkpoints->remove(checkpoint->getId());
+                        this->_checkpoints->insert(checkpoint->getId(), checkpoint);
+                    } else this->_checkpoints->insert(checkpoint->getId(), checkpoint);
+                } else if(ids[itId] > 9 && ids[itId] < 250) {
+                    Obstacle *obstacle = new Obstacle();
+                    obstacle->setId(ids[itId]);
+                    obstacle->setX(itemPos.x);
+                    obstacle->setY(itemPos.y);
+                    obstacle->setAngle(int(angleDeg));
+                    if(this->_obstacles->contains(obstacle->getId())) {
+                        this->_obstacles->remove(obstacle->getId());
+                        this->_obstacles->insert(obstacle->getId(), obstacle);
+                    } else this->_obstacles->insert(obstacle->getId(), obstacle);
+                }
+
+            }
+            else if(ids[itId] > 9 && ids[itId] < 200) this->_checkpoints->remove(ids[itId]); // remove si il est en dehors de la map
+            else if(ids[itId] > 9 && ids[itId] < 250) this->_obstacles->remove(ids[itId]); // remove si il est en dehors de la map
+
+            itId++;
+        }
+
+        // === gestion des timeout ===
+        bool contains;
+        // liste contenant les ids à supprimer
+        QList<int> checkpointIdTimedout;
+        QList<int> obstacleIdTimedout;
+
+        // checkpoint
+        foreach(Checkpoint *checkpoint, *this->_checkpoints) {
+            contains = false;
+            for(std::vector<int>::iterator id = ids.begin(); id != ids.end(); id++) {
+                contains = checkpoint->getId() == *id;
+                if(contains) {
+                    checkpoint->setTimeout(0); // reset timeout
+                    break;
+                }
+            }
+            if(!contains) checkpoint->setTimeout(checkpoint->getTimeout()+1);
+            if(checkpoint->getTimeout() >= this->_timeoutLimit) checkpointIdTimedout.append(checkpoint->getId());
+        }
+        // obstacle
+        foreach(Obstacle *obstacle, *this->_obstacles) {
+            contains = false;
+            for(std::vector<int>::iterator id = ids.begin(); id != ids.end(); id++) {
+                contains = obstacle->getId() == *id;
+                if(contains) {
+                    obstacle->setTimeout(0); // reset timeout
+                    break;
+                }
+            }
+            if(!contains) obstacle->setTimeout(obstacle->getTimeout()+1);
+            if(obstacle->getTimeout() >= this->_timeoutLimit) obstacleIdTimedout.append(obstacle->getId());
+        }
+
+        // suppression des elements
+        foreach (int id, checkpointIdTimedout) {
+            this->_checkpoints->remove(id);
+        }
+
+        foreach (int id, obstacleIdTimedout) {
+            this->_obstacles->remove(id);
+        }
+        // ============================
+
     }
 
     //afficher la sortie
