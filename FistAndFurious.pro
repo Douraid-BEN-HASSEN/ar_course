@@ -4,6 +4,7 @@ SUBDIRS = \
     Client \
     Player \
     Engine \
+    Maps \
     ExchangeLib
 
 unix {
