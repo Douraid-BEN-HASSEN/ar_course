@@ -11,6 +11,10 @@ void PlayerUi::keyPressEvent(QKeyEvent *key){
 
 }
 
+void PlayerUi::keyReleaseEvent(QKeyEvent *key){
+    qDebug(" key realese event ") ;
+
+}
 //Callback when start button is pressed
 void PlayerUi::buttonPlayPressed()
 {
@@ -69,6 +73,12 @@ void PlayerUi::onCloseGame()
     this->close();
 }
 
+void PlayerUi::onGamepadUse()
+{
+    qDebug() << "on gamepad use" ;
+    this->updateLabel();
+}
+
 
 //On action, make message for mqtt
 void PlayerUi::makeMqttMessage(int angle, int power, int keyAction)
@@ -109,7 +119,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->props = Properties::getInstance();
 
     qDebug() << "before" ;
-    _controller = new Controller ;
+
     qDebug() << "after" ;
 
     //Graphic content for loading page
@@ -229,11 +239,23 @@ PlayerUi::PlayerUi(QWidget *parent)
     mainLayout->addWidget(stackedWidget);
     this->setLayout(mainLayout);
 
+    _controller = new Controller(&this->uuid , &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket) ;
     //Connect
     this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(this->buttonExit , SIGNAL(clicked()) , this , SLOT(onExitRun()));
     this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind(QByteArray)) );
+    //Connect for the gamepad
+    this->connect(this->_controller->gamepad , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonR1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonR2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonL2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonAChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
+
+
     this->connectToMqtt();
 }
 
