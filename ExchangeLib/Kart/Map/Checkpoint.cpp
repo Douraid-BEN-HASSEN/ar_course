@@ -3,6 +3,7 @@
 // constructor
 Checkpoint::Checkpoint(QObject *parent): QObject{ parent }
 {
+    qDebug() << "new Instance Checkpoint";
 }
 
 // destructor
@@ -75,3 +76,8 @@ int Checkpoint::getTimeout()
     return this->_timeout;
 }
 
+
+QPoint Checkpoint::getPosition()
+{
+    return QPoint(_x, _y);
+}

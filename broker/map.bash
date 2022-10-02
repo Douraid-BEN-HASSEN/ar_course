@@ -17,9 +17,11 @@ echo "loop..."
 
 while true; do
     mosquitto_pub -h 127.0.0.1 \
-    -m '{"mapWidth":1000,"mapHeight":1000,"checkpoints":[{"id":1,"x":500,"y":50},{"id":2,"x":50,"y":250},{"id":3,"x":500,"y":450},{"id":4,"x":950,"y":250}],"obstacles":[{"id":1,"angle":0,"x":250,"y":250},{"id":2,"angle":0,"x":250,"y":750},{"id":3,"angle":0,"x":750,"y":750},{"id":4,"angle":0,"x":750,"y":250}]}' \
+    -m '{"mapWidth":1000,"mapHeight":1000,"checkpoints":[{"id":1,"x":500,"y":50},{"id":2,"x":50,"y":250},{"id":3,"x":500,"y":450},{"id":4,"x":950,"y":250}],"obstacles":[]}' \
     -t map
     sleep 1
+#    -m '{"mapWidth":1000,"mapHeight":1000,"checkpoints":[{"id":1,"x":500,"y":50},{"id":2,"x":50,"y":250},{"id":3,"x":500,"y":450},{"id":4,"x":950,"y":250}],"obstacles":[{"id":1,"angle":0,"x":250,"y":250},{"id":2,"angle":0,"x":250,"y":750},{"id":3,"angle":0,"x":750,"y":750},{"id":4,"angle":0,"x":750,"y":250}]}' \
+
 
     #mosquitto_pub -h 127.0.0.1 \
     #-m '{"players":[{"uuid":"1211sqsdsq22112","pseudo":"Alexis","color":"red","team":"1","x":95,"y":256,"angle":90,"speed":0,"vehicle":"string","items":{"banana":1,"bomb":2,"rocket":3},"lastCheckpoint":0,"currentLap":0,"status":"string","controller":"keyboard"}],"items":[{"x":1,"y":2,"angle":1,"status":"string","type":"string"}],"elapsedTime":1,"infoMessage":"string","status":"string"}' \

@@ -80,8 +80,6 @@ void Widget::updateMap() {
 
 void Widget::updateGameMode() {
 
-    qDebug() << "GameMode updated";
-
     for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
 
         PlayerGraphics *playerGraphics = localPlayers.value(iterPlayer->getUuid());

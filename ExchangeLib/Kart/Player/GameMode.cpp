@@ -4,6 +4,7 @@ GameMode *GameMode::getInstance() {
     static GameMode *instance;
 
     if (instance == nullptr) {
+        qDebug() << "new instance GameMode";
         instance = new GameMode();
 
         MqttService::instance()->subscribe(instance->topic);

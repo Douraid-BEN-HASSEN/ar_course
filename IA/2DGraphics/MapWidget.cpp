@@ -45,7 +45,6 @@ void MapWidget::updateProperties() {
 
 void MapWidget::updateMap() {
 
-    qDebug() << "map";
     //new QMap<int, Obstacle*>();
     // Faire une boucle sur tous les obstacles
     // Sur chaque obstacle on va devoir le créer + le placer
@@ -83,8 +82,6 @@ void MapWidget::updateMap() {
 
 void MapWidget::updateGameMode() {
 
-    qDebug() << "GameMode updated";
-
     for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
 
         PlayerGraphics *playerGraphics = localPlayers.value(iterPlayer->getUuid());
@@ -95,11 +92,11 @@ void MapWidget::updateGameMode() {
             localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
         }
 
-        qDebug() << QString("Angle : %1, X : %2, Y : %3").arg(
+/*        qDebug() << QString("Angle : %1, X : %2, Y : %3").arg(
                         QString::number(iterPlayer->getAngle()),
                         QString::number(iterPlayer->getX()),
                         QString::number(iterPlayer->getY())
-                        );
+                        );*/
 
         playerGraphics->updatePlayer(iterPlayer);
 //        playerGraphics->setPos(iterPlayer->getX(), iterPlayer->getY());

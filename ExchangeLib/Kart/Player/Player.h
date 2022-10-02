@@ -58,6 +58,8 @@ public:
     QString getStatus();
     QString getController();
 
+    QPoint getPosition();
+
     void update(Control *control);
 
 private:
