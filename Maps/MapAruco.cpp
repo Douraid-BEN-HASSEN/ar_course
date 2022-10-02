@@ -6,9 +6,8 @@ MapAruco *MapAruco::instance() {
 }
 
 // constructor
-MapAruco::MapAruco(): Map{}
+MapAruco::MapAruco(QObject *parent): Map{parent}
 {
-
 }
 
 // destructor

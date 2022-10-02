@@ -13,7 +13,7 @@ public:
 
     bool setMapInfo(cv::Mat &pImage);
 private:
-    MapAruco();
+    MapAruco(QObject *parent = nullptr);
     ~MapAruco();
 };
 
