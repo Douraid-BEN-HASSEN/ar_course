@@ -17,7 +17,7 @@
 #include <Kart/Game/Properties.h>
 #include <Kart/Game/Control.h>
 #include <Kart/Game/Vehicle.h>
-
+#include <algorithm>
 #include <QTimer>
 
 #include "Player.h"

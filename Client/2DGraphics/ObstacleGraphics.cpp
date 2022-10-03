@@ -12,8 +12,6 @@ ObstacleGraphics::ObstacleGraphics(Obstacle *obstacle, QGraphicsItem *parent): Q
     this->id = obstacle->getId();
     this->x = obstacle->getX();
     this->y = obstacle->getY();
-    //this->heigth = Properties::getInstance()->getRectangleWidth();
-    //this->width = Properties::getInstance()->getRectangleHeight();
 }
 
 
@@ -27,7 +25,7 @@ qreal ObstacleGraphics::getX()
     return x;
 }
 
-qreal ObstacleGraphics::getY()        //painter->drawEllipse(0,0,this->heigth, this->width);
+qreal ObstacleGraphics::getY()
 {
     return y;
 }
@@ -53,8 +51,6 @@ QRectF ObstacleGraphics::boundingRect() const
     } else {
         return QRectF(-this->heigth/2, -this->width/2,this->radius*2,this->radius*2);
     }
-
-
 }
 
 void ObstacleGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

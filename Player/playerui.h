@@ -37,6 +37,8 @@ private :
     int nbRocket ;
     int nbTurn ;
     int nbTeam ;
+    bool isProperties ;
+    bool isGame ;
     QString pseudo ;
     QString team ;
     QString vehicle ;
@@ -90,6 +92,7 @@ private :
 
 protected :
     void keyPressEvent(QKeyEvent *e) ;
+    void keyReleaseEvent(QKeyEvent *e);
 
 private slots :
     //Call when the user validate the initial form
@@ -97,6 +100,7 @@ private slots :
     void onRunFind(QByteArray datas) ;
     void onExitRun();
     void onCloseGame();
+    void onGamepadUse() ;
 public:
     PlayerUi(QWidget *parent = nullptr);
     void makeMqttMessage(int angle , int power , int keyAction );

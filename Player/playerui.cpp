@@ -4,11 +4,17 @@
 
 //Catch event of key pressed
 void PlayerUi::keyPressEvent(QKeyEvent *key){
-    this->_controller->handleKeyEvent(this->uuid ,  key, &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket);
-    this->updateLabel();
+    if (this->isGame == true ) {
+        this->_controller->handleKeyEvent(this->uuid ,  key, &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket);
+        this->updateLabel();
+    }
 
 }
 
+void PlayerUi::keyReleaseEvent(QKeyEvent *key){
+    qDebug(" key realese event ") ;
+
+}
 //Callback when start button is pressed
 void PlayerUi::buttonPlayPressed()
 {
@@ -24,42 +30,53 @@ void PlayerUi::buttonPlayPressed()
         this->team = this->comboBoxTeam->currentText();
         this->vehicle = this->comboBoxVehicle->currentText();
         this->stackedWidget->setCurrentIndex(2);
+        this->isGame = true ;
     }
 }
 
 //When receive mqtt message on topic /game/properties
 void PlayerUi::onRunFind(QByteArray datas)
 {
-    this->props->deserialize(QJsonDocument::fromJson(datas).object());
-    this->nbBanana = props->getBanana() ;
-    this->nbBomb = props->getBomb() ;
-    this->nbRocket = props->getRocket();
-    this->nbTurn = props->getLaps() ;
-    this->nbTeam = props->getTeam() ;
-    for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
-        qDebug()  << vehicle ;
-        this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
+    if ( this->isProperties == false ) {
+        qDebug() << "on run find" ;
+        this->props->deserialize(QJsonDocument::fromJson(datas).object());
+        this->nbBanana = props->getBanana() ;
+        this->nbBomb = props->getBomb() ;
+        this->nbRocket = props->getRocket();
+        this->nbTurn = props->getLaps() ;
+        this->nbTeam = props->getTeam() ;
+        for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
+            qDebug()  << vehicle ;
+            this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
 
+        }
+        this->stackedWidget->setCurrentIndex(1);
+        this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
+        this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
+        for (int i = 1 ; i < this->nbTeam+1 ; i++)
+            this->comboBoxTeam->addItem(QString::number(i));
+        this->updateLabel();
+        this->isProperties = true ;
     }
-    //delete this->loadingLayout ;
-    //qDeleteAll(this->gameLayout);
-    this->stackedWidget->setCurrentIndex(1);
-    //this->setLayout(this->registerLayout);
-    this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
-    this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
-    for (int i = 1 ; i < this->nbTeam+1 ; i++)
-       this->comboBoxTeam->addItem(QString::number(i));
-    this->updateLabel();
 }
 
 void PlayerUi::onExitRun()
 {
+    this->isGame = false ;
+    this->isProperties = false ;
     this->stackedWidget->setCurrentIndex(0);
 }
 
 void PlayerUi::onCloseGame()
 {
+    this->isProperties = false ;
     this->close();
+}
+
+void PlayerUi::onGamepadUse()
+{
+    qDebug() << "on gamepad use" ;
+    this->updateLabel();
 }
 
 
@@ -90,7 +107,9 @@ PlayerUi::PlayerUi(QWidget *parent)
     : QWidget(parent)
 {
     //Init parameters
-    this->angle = 180 ;
+    this->isProperties = false ;
+    this->isGame = false ;
+    this->angle = 0 ;
     this->power = 0 ;
     this->nbBanana = 0 ;
     this->nbBomb = 0 ;
@@ -100,7 +119,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->props = Properties::getInstance();
 
     qDebug() << "before" ;
-    _controller = new Controller ;
+
     qDebug() << "after" ;
 
     //Graphic content for loading page
@@ -192,7 +211,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->comboBoxTeam->addItem("No team");
     this->horizontalLayout_4->addWidget(labelTeam);
     this->horizontalLayout_4->addWidget(comboBoxTeam);
-
     this->registerButton = new QPushButton("Warm up the engine !")  ;
 
     this->registerLayout->addWidget(labelTitle);
@@ -221,11 +239,23 @@ PlayerUi::PlayerUi(QWidget *parent)
     mainLayout->addWidget(stackedWidget);
     this->setLayout(mainLayout);
 
+    _controller = new Controller(&this->uuid , &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket) ;
     //Connect
     this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(this->buttonExit , SIGNAL(clicked()) , this , SLOT(onExitRun()));
     this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind(QByteArray)) );
+    //Connect for the gamepad
+    this->connect(this->_controller->gamepad , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonR1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonR2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonL2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonAChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
+
+
     this->connectToMqtt();
 }
 

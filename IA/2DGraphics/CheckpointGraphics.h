@@ -12,6 +12,7 @@ class CheckpointGraphics: public QGraphicsObject
 {
      Q_OBJECT
 public:
+    static qreal radiusCheckpoint;
     CheckpointGraphics();
     CheckpointGraphics(Checkpoint *, QGraphicsItem *parent = nullptr);
     qreal getId() ;
@@ -25,8 +26,6 @@ private:
     qreal id;
     qreal x;
     qreal y;
-    // Récupérer depuis /game/properties
-    qreal radius = 50;
 
 };
 

@@ -13,10 +13,6 @@
 #include "CheckpointGraphics.h"
 #include "PlayerGraphics.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class Widget; }
-QT_END_NAMESPACE
-
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -30,7 +26,6 @@ private:
     QMap<int, CheckpointGraphics*> localCheckpoint;
     QMap<QString, PlayerGraphics*> localPlayers;
 
-    Ui::Widget *ui;
     QGraphicsScene* mScene;
     QGraphicsView* mView;
 

@@ -4,6 +4,8 @@ Properties *Properties::getInstance() {
     static Properties *instance;
 
     if (instance == nullptr) {
+        qDebug() << "new instance Properties";
+
         instance = new Properties();
 
         MqttService::instance()->subscribe(instance->topic);
@@ -44,8 +46,8 @@ Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
     this->checkpointRadius = 50;
 
     this->vehicleOptions->insert("bike", new Vehicle("bike"));
-    this->vehicleOptions->insert("bike", new Vehicle("car"));
-    this->vehicleOptions->insert("bike", new Vehicle("truck"));
+    this->vehicleOptions->insert("car", new Vehicle("car"));
+    this->vehicleOptions->insert("truck", new Vehicle("truck"));
 }
 
 

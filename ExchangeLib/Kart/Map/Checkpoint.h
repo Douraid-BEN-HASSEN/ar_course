@@ -10,6 +10,7 @@
 #include <QObject>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QPoint>
 
 /**
  * @brief The Checkpoint class
@@ -39,6 +40,8 @@ public:
     int getX();
     int getY();
     int getTimeout();
+
+    QPoint getPosition();
 
 private:
     int _id;

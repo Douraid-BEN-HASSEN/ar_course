@@ -5,12 +5,15 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <QtMqtt/QtMqtt>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QHBoxLayout>
+#include <typeinfo>
 
 #include "GCheckpoint.h"
 #include "GObstacle.h"
+#include "GPlayer.h"
 
 class GEngine: public QWidget
 {
@@ -21,9 +24,12 @@ public:
 
     void addCheckpoint(Checkpoint* pCheckpoint);
     void addObstacle(Obstacle* pObstacle);
+    void addPlayer(Player* pPlayer);
     void updateCheckpoint(Checkpoint* pCheckpoint);
     void updateObstacle(Obstacle* pObstacle);
-    void updateGraphics();
+    void updatePlayer(Player* pPlayer);
+
+    QList<QGraphicsItem*> collision(Player* pPlayer);
 
 private:
     // liste checkpoints
@@ -32,7 +38,10 @@ private:
     QGraphicsView* mView;
     QMap<int, GCheckpoint*> localCheckpoint;
     QMap<int, GObstacle*> localObstacles;
-    //QMap<QString, PlayerGraphics*> localPlayers;
+    QMap<QString, GPlayer*> localPlayers;
+
+protected:
+    void resizeEvent(QResizeEvent *event);
 
 };
 

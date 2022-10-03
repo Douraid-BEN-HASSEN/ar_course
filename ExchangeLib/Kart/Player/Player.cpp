@@ -2,11 +2,17 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include "Player.h"
+#include "math.h"
 
 // constructor
 Player::Player(QObject *parent): QObject{parent}
 {
+    this->_map = Map::getInstance();
     this->_items = new QMap<QString, int>();
+    this->_x = 0;
+    this->_y = 0;
+    this->_angle = 0;
+    this->_speed = 0;
 }
 
 // destructor
@@ -220,6 +226,31 @@ QString Player::getStatus()
 QString Player::getController()
 {
     return this->_controller;
+}
+
+QPoint Player::getPosition()
+{
+    return QPoint(_x, _y);
+}
+
+void Player::update(Control *control)
+{
+    //qDebug() << this->getX() << " " << this->getY() << " " << this->getAngle() << " " << control->getAngle() << " " << control->getPower();
+    /*this->_angle += control->getAngle()/10;
+    this->_x += control->getPower() * cos(this->_angle);
+    this->_y += -control->getPower() * sin(this->_angle);*/
+
+    int newX = control->getPower() * cos(this->_angle);
+    int newY = -control->getPower() * sin(this->_angle);
+    this->_angle += control->getAngle()/10;
+    this->_x += newX;
+    this->_y += newY;
+
+    /*if((newX >= 0 && newX <= this->_map->getMapWidth()) && (newY >= 0 && newY <= this->_map->getMapHeight())) {
+        this->_x += newX;
+        this->_y += newY;
+    }*/
+
 }
 
 

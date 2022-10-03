@@ -26,12 +26,15 @@ public:
     qreal getRadius();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    Obstacle *getObstacle();
 
 
 private:
+    Obstacle *obstacle;
     qreal id;
     qreal x;
     qreal y;
+    // Récupérer depuis /game/properties
 
 };
 

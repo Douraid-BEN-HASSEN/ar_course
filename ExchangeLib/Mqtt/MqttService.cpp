@@ -86,7 +86,7 @@ void MqttService::receivedMessage(const QByteArray &message, const QMqttTopicNam
     QJsonDocument doc = QJsonDocument::fromJson(message);
     QJsonObject jsonObject = doc.object();
 
-    qDebug() << QString("Topic %1 : %2").arg(topic.name(), "message");
+    //qDebug() << QString("Topic %1 : %2").arg(topic.name(), "message");
 
     emit this->message(jsonObject, topic.name());
 }
