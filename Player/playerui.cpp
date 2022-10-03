@@ -48,10 +48,8 @@ void PlayerUi::onRunFind(QByteArray datas)
         this->nbRocket = props->getRocket();
         this->nbTurn = props->getLaps() ;
         this->nbTeam = props->getTeam() ;
-        for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
-            qDebug()  << vehicle ;
+        for (Vehicle *vehicle : this->props->vehicleOptions->values())
             this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
-        }
         this->stackedWidget->setCurrentIndex(1);
         this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
         this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
