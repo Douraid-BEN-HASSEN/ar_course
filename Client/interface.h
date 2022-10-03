@@ -1,6 +1,12 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
+
 #include <QMainWindow>
+#include <QObject>
+#include <QDebug>
+
+#include "2DGraphics/widget.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class interface; }

@@ -4,6 +4,8 @@ Properties *Properties::getInstance() {
     static Properties *instance;
 
     if (instance == nullptr) {
+        qDebug() << "new instance Properties";
+
         instance = new Properties();
 
         MqttService::instance()->subscribe(instance->topic);

@@ -1,8 +1,59 @@
 #include "Control.h"
 
-Control::Control()
+Control::Control(QObject *parent): QObject{parent}
 {
+    _buttons.insert("banana", false);
+    _buttons.insert("bomb", false);
+    _buttons.insert("rocket", false);
+}
 
+Control::Control(QString uuid, QObject *parent): QObject{parent}
+{
+    this->_uuid = uuid;
+    _buttons.insert("banana", false);
+    _buttons.insert("bomb", false);
+    _buttons.insert("rocket", false);
+}
+
+void Control::publish() {
+    MqttService::instance()->publish(this->topic, this->serialize());
+}
+
+void Control::deserialize(const QJsonObject &jsonObject)
+{
+    this->_uuid = jsonObject["uuid"].toString();
+    this->_angle = jsonObject["angle"].toDouble();
+    this->_power = jsonObject["power"].toInt();
+
+    QJsonObject itemsJObject = jsonObject["items"].toObject();
+
+    this->_buttons.insert("banana", itemsJObject["banana"].toBool());
+    this->_buttons.insert("bomb", itemsJObject["bomb"].toBool());
+    this->_buttons.insert("rocket", itemsJObject["rocket"].toBool());
+}
+
+QString Control::serialize() {
+    QJsonDocument doc(this->toJson());
+    return QString(doc.toJson(QJsonDocument::Compact));
+}
+
+QJsonObject Control::toJson() {
+    QJsonObject jsonObject;
+
+    jsonObject["uuid"] = this->_uuid;
+    jsonObject["angle"] = this->_angle;
+    jsonObject["power"] = this->_power;
+
+    QJsonObject itemsJO;
+
+    itemsJO.insert("banana", this->_buttons.value("banana"));
+    itemsJO.insert("bomb", this->_buttons.value("bomb"));
+    itemsJO.insert("rocket", this->_buttons.value("rocket"));
+
+    jsonObject["buttons"] = itemsJO;
+
+
+    return jsonObject;
 }
 
 void Control::setUuid(QString pUuid)
