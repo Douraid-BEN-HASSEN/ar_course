@@ -1,5 +1,9 @@
 #include "PlayerGraphics.h"
+#include <Kart/Game/Vehicle.h>
+#include <Kart/Game/Properties.h>
 
+qreal PlayerGraphics::heigth = 100;
+qreal PlayerGraphics::width = 100;
 
 PlayerGraphics::PlayerGraphics(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}
 {
@@ -7,7 +11,6 @@ PlayerGraphics::PlayerGraphics(Player *player, QGraphicsItem *parent): QGraphics
     //this->pseudo = player->getPseudo();
     this->x = player->getX();
     this->y = player->getY();
-    //this->angle = player->getAngle();
     this->_player = player;
 }
 
@@ -31,20 +34,37 @@ qreal PlayerGraphics::getY()        //painter->drawEllipse(0,0,this->heigth, thi
     return y;
 }
 
+qreal PlayerGraphics::getHeigth()
+{
+    return heigth;
+}
+qreal PlayerGraphics::getWidth()
+{
+    return width;
+}
+
+void PlayerGraphics::updatePlayer(Player *player) {
+    this->_player = player;
+    this->setPos(player->getX(), player->getY());
+    this->setRotation(qRadiansToDegrees(-player->getAngle()));
+
+    Vehicle *veh = Properties::getInstance()->vehicleOptions->value(player->getVehicule());
+    if (veh != nullptr){
+    this->heigth = veh->getHeight();
+    this->width = veh->getWidth();
+    }
+}
+
 
 QRectF PlayerGraphics::boundingRect() const
 {
-    //this->_player->getVehicule()->
-    return QRectF(-50, -50,100.,100.);
+    return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
 }
 
 void PlayerGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush(Qt::yellow);
-   // painter->drawRect(-this->heigth/2, -this->width/2, this->heigth*2, this->width*2);
     painter->drawRect(boundingRect());
-    this->setRotation(this->_player->getAngle());
-
     painter->setPen(Qt::black);
     painter->drawText(0, 0, this->_player->getPseudo());
 

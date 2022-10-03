@@ -20,17 +20,20 @@ Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
     if(this->type == "bike") {
         this->maxSpeed = 300;
         this->acceleration = 10;
-        this->weight = 0;
+        this->weight = 50;
+        this->height = 20;
         this->steeringAngle = -1;
     } else if(this->type == "car") {
         this->maxSpeed = 300;
         this->acceleration = 10;
-        this->weight = 2;
+        this->weight = 10;
+        this->height = 10;
         this->steeringAngle = -1;
     } else if(this->type == "truck") {
         this->maxSpeed = 300;
         this->acceleration = 10;
-        this->weight = 38;
+        this->weight = 100;
+        this->height = 40;
         this->steeringAngle = -1;
     }
 }
@@ -41,7 +44,6 @@ QString Vehicle::toString() {
                 QString::number(this->acceleration),
                 QString::number(this->weight),
                 QString::number(this->steeringAngle),
-                QString::number(this->weight),
                 QString::number(this->height)
                 );
 }

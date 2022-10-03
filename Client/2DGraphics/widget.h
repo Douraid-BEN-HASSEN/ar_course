@@ -13,6 +13,13 @@
 #include "CheckpointGraphics.h"
 #include "PlayerGraphics.h"
 
+#include <QMainWindow>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -22,6 +29,7 @@ public:
     ~Widget();
 
 private:
+    Ui::Widget *ui;
     QMap<int, ObstacleGraphics*> localObstacles;
     QMap<int, CheckpointGraphics*> localCheckpoint;
     QMap<QString, PlayerGraphics*> localPlayers;
