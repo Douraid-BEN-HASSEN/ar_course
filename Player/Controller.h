@@ -51,6 +51,8 @@ public slots:
     void handlePressAction2 (bool isPushed) ;
     void handlePressAction3 (bool isPushed) ;
     void handlePressAction4 (bool isPushed) ;
+    void handleTurnLeftJoystick (double value);
+    //void handleChangeJoystickLeft();
 
     void setControllerType(QString controllerType);
 

@@ -35,6 +35,7 @@ void Controller::createGamepad(){
     connect(gamepad,SIGNAL(buttonBChanged(bool)), this, SLOT(handlePressAction2(bool)));
     connect(gamepad,SIGNAL(buttonXChanged(bool)), this, SLOT(handlePressAction3(bool)));
     connect(gamepad,SIGNAL(buttonYChanged(bool)), this, SLOT(handlePressAction4(bool)));
+    connect(gamepad, SIGNAL(axisLeftXChanged(double)) , this , SLOT(handleTurnLeftJoystick(double)));
 }
 
 QGamepad *Controller::getGamepad()
@@ -150,7 +151,7 @@ void Controller::handlePressTurnLeft(bool isPushed)
                 *this->angle -= 90;
             this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
         } else
-            *this->angle -= 0 ;
+            *this->angle = 0 ;
     }
 }
 
@@ -169,17 +170,26 @@ void Controller::handlePressTurnRight(bool isPushed) {
 void Controller::handlePressBreake(double value){
     qDebug() << "Controller::handlePresseBreake()";
     if (this->controllerType == "controller") {
-        if (*power != -100)
-            *power -= 1;
+        if (value > 0 ) {
+            if (*power != -100)
+                *power -= 1;
+        } else {
+            *power = 0 ;
+        }
         this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
     }
 }
 
 void Controller::handlePressAccelerate(double value){
+    qDebug() << "Controller::handlePressAccelerate()" << value;
+
     if (this->controllerType == "controller") {
-        qDebug() << "Controller::handlePressAccelerate()";
-        if (*power != 100)
-            *power += 1;
+        if (value > 0) {
+            if (*power != 100)
+                *power += 1;
+        } else
+            *power = 0 ;
+
         this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
     }
 }
@@ -215,6 +225,30 @@ void Controller::handlePressAction3(bool isPushed) {
 
 void Controller::handlePressAction4(bool isPushed) {
     qDebug() << "Controller::handlePressAction4()";
+
+
+}
+
+void Controller::handleTurnLeftJoystick(double value)
+{
+    qDebug() << "Controller::handleTurnRightJoystick()" << value ;
+    if (this->controllerType == "controller") {
+        if (value != 0) {
+            if (value == -1 ) { //Turn left
+                *this->angle += 90;
+                this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
+                *this->angle = 0 ;
+            } else if (value == 1) { //Turn right
+                *this->angle -= 90;
+                this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
+                *this->angle = 0 ;
+            }
+        }
+        else {
+            *this->angle = 0 ;
+        }
+
+    }
 }
 
 void Controller::setControllerType(QString controllerType)
