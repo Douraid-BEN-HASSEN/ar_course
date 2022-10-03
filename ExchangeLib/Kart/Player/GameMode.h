@@ -19,6 +19,7 @@
 #include <Kart/Game/Vehicle.h>
 #include <algorithm>
 #include <QTimer>
+#include <Kart/Player/Register.h>
 
 #include "Player.h"
 #include "Item.h"

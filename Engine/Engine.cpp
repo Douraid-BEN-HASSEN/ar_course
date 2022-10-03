@@ -5,21 +5,23 @@
 Engine::Engine(QObject *parent): QObject{parent}
 {
     this->_mqtt = MqttService::instance();
-    this->_mqtt->subscribe("player/register");
+    connect(this->_mqtt, SIGNAL(message(QJsonObject,QString)), this, SLOT(receivedMessage(QJsonObject,QString)));
     this->_mqtt->subscribe("player/control");
 
-    connect(this->_mqtt, SIGNAL(message(QJsonObject,QString)), this, SLOT(receivedMessage(QJsonObject,QString)));
 
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
     this->_properties = new Properties(5);
 
+    connect(RegisterManager::getInstance(), SIGNAL(application(Register*)), this, SLOT(registered(Register*)));
+    connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
+
+
     this->_controls = new QMap<QString, Control*>;
 
-    this->envoiGameInfo();
-    this->control_th();
 
-    this->g_engine.show();
+    this->g_engine = new GEngine();
+    this->control_th();
 
     this->envoiGameProperties();
     this->envoiGameInfo();
@@ -39,20 +41,28 @@ void Engine::envoiGameInfo()
 {
     QTimer::singleShot(100, this, &Engine::envoiGameInfo);
     this->_gameMode->publish();
-
-    // ajout dans le moteur graphique
-    for(Checkpoint *checkpoint: *this->_map->getCheckpoints()) {
-        this->g_engine.updateCheckpoint(checkpoint);
-    }
-
-    for(Obstacle *obstacle: *this->_map->getObstacles()) {
-        this->g_engine.updateObstacle(obstacle);
-    }
-
-    for(Player *player: *this->_gameMode->_players) {
-        this->g_engine.updatePlayer(player);
-    }
 }
+
+QList<QGraphicsItem *> Engine::collision(Player* pPlayer)
+{
+    QList<QGraphicsItem*> g_items;
+    QGraphicsItem* g_player = this->playersGraphics.value(pPlayer->getUuid());
+
+    for(GCheckpoint *g_checkpoint: this->checkpointsGraphics.values()) {
+        if(g_checkpoint->collidesWithItem(g_player)) g_items.append(g_checkpoint);
+    }
+
+    for(GObstacle *g_obstacle: this->obstaclesGraphics.values()) {
+        if(g_obstacle->collidesWithItem(g_player)) g_items.append(g_obstacle);
+    }
+
+    for(GPlayer *g_player: this->playersGraphics.values()) {
+        if(g_player->getUuid() != pPlayer->getUuid() && g_player->collidesWithItem(g_player)) g_items.append(g_player);
+    }
+
+    return g_items;
+}
+
 
 void Engine::control_th()
 {
@@ -62,42 +72,50 @@ void Engine::control_th()
     for(Control *control: this->_controls->values()) {
         Player *player = this->_gameMode->_players->value(control->getUuid());
 
+        playersGraphics.value(player->getUuid())->moveBy(QPoint(1, 2));
 
-        QList<QGraphicsItem*> g_items = this->g_engine.collision(player);
-        if(g_items.count() > 0) {
-            for(int iItem=0; iItem<g_items.count(); iItem++) {
-                GPlayer* g_player = (GPlayer*)g_items[iItem];
-                GCheckpoint* g_checkpoint = (GCheckpoint*)g_items[iItem];
-                GObstacle* g_obstacle = (GObstacle*)g_items[iItem];
+        player->update(control);
 
-                // collision avec player
-                if(g_player->getPlayer()) {
 
-                }
 
-                // collision avec checkpoint
-                if(g_checkpoint->getCheckpoint()) {
-                    int nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
-                    if(g_checkpoint->getId() == nextCheckpoint) {
-                        player->setLastCheckpoint(nextCheckpoint);
-                        nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
-                        if(nextCheckpoint == -1) {
-                            qDebug() << "new checkpoint";
-                            player->setCurrentLap(player->getCurrentLap()+1);
-                        }
+
+
+        QList<QGraphicsItem*> g_items = this->collision(player);
+
+        for (QGraphicsItem *gItem : g_items ) {
+            QGraphicsObject *gObject = static_cast<QGraphicsObject *>(gItem);
+
+
+            if (gObject->property("type") == GCheckpoint::type) {
+                GCheckpoint* g_checkpoint = (GCheckpoint*)gObject;
+
+                int nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
+
+                if (g_checkpoint->getId() == nextCheckpoint) {
+                    player->setLastCheckpoint(nextCheckpoint);
+                    nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
+                    if (nextCheckpoint == -1) {
+                        qDebug() << "new checkpoint";
+                        player->setCurrentLap(player->getCurrentLap()+1);
                     }
                 }
 
-                // collision avec obstacle
-                if(g_obstacle->getObstacle()) {
-                    player->setSpeed(0);
-                }
+            } else if (gObject->property("type") == GPlayer::type) {
+                GPlayer* g_player = (GPlayer*)gObject;
 
+            } else if (gObject->property("type") == GObstacle::type) {
+                GObstacle* g_obstacle = (GObstacle*)gObject;
 
+               //obstacleCollision = true;
             }
+
         }
 
-        player->update(control);
+
+    }
+
+
+
 
         //Vehicle *vehicule = new Vehicle(player->getVehicule());
 
@@ -131,9 +149,8 @@ void Engine::control_th()
         /*this->_gameMode->_players->remove(player->getUuid());
         this->_gameMode->_players->insert(player->getUuid(), player);*/
 
-    }
-
 }
+
 
 int Engine::getNextCheckpointId(int pCurrentCheckpoint)
 {
@@ -158,16 +175,6 @@ int Engine::getNextCheckpointId(int pCurrentCheckpoint)
     return -1;
 }
 
-void Engine::traitementPlayerRegister(QJsonObject pMessage)
-{
-    Player *player = new Player();
-    player->deserialize(pMessage);
-    this->_gameMode->_players->remove(player->getUuid());
-    this->_gameMode->_players->insert(player->getUuid(), player);
-
-    qDebug() << player->serialize();
-}
-
 void Engine::traitementPlayerControl(QJsonObject pMessage)
 {
     qDebug() << pMessage;
@@ -183,8 +190,7 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
     Player *player = this->_gameMode->_players->value(uuid);
 
     if(!player) {
-        player = new Player();
-        player->deserialize(pMessage);
+        return;
     }
 
     Control *control = new Control();
@@ -193,7 +199,6 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
     control->setPower(power);
     control->setButtons(buttons);
 
-    this->_controls->remove(player->getUuid());
     this->_controls->insert(player->getUuid(), control);
 }
 
@@ -202,7 +207,63 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
 //  +------+
 void Engine::receivedMessage(QJsonObject pMessage, QString pTopic)
 {
-    if (pTopic == "player/register") this->traitementPlayerRegister(pMessage);
     if (pTopic == "player/control") this->traitementPlayerControl(pMessage);
 }
 
+void Engine::registered(Register *r) {
+    qDebug() << "register";
+
+    if (GameMode::getInstance()->_players->value(r->getUuid()) != nullptr) {
+        return;
+    }
+
+    Player *p = new Player(r);
+    _gameMode->_players->insert(p->getUuid(), p);
+
+    GPlayer *playerGraphics = playersGraphics.value(p->getUuid());
+
+    if (!playerGraphics) {
+        playerGraphics = new GPlayer(p);
+        this->g_engine->addPlayerGraphics(playerGraphics);
+    }
+
+    playerGraphics->setPos(p->getX(), p->getY());
+
+    delete r;
+}
+
+void Engine::updateMap() {
+
+    for (Obstacle *iterObstacle : Map::getInstance()->getObstacles()->values()) {
+        // Verifier si l object ObstacleRect* obstaclerect  exist
+
+        GObstacle *obstacleGraphics = obstaclesGraphics.value(iterObstacle->getId());
+
+        if (!obstacleGraphics) {
+            obstacleGraphics = new GObstacle(iterObstacle);
+            this->g_engine->addObstacleGraphics(obstacleGraphics);
+            obstaclesGraphics.insert(obstacleGraphics->getId(), obstacleGraphics);
+        }
+
+        obstacleGraphics->setPos(iterObstacle->getX(),iterObstacle->getY());
+    }
+
+
+    for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+
+        GCheckpoint *checkpointGraphics = checkpointsGraphics.value(iterCheckpoint->getId());
+
+        if (!checkpointGraphics) {
+            checkpointGraphics = new GCheckpoint(iterCheckpoint);
+            this->g_engine->addCheckpointGraphics(checkpointGraphics);
+            checkpointsGraphics.insert(checkpointGraphics->getId(), checkpointGraphics);
+        }
+
+        checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
+    }
+}
+
+GEngine * Engine::getGEngine()
+{
+    return g_engine;
+}

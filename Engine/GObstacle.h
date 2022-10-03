@@ -14,6 +14,8 @@ public:
     GObstacle(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
     GObstacle(Obstacle *, QGraphicsItem *parent = nullptr);
 
+        static QString type;
+
     static qreal heigth;
     static qreal width;
     static qreal radius;

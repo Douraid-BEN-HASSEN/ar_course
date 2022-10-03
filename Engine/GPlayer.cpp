@@ -1,7 +1,11 @@
 #include "GPlayer.h"
 
+QString GPlayer::type = "GPlayer";
+
 GPlayer::GPlayer(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}
 {
+    this->setProperty("type", this->type);
+
     this->uuid = player->getUuid();
     this->x = player->getX();
     this->y = player->getY();

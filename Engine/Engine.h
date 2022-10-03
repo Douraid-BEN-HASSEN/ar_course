@@ -11,6 +11,7 @@
 #include <Kart/Game/Control.h>
 #include <Kart/Game/Vehicle.h>
 #include <Kart/Map/Map.h>
+#include <Kart/Player/RegisterManager.h>
 
 #include "GEngine.h"
 
@@ -20,6 +21,7 @@ class Engine : public QObject
 public:
     explicit Engine(QObject *parent = nullptr);
     ~Engine();
+    GEngine *getGEngine();
 
 private:
     MqttService *_mqtt;
@@ -37,15 +39,19 @@ private:
     void control_th();
     int getNextCheckpointId(int pCurrentCheckpoint);
 
-    // graphic
-    GEngine g_engine;
+    QMap<int, GCheckpoint*> checkpointsGraphics;
+    QMap<int, GObstacle*> obstaclesGraphics;
+    QMap<QString, GPlayer*> playersGraphics;
 
-    Checkpoint *testCheckpoint;
-    Obstacle *testObstacle;
-    Player *testPlayer;
+    QList<QGraphicsItem*> collision(Player* pPlayer);
+
+    // graphic
+    GEngine *g_engine;
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
+    void registered(Register *);
+    void updateMap();
 
 };
 

@@ -7,12 +7,26 @@
 // constructor
 Player::Player(QObject *parent): QObject{parent}
 {
-    this->_map = Map::getInstance();
     this->_items = new QMap<QString, int>();
     this->_x = 0;
     this->_y = 0;
     this->_angle = 0;
     this->_speed = 0;
+}
+
+Player::Player(Register *r, QObject *parent): QObject{parent}
+{
+    this->_uuid = r->getUuid();
+    this->_pseudo = r->getPseudo();
+    this->_controller = r->getController();
+    this->_vehicle = r->getVehicle();
+
+    this->_items = new QMap<QString, int>();
+    this->_x = 0;
+    this->_y = 0;
+    this->_angle = 0;
+    this->_speed = 0;
+    this->_lastCheckpoint = 0;
 }
 
 // destructor
@@ -240,17 +254,26 @@ void Player::update(Control *control)
     this->_x += control->getPower() * cos(this->_angle);
     this->_y += -control->getPower() * sin(this->_angle);*/
 
+
+
     int newX = control->getPower() * cos(this->_angle);
     int newY = -control->getPower() * sin(this->_angle);
     this->_angle += control->getAngle()/10;
     this->_x += newX;
     this->_y += newY;
 
+
     /*if((newX >= 0 && newX <= this->_map->getMapWidth()) && (newY >= 0 && newY <= this->_map->getMapHeight())) {
         this->_x += newX;
         this->_y += newY;
     }*/
 
+}
+
+Player *Player::newPos(Control *control)
+{
+     Player *player = new Player();
+     return player;
 }
 
 

@@ -11,12 +11,14 @@
 #include <QMap>
 #include "Kart/Game/Control.h"
 #include "Kart/Map/Map.h"
+#include "Kart/Player/Register.h"
 
 class PLAYER_EXPORT Player : public QObject
 {
     Q_OBJECT
 public:
     explicit Player(QObject *parent = nullptr);
+    Player(Register* r, QObject *parent = nullptr);
     ~Player();
 
     // === UTILS ===
@@ -61,6 +63,7 @@ public:
     QPoint getPosition();
 
     void update(Control *control);
+    Player *newPos(Control *control);
 
 private:
     Map *_map;
@@ -68,16 +71,17 @@ private:
     QString _pseudo;
     QString _color;
     QString _team;
-    int _x;
-    int _y;
-    float _angle;
-    int _speed;
+    int _x = 0;
+    int _y = 0;
+    float _angle = 0;
+    int _speed = 0;
     QString _vehicle; // enum a modifier
     QMap<QString, int> *_items;
-    int _lastCheckpoint;
-    int _currentLap;
+    int _lastCheckpoint = 0;
+    int _currentLap = 0;
     QString _status;
     QString _controller;
+
 
 signals:
 

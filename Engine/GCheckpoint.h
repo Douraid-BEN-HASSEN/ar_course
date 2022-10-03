@@ -12,6 +12,8 @@ class GCheckpoint: public QGraphicsObject
 {
     Q_OBJECT
 public:
+    static QString type;
+
     static qreal radiusCheckpoint;
     GCheckpoint();
     GCheckpoint(Checkpoint *, QGraphicsItem *parent = nullptr);

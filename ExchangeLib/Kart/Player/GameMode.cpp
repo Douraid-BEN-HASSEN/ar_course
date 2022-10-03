@@ -112,6 +112,7 @@ void GameMode::receivedMessage(QJsonObject message, QString topic) {
     }
 }
 
+
 //  +--------+
 //  | SETTER |
 //  +--------+

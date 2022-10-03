@@ -2,12 +2,16 @@
 
 #include <QBrush>
 
+QString GObstacle::type = "GObstacle";
+
 qreal GObstacle::heigth = 100;
 qreal GObstacle::width = 100;
 qreal GObstacle::radius = 50;
 
 GObstacle::GObstacle(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject(parent)
 {
+    this->setProperty("type", this->type);
+
     this->obstacle = obstacle;
     this->id = obstacle->getId();
     this->x = obstacle->getX();

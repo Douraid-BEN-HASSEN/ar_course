@@ -12,6 +12,9 @@ class GPlayer: public QGraphicsObject
     Q_OBJECT
 public:
     GPlayer(Player *, QGraphicsItem *parent = nullptr);
+
+    static QString type;
+
     QString getUuid();
     qreal getX();
     qreal getY();

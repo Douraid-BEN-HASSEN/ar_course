@@ -23,21 +23,28 @@ win32 {
 
 SOURCES += \
     Engine.cpp \
+    GBanana.cpp \
     GCheckpoint.cpp \
     GEngine.cpp \
     GObstacle.cpp \
     GPlayer.cpp \
-    main.cpp
+    main.cpp \
+    window.cpp
 
 HEADERS += \
     Engine.h \
+    GBanana.h \
     GCheckpoint.h \
     GEngine.h \
     GObstacle.h \
-    GPlayer.h
+    GPlayer.h \
+    window.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+FORMS += \
+    window.ui
 

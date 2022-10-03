@@ -1,10 +1,13 @@
 #include "GCheckpoint.h"
 
 
+QString GCheckpoint::type = "GCheckpoint";
 qreal GCheckpoint::radiusCheckpoint = 50;
 
 GCheckpoint::GCheckpoint(Checkpoint *checkpoint, QGraphicsItem *parent):QGraphicsObject(parent)
 {
+    this->setProperty("type", this->type);
+
     this->checkpoint = checkpoint;
     this->id = checkpoint->getId();
     this->x = checkpoint->getX();

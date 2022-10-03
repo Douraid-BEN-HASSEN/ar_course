@@ -22,23 +22,22 @@ public:
     GEngine(QWidget *parent = nullptr);
     ~GEngine();
 
-    void addCheckpoint(Checkpoint* pCheckpoint);
-    void addObstacle(Obstacle* pObstacle);
-    void addPlayer(Player* pPlayer);
+    GPlayer *getGPlayer(QString uuid);
+
+    void addObstacleGraphics(GObstacle *);
+    void addCheckpointGraphics(GCheckpoint *);
+    void addPlayerGraphics(GPlayer *);
     void updateCheckpoint(Checkpoint* pCheckpoint);
     void updateObstacle(Obstacle* pObstacle);
     void updatePlayer(Player* pPlayer);
 
-    QList<QGraphicsItem*> collision(Player* pPlayer);
+
 
 private:
     // liste checkpoints
     // liste obstacles
     QGraphicsScene* mScene;
     QGraphicsView* mView;
-    QMap<int, GCheckpoint*> localCheckpoint;
-    QMap<int, GObstacle*> localObstacles;
-    QMap<QString, GPlayer*> localPlayers;
 
 protected:
     void resizeEvent(QResizeEvent *event);
