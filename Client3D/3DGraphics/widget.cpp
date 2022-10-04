@@ -13,21 +13,56 @@
 
 Widget::Widget(QWidget *parent): QWidget(parent)
 {
-    mScene = new QGraphicsScene(this);
-    mScene->setSceneRect(0, 0, 1000,1000);
-    mView = new QGraphicsView(this);
-    mView->setScene(mScene);
+    this->mView3D = new Qt3DExtras::Qt3DWindow();
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
+    Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(rootEntity);
+
+    Qt3DCore::QEntity *m_cuboidEntity = new Qt3DCore::QEntity(rootEntity);
+    Qt3DExtras::QCuboidMesh *cuboid = new Qt3DExtras::QCuboidMesh();
+    // CuboidMesh Transform
+    Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
+    cuboidTransform->setScale(4.0f);
+    cuboidTransform->setTranslation(QVector3D(5.0f, -4.0f, 0.0f));
+    material->setDiffuse(QColor(QRgb(0x665423)));
+
+    //Cuboid
+    m_cuboidEntity->addComponent(cuboid);
+    m_cuboidEntity->addComponent(material);
+    m_cuboidEntity->addComponent(cuboidTransform);
+
+    // Camera
+    Qt3DRender::QCamera *camera = mView3D->camera();
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    camera->setPosition(QVector3D(0, 0, 40.0f));
+    camera->setViewCenter(QVector3D(0, 0, 0));
+
+    // For camera controls
+    Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(rootEntity);
+    camController->setLinearSpeed( 50.0f );
+    camController->setLookSpeed( 180.0f );
+    camController->setCamera(camera);
+
+
+    mView3D->setRootEntity(rootEntity);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->addWidget(mView);
+    QWidget *container = QWidget::createWindowContainer(mView3D);
+
+    layout->addWidget(container);
     setLayout(layout);
+
+
+
+
 
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
     // Pour finir sur this = Widget apperler updateMap
+
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
     connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
     connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode()));
+
 }
 
 Widget::~Widget() {}

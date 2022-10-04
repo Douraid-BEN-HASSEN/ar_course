@@ -1,4 +1,4 @@
-QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick 3danimation core gui mqtt
+QT += 3dcore 3drender 3dinput 3dlogic 3dextras 3danimation core gui mqtt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,6 +20,7 @@ win32 {
 }
 
 SOURCES += \
+    3DGraphics/Widget3D.cpp \
     3DGraphics/checkpointGraphics3D.cpp \
     3DGraphics/obstacleGraphics3D.cpp \
     3DGraphics/orbittransformcontroller.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
     main.cpp \
 
 HEADERS += \
+    3DGraphics/Widget3D.h \
     3DGraphics/checkpointGraphics3D.h \
     3DGraphics/obstacleGraphics3D.h \
     3DGraphics/orbittransformcontroller.h \
