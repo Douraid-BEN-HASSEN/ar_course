@@ -12,6 +12,8 @@
 #include "Kart/Game/Control.h"
 #include "Kart/Map/Map.h"
 #include "Kart/Player/Register.h"
+#include "Kart/Game/Vehicle.h" //ajouter avant
+#include <QPointF>
 
 class PLAYER_EXPORT Player : public QObject
 {
@@ -71,8 +73,6 @@ private:
     QString _pseudo;
     QString _color;
     QString _team;
-    int _x = 0;
-    int _y = 0;
     float _angle = 0;
     int _speed = 0;
     QString _vehicle; // enum a modifier
@@ -81,8 +81,8 @@ private:
     int _currentLap = 0;
     QString _status;
     QString _controller;
-    double _vx;
-    double _vy;
+    QPoint _pos;
+    QPointF _vitesse;
 
 
 signals:

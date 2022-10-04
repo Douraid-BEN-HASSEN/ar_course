@@ -8,10 +8,9 @@
 Player::Player(QObject *parent): QObject{parent}
 {
     this->_items = new QMap<QString, int>();
-    this->_x = 0;
-    this->_y = 0;
-    this->_vx = 0;
-    this->_vy = 0;
+
+    this->_pos = QPoint(0,0);
+    this->_vitesse = QPointF(0,0);
 
     this->_angle = 0;
     this->_speed = 0;
@@ -25,10 +24,9 @@ Player::Player(Register *r, QObject *parent): QObject{parent}
     this->_vehicle = r->getVehicle();
 
     this->_items = new QMap<QString, int>();
-    this->_x = 0;
-    this->_y = 0;
-    this->_vy = 0;
-    this->_vx = 0;
+
+    this->_pos = QPoint(0,0);
+    this->_vitesse = QPointF(0,0);
 
     this->_angle = 0;
     this->_speed = 0;
@@ -49,8 +47,8 @@ void Player::deserialize(const QJsonObject &jsonObject)
     this->_pseudo = jsonObject["pseudo"].toString();
     this->_color = jsonObject["color"].toString();
     this->_team = jsonObject["team"].toString();
-    this->_x = jsonObject["x"].toInt();
-    this->_y = jsonObject["y"].toInt();
+    this->_pos.setX(jsonObject["x"].toInt());
+    this->_pos.setY(jsonObject["y"].toInt());
     this->_angle = jsonObject["angle"].toDouble();
     this->_speed = jsonObject["speed"].toInt();
     this->_vehicle = jsonObject["vehicle"].toString();
@@ -69,8 +67,8 @@ void Player::deserialize(const QJsonObject &jsonObject)
 
 QString Player::toString() {
     return QString("uuid: %1, x: %2, y: %3, angle: %4, vx: %5, vy: %6").arg(
-                _uuid, QString::number(_x), QString::number(_y), QString::number(_angle),
-                QString::number(_vx), QString::number(_vy)
+                _uuid, QString::number(_pos.x()), QString::number(_pos.y()), QString::number(_angle),
+                QString::number(_vitesse.x()), QString::number(_vitesse.y())
                 );
 }
 
@@ -86,8 +84,8 @@ QJsonObject Player::toJson() {
     jsonObject["pseudo"] = this->_pseudo;
     jsonObject["color"] = this->_color;
     jsonObject["team"] = this->_team;
-    jsonObject["x"] = this->_x;
-    jsonObject["y"] = this->_y;
+    jsonObject["x"] = this->_pos.x();
+    jsonObject["y"] = this->_pos.y();
     jsonObject["angle"] = this->_angle;
     jsonObject["speed"] = this->_speed;
     jsonObject["vehicle"] = this->_vehicle;
@@ -134,12 +132,12 @@ void Player::setTeam(QString pTeam)
 
 void Player::setX(int pX)
 {
-    this->_x = pX;
+    this->_pos.setX(pX);
 }
 
 void Player::setY(int pY)
 {
-    this->_y = pY;
+    this->_pos.setY(pY);
 }
 
 void Player::setAngle(float pAngle)
@@ -203,12 +201,12 @@ QString Player::getTeam()
 
 int Player::getX()
 {
-    return this->_x;
+    return this->_pos.x();
 }
 
 int Player::getY()
 {
-    return this->_y;
+    return this->_pos.y();
 }
 
 float Player::getAngle()
@@ -253,7 +251,7 @@ QString Player::getController()
 
 QPoint Player::getPosition()
 {
-    return QPoint(_x, _y);
+    return _pos;
 }
 
 void Player::update(Control *control)
@@ -269,16 +267,26 @@ void Player::update(Control *control)
     }
 
     qDebug() << control->toString();
+    //qDebug() <<"angle avant traitement"<<this->_angle; << "control->getAngle()"<< control->getAngle();
+    this->_angle += control->getAngle()*0.1;
+    qDebug() <<"angle aprés traitement"<<this->_angle;
 
     float P = 1000;
-    float F = control->getPower(); //Forces
 
-    /* Vitesse sqrt(vx² * vy²)*/
-    float V = sqrt(this->_vx * this->_vx * this->_vy * this->_vy);
+    // Accélération voulu
+    auto F = QPointF(cos(this->_angle), -sin(this->_angle)) *control->getPower();
 
+    // Vitesse actuel = sqrt(vx² * vy²)
+    float V = sqrt(_vitesse.x()*_vitesse.x() + _vitesse.y()*_vitesse.y());
+
+    this->_vitesse = (this->_vitesse + F) *0.9;
+    this->_pos = this->_pos +this->_vitesse.toPoint();
+
+    /*
     this->_vx = (V + F) * cos(this->_angle);
     this->_vy = (V + F) * -sin(this->_angle);
 
+    //vecteur vitesse max
     if (_vx > 50) {
         _vx = 50;
     }
@@ -295,19 +303,19 @@ void Player::update(Control *control)
         _vy = -50;
     }
 
-    this->_angle += control->getAngle();
 
-    /* update pos */
+    /* update pos
     this->_x += _vx * 0.1;
     this->_y += _vy * 0.1;
+
 
     qDebug() << this->toString();
 
     /*if((newX >= 0 && newX <= this->_map->getMapWidth()) && (newY >= 0 && newY <= this->_map->getMapHeight())) {
         this->_x += newX;
         this->_y += newY;
-    }*/
-
+    }
+    */
 }
 
 Player *Player::newPos(Control *control)
