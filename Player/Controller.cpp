@@ -171,8 +171,7 @@ void Controller::handlePressBreake(double value){
     qDebug() << "Controller::handlePresseBreake()";
     if (this->controllerType == "controller") {
         if (value > 0 ) {
-            if (*power != -100)
-                *power -= 1;
+            *this->power = value * - 100 ;
         } else {
             *power = 0 ;
         }
@@ -185,8 +184,7 @@ void Controller::handlePressAccelerate(double value){
 
     if (this->controllerType == "controller") {
         if (value > 0) {
-            if (*power != 100)
-                *power += 1;
+            *this->power = value * 100 ;
         } else
             *power = 0 ;
 
@@ -234,12 +232,12 @@ void Controller::handleTurnLeftJoystick(double value)
     qDebug() << "Controller::handleTurnRightJoystick()" << value ;
     if (this->controllerType == "controller") {
         if (value != 0) {
-            if (value == -1 ) { //Turn left
-                *this->angle += 90;
+            if (value < 0 ) { //Turn left
+                *this->angle += value*90;
                 this->sendMessageControl( 0);
                 *this->angle = 0 ;
-            } else if (value == 1) { //Turn right
-                *this->angle -= 90;
+            } else if (value > 0) { //Turn right
+                *this->angle -= value*90;
                 this->sendMessageControl( 0);
                 *this->angle = 0 ;
             }
