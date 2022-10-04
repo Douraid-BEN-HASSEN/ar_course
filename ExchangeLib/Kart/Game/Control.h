@@ -27,6 +27,7 @@ public:
 
     void publish();
 
+    QString toString();
     void deserialize(const QJsonObject &);
     QString serialize();
     QJsonObject toJson();

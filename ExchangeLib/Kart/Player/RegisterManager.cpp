@@ -27,6 +27,7 @@ RegisterManager::RegisterManager(QObject *parent): QObject{parent}
 
 void RegisterManager::receivedMessage(QJsonObject message, QString topic) {
     if (topic == RegisterManager::topic) {
+        qDebug() << "register recive";
         Register *r = new Register;
         r->deserialize(message);
 

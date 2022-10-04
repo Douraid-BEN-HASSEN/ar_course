@@ -19,6 +19,11 @@ void Control::publish() {
     MqttService::instance()->publish(this->topic, this->serialize());
 }
 
+QString Control::toString()
+{
+    return QString("uuid : %1, angle : %2, power : %3").arg(this->_uuid, QString::number(_angle), QString::number(_power));
+}
+
 void Control::deserialize(const QJsonObject &jsonObject)
 {
     this->_uuid = jsonObject["uuid"].toString();

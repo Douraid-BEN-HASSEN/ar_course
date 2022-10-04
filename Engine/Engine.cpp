@@ -66,18 +66,48 @@ QList<QGraphicsItem *> Engine::collision(Player* pPlayer)
 
 void Engine::control_th()
 {
-    QTimer::singleShot(1000, this, &Engine::control_th);
-
+    QTimer::singleShot(100, this, &Engine::control_th);
     // traitement
-    for(Control *control: this->_controls->values()) {
-        Player *player = this->_gameMode->_players->value(control->getUuid());
-
-        playersGraphics.value(player->getUuid())->moveBy(QPoint(1, 2));
+    for (Player *player: this->_gameMode->_players->values()) {
+        Control *control = this->_controls->value(player->getUuid());
 
         player->update(control);
 
 
 
+
+
+
+/*        float P = vehicule->getMaxSpeed() * vehicule->getMaxSpeed() * (1/2) * vehicule->getWeight();  //1000 avant
+        float F = control->getPower() * P;
+        float C = 1.9;//coef de penetration dans l'air a 20°
+        float Ff = 0.5 * C * 1.09 * (player->getSpeed()*player->getSpeed());
+        float acceleration = (F-Ff) / (vehicule->getWeight()*1000); // acceleration
+        float speed = player->getSpeed() + acceleration;
+        // a faire
+        float angle = (player->getAngle() +(control->getAngle()));
+        qDebug()<<"angle"<<angle;
+        qDebug()<<"acceleration"<<acceleration;
+        qDebug()<<"speed"<<speed;
+        qDebug()<<"===================";
+        qDebug()<<"xDepart"<<player->getX();
+        qDebug()<<"yDepart"<<player->getY();
+
+        int Newx = player->getX() + (control->getPower() * cos(player->getAngle()));
+        int Newy = player->getY() + (control->getPower() * -sin(player->getAngle()));
+
+        qDebug()<<"===================";
+        qDebug()<<"xArriv"<<Newx;
+        qDebug()<<"yArriv"<<Newy;
+
+        qDebug()<<"vehicule"<<player->getVehicule()<<"poid"<<vehicule->getWeight();
+
+        //playersGraphics.value(player->getUuid())->moveBy(Newx,Newy); //int vers real ?? des soucis a prevoir
+        player->setX(Newx);
+        player->setY(Newy);
+        player->setAngle(angle);
+        player->setSpeed(speed);
+*/
 
 
         QList<QGraphicsItem*> g_items = this->collision(player);
@@ -177,7 +207,7 @@ int Engine::getNextCheckpointId(int pCurrentCheckpoint)
 
 void Engine::traitementPlayerControl(QJsonObject pMessage)
 {
-    qDebug() << pMessage;
+    //qDebug() << pMessage;
     QString uuid = pMessage["uuid"].toString();
     float angle = pMessage["angle"].toDouble();
     int power = pMessage["power"].toInt();

@@ -81,6 +81,8 @@ private:
     int _currentLap = 0;
     QString _status;
     QString _controller;
+    double _vx;
+    double _vy;
 
 
 signals:
