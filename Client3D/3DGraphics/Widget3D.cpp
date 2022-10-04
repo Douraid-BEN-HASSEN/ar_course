@@ -119,13 +119,15 @@ qDebug() << "map";
 
 
 
-    connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
+    connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap3D()));
     //connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
     //connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode()));
         this->setRootEntity(scene);
 }
 
-void Widget3D::updateMap() {
+void Widget3D::updateMap3D() {
+    qDebug() << "appel updateMap";
+    qDebug() << "appel updateMap";
     qDebug() << "appel updateMap";
 
 }

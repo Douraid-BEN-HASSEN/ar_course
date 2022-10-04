@@ -37,12 +37,14 @@
 
 class Widget3D: public Qt3DExtras::Qt3DWindow
 {
+    Q_OBJECT
+
 public:
     static Qt3DCore::QEntity *createScene();
     Widget3D();
 
-private:
-    void updateMap();
+private slots:
+    void updateMap3D();
 };
 
 #endif // WIDGET3D_H

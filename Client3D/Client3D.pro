@@ -25,8 +25,6 @@ SOURCES += \
     3DGraphics/obstacleGraphics3D.cpp \
     3DGraphics/orbittransformcontroller.cpp \
     3DGraphics/playerGraphics3D.cpp \
-    3DGraphics/widget.cpp \
-    interface.cpp \
     main.cpp \
 
 HEADERS += \
@@ -35,12 +33,8 @@ HEADERS += \
     3DGraphics/obstacleGraphics3D.h \
     3DGraphics/orbittransformcontroller.h \
     3DGraphics/playerGraphics3D.h \
-    3DGraphics/widget.h \
-    interface.h \
 
 FORMS += \
-    3DGraphics/widget.ui \
-    interface.ui \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
