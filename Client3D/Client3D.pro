@@ -20,25 +20,25 @@ win32 {
 }
 
 SOURCES += \
-    checkpointgraphics.cpp \
+    3DGraphics/checkpointGraphics3D.cpp \
+    3DGraphics/obstacleGraphics3D.cpp \
+    3DGraphics/orbittransformcontroller.cpp \
+    3DGraphics/playerGraphics3D.cpp \
+    3DGraphics/widget.cpp \
     interface.cpp \
     main.cpp \
-    obstaclegraphics.cpp \
-    orbittransformcontroller.cpp \
-    playergraphics.cpp \
-    widget.cpp
 
 HEADERS += \
-    checkpointgraphics.h \
+    3DGraphics/checkpointGraphics3D.h \
+    3DGraphics/obstacleGraphics3D.h \
+    3DGraphics/orbittransformcontroller.h \
+    3DGraphics/playerGraphics3D.h \
+    3DGraphics/widget.h \
     interface.h \
-    obstaclegraphics.h \
-    orbittransformcontroller.h \
-    playergraphics.h \
-    widget.h
 
 FORMS += \
+    3DGraphics/widget.ui \
     interface.ui \
-    widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

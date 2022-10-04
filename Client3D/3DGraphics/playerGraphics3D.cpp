@@ -1,4 +1,4 @@
-#include "playergraphics.h"
+#include "playerGraphics3D.h"
 
 
 PlayerGraphics::PlayerGraphics(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}

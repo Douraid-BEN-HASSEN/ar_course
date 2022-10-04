@@ -1,8 +1,8 @@
+
+
 #include "qt3dwindow.h"
-#include "3DGraphics/orbittransformcontroller.h"
+#include "orbittransformcontroller.h"
 #include "qorbitcameracontroller.h"
-#include <QApplication>
-#include "interface.h"
 
 Qt3DCore::QEntity *createScene()
 {
@@ -87,8 +87,6 @@ Qt3DCore::QEntity *createScene()
 
 int main(int argc, char* argv[])
 {
-
-    /*
     QGuiApplication app(argc, argv);
     Qt3DExtras::Qt3DWindow view;
 
@@ -110,15 +108,4 @@ int main(int argc, char* argv[])
     view.show();
 
     return app.exec();
-    */
-
-    QApplication a(argc, argv);
-
-    interface w;
-
-    w.show();
-    return a.exec();
-
 }
-
-

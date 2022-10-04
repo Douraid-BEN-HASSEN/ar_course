@@ -9,10 +9,10 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-#include "obstaclegraphics.h"
-#include "playergraphics.h"
+#include "obstacleGraphics3D.h"
+#include "playerGraphics3D.h"
 
-#include "checkpointgraphics.h"
+#include "checkpointGraphics3D.h"
 
 class Widget : public QWidget
 {

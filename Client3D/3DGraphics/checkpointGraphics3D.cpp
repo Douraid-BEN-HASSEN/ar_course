@@ -1,4 +1,4 @@
-#include "checkpointgraphics.h"
+#include "checkpointGraphics3D.h"
 
 qreal CheckpointGraphics::radiusCheckpoint = 50;
 

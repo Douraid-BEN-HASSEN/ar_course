@@ -2,8 +2,8 @@
 #include "ui_widget.h"
 
 #include <QHBoxLayout>
-#include "obstaclegraphics.h"
-#include "checkpointgraphics.h"
+#include "obstacleGraphics3D.h"
+#include "checkpointGraphics3D.h"
 
 #include <Kart/Map/Map.h>
 #include <Kart/Game/Properties.h>

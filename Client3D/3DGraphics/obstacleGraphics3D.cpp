@@ -1,4 +1,4 @@
-#include "obstaclegraphics.h"
+#include "obstacleGraphics3D.h"
 #include "Kart/Game/Properties.h"
 
 #include <QBrush>

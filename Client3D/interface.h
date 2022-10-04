@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QDebug>
 
-#include "widget.h"
+#include "3DGraphics/widget.h"
 
 
 QT_BEGIN_NAMESPACE
