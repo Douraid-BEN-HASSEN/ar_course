@@ -35,6 +35,7 @@ void Controller::createGamepad(){
     connect(gamepad,SIGNAL(buttonBChanged(bool)), this, SLOT(handlePressAction2(bool)));
     connect(gamepad,SIGNAL(buttonXChanged(bool)), this, SLOT(handlePressAction3(bool)));
     connect(gamepad,SIGNAL(buttonYChanged(bool)), this, SLOT(handlePressAction4(bool)));
+    connect(gamepad, SIGNAL(axisLeftXChanged(double)) , this , SLOT(handleTurnLeftJoystick(double)));
 }
 
 QGamepad *Controller::getGamepad()
@@ -84,7 +85,7 @@ void Controller::handleKeyEvent(QKeyEvent *key )
         break ;
     }
     if (isCorrectAction == true )
-        this->sendMessageControl(* this->uuid , *this->angle , *this->power , keyAction);
+        this->sendMessageControl( keyAction);
 }
 
 void Controller::handleReleaseKeyEvent(QKeyEvent *key)
@@ -148,9 +149,9 @@ void Controller::handlePressTurnLeft(bool isPushed)
         if (isPushed == true ) {
             if (*this->angle != -90)
                 *this->angle -= 90;
-            this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
+            this->sendMessageControl( 0);
         } else
-            *this->angle -= 0 ;
+            *this->angle = 0 ;
     }
 }
 
@@ -160,7 +161,7 @@ void Controller::handlePressTurnRight(bool isPushed) {
         if (isPushed == true) {
             if (*this->angle != 90)
                 *this->angle += 90;
-            this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
+            this->sendMessageControl( 0);
         } else
             *this->angle = 0 ;
     }
@@ -169,18 +170,27 @@ void Controller::handlePressTurnRight(bool isPushed) {
 void Controller::handlePressBreake(double value){
     qDebug() << "Controller::handlePresseBreake()";
     if (this->controllerType == "controller") {
-        if (*power != -100)
-            *power -= 1;
-        this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
+        if (value > 0 ) {
+            if (*power != -100)
+                *power -= 1;
+        } else {
+            *power = 0 ;
+        }
+        this->sendMessageControl( 0);
     }
 }
 
 void Controller::handlePressAccelerate(double value){
+    qDebug() << "Controller::handlePressAccelerate()" << value;
+
     if (this->controllerType == "controller") {
-        qDebug() << "Controller::handlePressAccelerate()";
-        if (*power != 100)
-            *power += 1;
-        this->sendMessageControl(*this->uuid , *this->angle , *this->power , 0);
+        if (value > 0) {
+            if (*power != 100)
+                *power += 1;
+        } else
+            *power = 0 ;
+
+        this->sendMessageControl( 0);
     }
 }
 
@@ -189,7 +199,7 @@ void Controller::handlePressAction1(bool isPushed) {
         qDebug() << "Controller::handlePressAction1()";
         if (*this->nbBananas > 0 && isPushed == true)  {
             *this->nbBananas -= 1 ;
-            this->sendMessageControl(*this->uuid , *this->angle , *this->power , 1);
+            this->sendMessageControl(1);
         }
     }
 }
@@ -199,7 +209,7 @@ void Controller::handlePressAction2(bool isPushed) {
         qDebug() << "Controller::handlePressAction2()";
         if (*this->nbBomb > 0 && isPushed == true) {
             *this->nbBomb -= 1 ;
-            this->sendMessageControl(*this->uuid , *this->angle , *this->power , 2);}
+            this->sendMessageControl( 2);}
     }
 }
 
@@ -208,13 +218,37 @@ void Controller::handlePressAction3(bool isPushed) {
     if (this->controllerType == "controller") {
         if (*this->nbRocket > 0 && isPushed == true) {
             *this->nbRocket -= 1 ;
-            this->sendMessageControl(*this->uuid , *this->angle , *this->power , 3);
+            this->sendMessageControl( 3);
         }
     }
 }
 
 void Controller::handlePressAction4(bool isPushed) {
     qDebug() << "Controller::handlePressAction4()";
+
+
+}
+
+void Controller::handleTurnLeftJoystick(double value)
+{
+    qDebug() << "Controller::handleTurnRightJoystick()" << value ;
+    if (this->controllerType == "controller") {
+        if (value != 0) {
+            if (value == -1 ) { //Turn left
+                *this->angle += 90;
+                this->sendMessageControl( 0);
+                *this->angle = 0 ;
+            } else if (value == 1) { //Turn right
+                *this->angle -= 90;
+                this->sendMessageControl( 0);
+                *this->angle = 0 ;
+            }
+        }
+        else {
+            *this->angle = 0 ;
+        }
+
+    }
 }
 
 void Controller::setControllerType(QString controllerType)
@@ -223,11 +257,11 @@ void Controller::setControllerType(QString controllerType)
 }
 
 
-void Controller::sendMessageRegister(QString uuid, QString pseudo, QString controller, QString vehicle, QString team)
+void Controller::sendMessageRegister( QString pseudo, QString controller, QString vehicle, QString team)
 {
     qDebug() << "Controller::sendMessageRegister()" ;
     QJsonObject messageJsonObject ;
-    messageJsonObject.insert("uuid" , uuid);
+    messageJsonObject.insert("uuid" , *this->uuid);
     messageJsonObject.insert("pseudo" , pseudo);
     messageJsonObject.insert("controller" , controller);
     messageJsonObject.insert("vehicle" , vehicle);
@@ -237,13 +271,13 @@ void Controller::sendMessageRegister(QString uuid, QString pseudo, QString contr
     MqttService::instance()->publish("player/register" , strJson);
 }
 
-void Controller::sendMessageControl(QString uuid, int angle, int power, int keyAction)
+void Controller::sendMessageControl(int keyAction)
 {
     qDebug() << "Controller::sendMessageControl()" ;
     QJsonObject messageJsonObject ;
-    messageJsonObject.insert("uuid" , uuid);
-    messageJsonObject.insert("angle" , qDegreesToRadians(double(angle)) );
-    messageJsonObject.insert("power" , power);
+    messageJsonObject.insert("uuid" , *this->uuid);
+    messageJsonObject.insert("angle" , qDegreesToRadians(double(*this->angle)) );
+    messageJsonObject.insert("power" , *this->power);
     QJsonObject messageJsonButtonsObject ;
     messageJsonButtonsObject.insert("banana" , keyAction == 1 ? true : false);
     messageJsonButtonsObject.insert("bomb" , keyAction == 2 ? true : false);

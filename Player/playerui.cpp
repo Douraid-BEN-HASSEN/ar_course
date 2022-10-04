@@ -29,7 +29,7 @@ void PlayerUi::buttonPlayPressed()
     this->_controller->setControllerType(this->controllerType);
     if (this->lineEditPseudo->text() != "")
     {
-        this->_controller->sendMessageRegister(this->uuid , this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText().split(" ").at(0) , this->comboBoxTeam->currentText());
+        this->_controller->sendMessageRegister( this->lineEditPseudo->text() , this->comboBoxController->currentText(), this->comboBoxVehicle->currentText().split(" ").at(0) , this->comboBoxTeam->currentText());
         this->team = this->comboBoxTeam->currentText();
         this->vehicle = this->comboBoxVehicle->currentText();
         this->stackedWidget->setCurrentIndex(2);
@@ -48,10 +48,8 @@ void PlayerUi::onRunFind(QByteArray datas)
         this->nbRocket = props->getRocket();
         this->nbTurn = props->getLaps() ;
         this->nbTeam = props->getTeam() ;
-        for (Vehicle *vehicle : this->props->vehicleOptions->values()) {
-            qDebug()  << vehicle ;
+        for (Vehicle *vehicle : this->props->vehicleOptions->values())
             this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
-        }
         this->stackedWidget->setCurrentIndex(1);
         this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
         this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
@@ -92,7 +90,7 @@ void PlayerUi::onGamepadUse()
 void PlayerUi::makeMqttMessage( int keyAction)
 {
     qDebug() << "PlayerUi::makeMqttMessage()";
-    this->_controller->sendMessageControl(this->uuid , this->angle , this->power , keyAction);
+    this->_controller->sendMessageControl( keyAction);
 }
 
 
@@ -135,9 +133,9 @@ PlayerUi::PlayerUi(QWidget *parent)
 
     this->labelLoading = new QLabel("<h1> Trying to find a ride... </h1> ");
     this->buttonClose = new QPushButton("Close game");
+    this->labelLoading->setAlignment(Qt::AlignCenter);
     this->loadingLayout->addWidget(labelLoading);
     this->loadingLayout->addWidget(buttonClose);
-    //Graphic content for the game
     this->gameLayout = new QVBoxLayout ;
 
     this->horizontalLayout_5 = new QHBoxLayout ;
