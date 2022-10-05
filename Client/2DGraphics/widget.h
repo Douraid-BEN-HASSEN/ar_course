@@ -8,10 +8,16 @@
 #include <QtMqtt/QtMqtt>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <Kart/Player/Item.h>
 
 #include "ObstacleGraphics.h"
 #include "CheckpointGraphics.h"
 #include "PlayerGraphics.h"
+
+#include "ItemGraphics.h"
+#include "BananaGraphics.h"
+#include "BombGraphics.h"
+#include "RocketGraphics.h"
 
 #include <QMainWindow>
 
@@ -33,6 +39,7 @@ private:
     QMap<int, ObstacleGraphics*> localObstacles;
     QMap<int, CheckpointGraphics*> localCheckpoint;
     QMap<QString, PlayerGraphics*> localPlayers;
+    QList<ItemGraphics*> localItems;
 
     QGraphicsScene* mScene;
     QGraphicsView* mView;

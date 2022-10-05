@@ -94,6 +94,24 @@ void Widget::updateGameMode() {
         playerGraphics->updatePlayer(iterPlayer);
     }
 
+    localItems.clear();
+
+    for (Item *item : *GameMode::getInstance()->_items) {
+        ItemGraphics *itemGraphics = nullptr;
+
+        if (item->getType() == "banana") {
+            itemGraphics = new BananaGraphics(item);
+        } else if (item->getType() == "bomb") {
+            itemGraphics = new BombGraphics(item);
+        } else if (item->getType() == "rocket") {
+            itemGraphics = new RocketGraphics(item);
+        }
+
+        if (itemGraphics != nullptr) {
+            mScene->addItem(itemGraphics);
+            localItems.append(itemGraphics);
+        }
+    }
 }
 
 void Widget::resizeEvent(QResizeEvent *event)
