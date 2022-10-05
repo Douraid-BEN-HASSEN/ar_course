@@ -1,7 +1,6 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "Kart/Game/Control.h"
 #include <QObject>
 
 #include <Mqtt/MqttService.h>
@@ -12,8 +11,9 @@
 #include <Kart/Game/Vehicle.h>
 #include <Kart/Map/Map.h>
 #include <Kart/Player/RegisterManager.h>
+#include <Kart/Game/Control.h>
 
-#include "GEngine.h"
+#include "2DGraphics/GEngine.h"
 
 class Engine : public QObject
 {
