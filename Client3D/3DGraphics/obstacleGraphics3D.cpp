@@ -3,11 +3,11 @@
 
 #include <QBrush>
 
-qreal ObstacleGraphics::heigth = 100;
-qreal ObstacleGraphics::width = 100;
-qreal ObstacleGraphics::radius = 50;
+qreal ObstacleGraphics3D::heigth = 100;
+qreal ObstacleGraphics3D::width = 100;
+qreal ObstacleGraphics3D::radius = 50;
 
-ObstacleGraphics::ObstacleGraphics(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject(parent)
+ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject(parent)
 {
     this->id = obstacle->getId();
     this->x = obstacle->getX();
@@ -15,36 +15,36 @@ ObstacleGraphics::ObstacleGraphics(Obstacle *obstacle, QGraphicsItem *parent): Q
 }
 
 
-qreal ObstacleGraphics::getId()
+qreal ObstacleGraphics3D::getId()
 {
     return id;
 }
 
-qreal ObstacleGraphics::getX()
+qreal ObstacleGraphics3D::getX()
 {
     return x;
 }
 
-qreal ObstacleGraphics::getY()
+qreal ObstacleGraphics3D::getY()
 {
     return y;
 }
 
-qreal ObstacleGraphics::getHeigth()
+qreal ObstacleGraphics3D::getHeigth()
 {
     return heigth;
 }
-qreal ObstacleGraphics::getWidth()
+qreal ObstacleGraphics3D::getWidth()
 {
     return width;
 }
 
-qreal ObstacleGraphics::getRadius()
+qreal ObstacleGraphics3D::getRadius()
 {
     return radius;
 }
 
-QRectF ObstacleGraphics::boundingRect() const
+QRectF ObstacleGraphics3D::boundingRect() const
 {
     if((int)this->id % 2 == 1){
         return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
@@ -53,7 +53,7 @@ QRectF ObstacleGraphics::boundingRect() const
     }
 }
 
-void ObstacleGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void ObstacleGraphics3D::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush(Qt::blue);
 

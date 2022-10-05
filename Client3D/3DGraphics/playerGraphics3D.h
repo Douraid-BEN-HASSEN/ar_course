@@ -9,11 +9,11 @@
 
 #include <Kart/Player/Player.h>
 
-class PlayerGraphics : public QGraphicsObject
+class PlayerGraphics3D : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    PlayerGraphics(Player *, QGraphicsItem *parent = nullptr);
+    PlayerGraphics3D(Player *, QGraphicsItem *parent = nullptr);
     QString getUuid();
     qreal getX();
     qreal getY();

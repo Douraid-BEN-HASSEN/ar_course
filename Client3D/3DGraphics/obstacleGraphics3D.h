@@ -7,12 +7,12 @@
 
 #include <Kart/Map/Obstacle.h>
 
-class ObstacleGraphics : public QGraphicsObject
+class ObstacleGraphics3D : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    ObstacleGraphics(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
-    ObstacleGraphics(Obstacle *, QGraphicsItem *parent = nullptr);
+    ObstacleGraphics3D(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
+    ObstacleGraphics3D(Obstacle *, QGraphicsItem *parent = nullptr);
 
     static qreal heigth;
     static qreal width;

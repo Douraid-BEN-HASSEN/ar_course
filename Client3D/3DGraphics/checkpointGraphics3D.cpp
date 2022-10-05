@@ -1,41 +1,41 @@
 #include "checkpointGraphics3D.h"
 
-qreal CheckpointGraphics::radiusCheckpoint = 50;
+qreal CheckpointGraphics3D::radiusCheckpoint = 50;
 
-CheckpointGraphics::CheckpointGraphics(Checkpoint *checkpoint, QGraphicsItem *parent):QGraphicsObject(parent)
+CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, QGraphicsItem *parent):QGraphicsObject(parent)
 {
     this->id = checkpoint->getId();
     this->x = checkpoint->getX();
     this->y = checkpoint->getY();
 }
 
-qreal CheckpointGraphics::getId()
+qreal CheckpointGraphics3D::getId()
 {
     return id;
 }
 
-qreal CheckpointGraphics::getX()
+qreal CheckpointGraphics3D::getX()
 {
     return x;
 }
 
-qreal CheckpointGraphics::getY()        //painter->drawEllipse(0,0,this->heigth, this->width);
+qreal CheckpointGraphics3D::getY()        //painter->drawEllipse(0,0,this->heigth, this->width);
 {
     return y;
 }
 
-qreal CheckpointGraphics::getRadius()
+qreal CheckpointGraphics3D::getRadius()
 {
     return radiusCheckpoint;
 }
 
-QRectF CheckpointGraphics::boundingRect() const
+QRectF CheckpointGraphics3D::boundingRect() const
 {
     return QRectF(-this->radiusCheckpoint, -this->radiusCheckpoint,this->radiusCheckpoint*2,this->radiusCheckpoint*2);
 
 }
 
-void CheckpointGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void CheckpointGraphics3D::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush(Qt::green);
     //painter->drawEllipse(-this->getRadius(),-this->getRadius(),this->radius*2, this->radius*2);

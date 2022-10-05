@@ -8,13 +8,13 @@
 
 #include <Kart/Map/Checkpoint.h>
 
-class CheckpointGraphics: public QGraphicsObject
+class CheckpointGraphics3D: public QGraphicsObject
 {
      Q_OBJECT
 public:
     static qreal radiusCheckpoint;
-    CheckpointGraphics();
-    CheckpointGraphics(Checkpoint *, QGraphicsItem *parent = nullptr);
+    CheckpointGraphics3D();
+    CheckpointGraphics3D(Checkpoint *, QGraphicsItem *parent = nullptr);
     qreal getId() ;
     qreal getX();
     qreal getY();

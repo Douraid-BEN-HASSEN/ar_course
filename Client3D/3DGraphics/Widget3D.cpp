@@ -6,64 +6,11 @@ Qt3DCore::QEntity* Widget3D::createScene()
     //En soi, un Qt3DCore::QEntity est une coquille vide.
     //Le comportement d'un objet Qt3DCore::QEntity est défini par les objets Qt3DCore::QComponent auxquels il fait référence.
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
-
     // Rendu Phong Material
     // La classe QDiffuseSpecularMaterial fournit une implémentation par défaut de l'effet d'éclairage phong
     // L'effet d'éclairage phong est basé sur la combinaison de 3 composants d'éclairage ambiant, diffus et spéculaire.
     // Les forces relatives de ces composants sont contrôlées au moyen de leurs coefficients de réflectivité qui sont modélisés comme des triplets RVB :
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(rootEntity);
-
-    /*
-    //En soi, un Qt3DCore::QEntity est une coquille vide.
-    //Le comportement d'un objet Qt3DCore::QEntity est défini par les objets Qt3DCore::QComponent auxquels il fait référence.
-    Qt3DCore::QEntity *torusEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DExtras::QTorusMesh *torusMesh = new Qt3DExtras::QTorusMesh;
-    // Rayon ellipse
-    torusMesh->setRadius(5);
-    torusMesh->setMinorRadius(1);
-    torusMesh->setRings(100);
-    torusMesh->setSlices(20);
-
-    // Transformation Torus
-    Qt3DCore::QTransform *torusTransform = new Qt3DCore::QTransform;
-    torusTransform->setScale3D(QVector3D(1.5, 1, 0.5));
-    torusTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
-
-    // Elairage
-    torusEntity->addComponent(material);
-    torusEntity->addComponent(torusMesh);
-    torusEntity->addComponent(torusTransform);
-
-
-    //##############################################################################################################
-
-    // Sphere
-    Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
-    sphereMesh->setRadius(3);
-    sphereMesh->setGenerateTangents(true);
-
-    Qt3DCore::QTransform *sphereTransform = new Qt3DCore::QTransform;
-    OrbitTransformController *controller = new OrbitTransformController(sphereTransform);
-    controller->setTarget(sphereTransform);
-    controller->setRadius(20.0f);
-
-    QPropertyAnimation *sphereRotateTransformAnimation = new QPropertyAnimation(sphereTransform);
-    sphereRotateTransformAnimation->setTargetObject(controller);
-    sphereRotateTransformAnimation->setPropertyName("angle");
-    sphereRotateTransformAnimation->setStartValue(QVariant::fromValue(0));
-    sphereRotateTransformAnimation->setEndValue(QVariant::fromValue(360));
-    sphereRotateTransformAnimation->setDuration(10000);
-    sphereRotateTransformAnimation->setLoopCount(-1);
-    sphereRotateTransformAnimation->start();
-
-    sphereEntity->addComponent(sphereMesh);
-    sphereEntity->addComponent(sphereTransform);
-    sphereEntity->addComponent(material);
-
-    */
-// #####################################################################################################################
-    //
 
     Qt3DCore::QEntity *m_cuboidEntity = new Qt3DCore::QEntity(rootEntity);
 
@@ -80,21 +27,8 @@ Qt3DCore::QEntity* Widget3D::createScene()
     m_cuboidEntity->addComponent(material);
     m_cuboidEntity->addComponent(cuboidTransform);
 
-    Qt3DCore::QEntity *m_cuboidEntity2 = new Qt3DCore::QEntity(rootEntity);
-
-    Qt3DExtras::QCuboidMesh *cuboid2 = new Qt3DExtras::QCuboidMesh();
-    // CuboidMesh Transform
-    Qt3DCore::QTransform *cuboidTransform2 = new Qt3DCore::QTransform();
-    cuboidTransform2->setScale(4.0f);
-    cuboidTransform2->setTranslation(QVector3D(5.0f, -4.0f, 0.0f));
-
-    material->setDiffuse(QColor(QRgb(0x665423)));
-
-    //Cuboid
-    m_cuboidEntity2->addComponent(cuboid2);
-    m_cuboidEntity2->addComponent(material);
-    m_cuboidEntity2->addComponent(cuboidTransform2);
-
+//####################################################################################################
+    // Créer le plateau
 
     return rootEntity;
 }
@@ -114,8 +48,6 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
     camController->setLinearSpeed( 50.0f );
     camController->setLookSpeed( 180.0f );
     camController->setCamera(camera);
-qDebug() << "map";
-
 
 
 
@@ -129,5 +61,6 @@ void Widget3D::updateMap3D() {
     qDebug() << "appel updateMap";
     qDebug() << "appel updateMap";
     qDebug() << "appel updateMap";
+
 
 }
