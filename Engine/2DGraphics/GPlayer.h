@@ -30,9 +30,10 @@ private:
     QString uuid;
     qreal heigth = 50;
     qreal width = 50;
+    int _speed = 0;
+
     Player *_player;
     float _angle = 0;
-    int _speed = 0;
     QString _vehicle;
     QMap<QString, int> *_items;
     int _lastCheckpoint = 0;

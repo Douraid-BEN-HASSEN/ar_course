@@ -32,6 +32,11 @@ void GEngine::addPlayerGraphics(GPlayer* gPlayer)
     this->mScene->addItem(gPlayer);
 }
 
+void GEngine::removeItem(QGraphicsItem *graphicsItem)
+{
+    mScene->removeItem(graphicsItem);
+}
+
 void GEngine::resizeEvent(QResizeEvent *event)
 {
     mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);

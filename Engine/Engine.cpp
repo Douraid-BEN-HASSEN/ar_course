@@ -13,9 +13,14 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_gameMode = new GameMode();
     this->_properties = new Properties(5);
 
+    GObstacle::radius = this->_properties->getCircleRadius();
+    GObstacle::heigth = this->_properties->getRectangleHeight();
+    GObstacle::width = this->_properties->getRectangleWidth();
+
+    GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
+
     connect(RegisterManager::getInstance(), SIGNAL(application(Register*)), this, SLOT(registered(Register*)));
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
-
 
     this->_controls = new QMap<QString, Control*>;
 
@@ -239,4 +244,27 @@ void Engine::traitementPlayerRegister(QJsonObject pMessage)
     player->deserialize(pMessage);
     this->_gameMode->_players->remove(player->getUuid());
     this->_gameMode->_players->insert(player->getUuid(), player);
+}
+
+void Engine::reset(bool b)
+{
+    qDebug() << "reset";
+
+    for (QGraphicsItem *item : this->checkpointsGraphics.values()) {
+        this->g_engine->removeItem(item);
+    }
+    this->checkpointsGraphics.clear();
+
+    for (QGraphicsItem *item : this->obstaclesGraphics.values()) {
+        this->g_engine->removeItem(item);
+    }
+    this->obstaclesGraphics.clear();
+
+    for (QGraphicsItem *item : this->playersGraphics.values()) {
+        this->g_engine->removeItem(item);
+    }
+    this->playersGraphics.clear();
+
+    this->_gameMode->reset();
+    this->_map->reste();
 }

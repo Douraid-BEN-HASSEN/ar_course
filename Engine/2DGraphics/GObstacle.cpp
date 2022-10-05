@@ -6,7 +6,7 @@ QString GObstacle::type = "GObstacle";
 
 qreal GObstacle::heigth = 100;
 qreal GObstacle::width = 100;
-qreal GObstacle::radius = 50;
+qreal GObstacle::radius = 100;
 
 GObstacle::GObstacle(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject(parent)
 {

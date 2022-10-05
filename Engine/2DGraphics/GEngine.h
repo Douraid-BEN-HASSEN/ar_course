@@ -31,8 +31,7 @@ public:
     void updateObstacle(Obstacle* pObstacle);
     void updatePlayer(Player* pPlayer);
 
-
-
+    void removeItem(QGraphicsItem *);
 private:
     // liste checkpoints
     // liste obstacles

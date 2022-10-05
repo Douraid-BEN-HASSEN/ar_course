@@ -33,15 +33,13 @@ QString GPlayer::getUuid()
 
 QRectF GPlayer::boundingRect() const
 {
-    return QRectF(-50, -50,100.,100.);
+    return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
 }
 
 void GPlayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush(Qt::yellow);
     painter->drawRect(boundingRect());
-    this->setRotation(this->_player->getAngle());
-
     painter->setPen(Qt::black);
     painter->drawText(0, 0, this->_player->getPseudo());
 }

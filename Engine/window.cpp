@@ -12,9 +12,14 @@ Window::Window(QWidget *parent) :
 
     ui->verticalLayout_main->addWidget(ge);
 
+    connect(ui->pushButton_reset, SIGNAL(clicked(bool)), e, SLOT(reset(bool)));
 }
 
 Window::~Window()
 {
     delete ui;
+}
+
+void Window::resetEngine(bool b) {
+
 }

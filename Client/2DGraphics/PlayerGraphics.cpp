@@ -2,9 +2,6 @@
 #include <Kart/Game/Vehicle.h>
 #include <Kart/Game/Properties.h>
 
-qreal PlayerGraphics::heigth = 100;
-qreal PlayerGraphics::width = 100;
-
 PlayerGraphics::PlayerGraphics(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}
 {
     this->uuid = player->getUuid();
@@ -49,9 +46,9 @@ void PlayerGraphics::updatePlayer(Player *player) {
     this->setRotation(qRadiansToDegrees(-player->getAngle()));
 
     Vehicle *veh = Properties::getInstance()->vehicleOptions->value(player->getVehicule());
-    if (veh != nullptr){
-    this->heigth = veh->getHeight();
-    this->width = veh->getWidth();
+    if (veh != nullptr) {
+        this->heigth = veh->getHeight();
+        this->width = veh->getWidth();
     }
 }
 

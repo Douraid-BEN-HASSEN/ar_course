@@ -20,6 +20,9 @@ public:
 
 private:
     Ui::Window *ui;
+
+private slots:
+    void resetEngine(bool);
 };
 
 #endif // WINDOW_H

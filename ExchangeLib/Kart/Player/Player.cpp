@@ -326,6 +326,7 @@ void Player::update(Control *control)
 
 
     qDebug() << this->toString();
+    */
 
     /*if((newX >= 0 && newX <= this->_map->getMapWidth()) && (newY >= 0 && newY <= this->_map->getMapHeight())) {
         this->_x += newX;

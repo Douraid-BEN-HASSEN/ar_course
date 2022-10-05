@@ -169,3 +169,8 @@ QMap<int, Obstacle*>* Map::getObstacles()
 }
 
 
+void Map::reste()
+{
+    this->_obstacles->clear();
+    this->_checkpoints->clear();
+}

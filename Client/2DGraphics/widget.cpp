@@ -94,6 +94,10 @@ void Widget::updateGameMode() {
         playerGraphics->updatePlayer(iterPlayer);
     }
 
+    for (ItemGraphics *graphicsItem : localItems) {
+        mScene->removeItem(graphicsItem);
+    }
+
     localItems.clear();
 
     for (Item *item : *GameMode::getInstance()->_items) {

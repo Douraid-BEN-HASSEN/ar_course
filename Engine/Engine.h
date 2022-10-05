@@ -23,6 +23,9 @@ public:
     ~Engine();
     GEngine *getGEngine();
 
+public slots:
+    void reset(bool);
+
 private:
     MqttService *_mqtt;
 
