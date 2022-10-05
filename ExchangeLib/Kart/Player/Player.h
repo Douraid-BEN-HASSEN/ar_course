@@ -45,6 +45,7 @@ public:
     void setCurrentLap(int pCurrentLap);
     void setStatus(QString pStatus);
     void setController(QString pController);
+    void copyPlayer(Player *pPlayer); // pointer
 
     // === GETTER ===
     QString getUuid();

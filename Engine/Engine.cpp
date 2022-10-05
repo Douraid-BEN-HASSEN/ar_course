@@ -19,7 +19,6 @@ Engine::Engine(QObject *parent): QObject{parent}
 
     this->_controls = new QMap<QString, Control*>;
 
-
     this->g_engine = new GEngine();
     this->control_th();
 
@@ -63,58 +62,27 @@ QList<QGraphicsItem *> Engine::collision(Player* pPlayer)
     return g_items;
 }
 
+qreal Engine::intersectionVal(QGraphicsItem *pItem1, QGraphicsItem *pItem2)
+{
+    return pItem1->shape().intersected(pItem2->shape()).boundingRect().height() * pItem1->shape().intersected(pItem2->shape()).boundingRect().width();
+}
 
 void Engine::control_th()
 {
     QTimer::singleShot(100, this, &Engine::control_th);
     // traitement
     for (Player *player: this->_gameMode->_players->values()) {
+        QGraphicsItem* g_player = this->playersGraphics.value(player->getUuid());
         Control *control = this->_controls->value(player->getUuid());
 
         player->update(control);
-
-
-
-
-
-
-/*        float P = vehicule->getMaxSpeed() * vehicule->getMaxSpeed() * (1/2) * vehicule->getWeight();  //1000 avant
-        float F = control->getPower() * P;
-        float C = 1.9;//coef de penetration dans l'air a 20°
-        float Ff = 0.5 * C * 1.09 * (player->getSpeed()*player->getSpeed());
-        float acceleration = (F-Ff) / (vehicule->getWeight()*1000); // acceleration
-        float speed = player->getSpeed() + acceleration;
-        // a faire
-        float angle = (player->getAngle() +(control->getAngle()));
-        qDebug()<<"angle"<<angle;
-        qDebug()<<"acceleration"<<acceleration;
-        qDebug()<<"speed"<<speed;
-        qDebug()<<"===================";
-        qDebug()<<"xDepart"<<player->getX();
-        qDebug()<<"yDepart"<<player->getY();
-
-        int Newx = player->getX() + (control->getPower() * cos(player->getAngle()));
-        int Newy = player->getY() + (control->getPower() * -sin(player->getAngle()));
-
-        qDebug()<<"===================";
-        qDebug()<<"xArriv"<<Newx;
-        qDebug()<<"yArriv"<<Newy;
-
-        qDebug()<<"vehicule"<<player->getVehicule()<<"poid"<<vehicule->getWeight();
-
-        //playersGraphics.value(player->getUuid())->moveBy(Newx,Newy); //int vers real ?? des soucis a prevoir
-        player->setX(Newx);
-        player->setY(Newy);
-        player->setAngle(angle);
-        player->setSpeed(speed);
-*/
-
+        g_player->setX(player->getX());
+        g_player->setY(player->getY());
 
         QList<QGraphicsItem*> g_items = this->collision(player);
 
         for (QGraphicsItem *gItem : g_items ) {
             QGraphicsObject *gObject = static_cast<QGraphicsObject *>(gItem);
-
 
             if (gObject->property("type") == GCheckpoint::type) {
                 GCheckpoint* g_checkpoint = (GCheckpoint*)gObject;
@@ -127,60 +95,52 @@ void Engine::control_th()
                     if (nextCheckpoint == -1) {
                         qDebug() << "new checkpoint";
                         player->setCurrentLap(player->getCurrentLap()+1);
+                        player->setLastCheckpoint(0);
                     }
                 }
 
             } else if (gObject->property("type") == GPlayer::type) {
                 GPlayer* g_player = (GPlayer*)gObject;
 
+
             } else if (gObject->property("type") == GObstacle::type) {
                 GObstacle* g_obstacle = (GObstacle*)gObject;
 
-               //obstacleCollision = true;
+                // copie du player
+                Player oldPlayer;
+                qreal oldIntersectionVal = this->intersectionVal(g_player, g_obstacle);
+                oldPlayer.copyPlayer(player);
+
+                // faire le déplacement
+                player->update(control);
+
+                // comparer les valeur
+                qreal newIntersectionVal = this->intersectionVal(g_player, g_obstacle);
+                qDebug() << "newIntersectionVal => " << newIntersectionVal;
+                qDebug() << "oldIntersectionVal => " << oldIntersectionVal;
+                if(newIntersectionVal > oldIntersectionVal) {
+                    // restauration du player
+                    player->setUuid(oldPlayer.getUuid());
+                    player->setPseudo(oldPlayer.getPseudo());
+                    player->setColor(oldPlayer.getColor());
+                    player->setTeam(oldPlayer.getTeam());
+                    player->setX(oldPlayer.getX());
+                    player->setY(oldPlayer.getY());
+                    player->setAngle(oldPlayer.getAngle());
+                    player->setSpeed(oldPlayer.getSpeed());
+                    player->setVehicule(oldPlayer.getVehicule());
+                    player->setLastCheckpoint(oldPlayer.getLastCheckpoint());
+                    player->setCurrentLap(oldPlayer.getCurrentLap());
+                    player->setStatus(oldPlayer.getStatus());
+                    player->setController(oldPlayer.getController());
+                }
             }
 
         }
 
-
+        //g_player->setPos(player->getX(), player->getY());
     }
-
-
-
-
-        //Vehicle *vehicule = new Vehicle(player->getVehicule());
-
-        /*float P = 1000;
-
-        float F = control->getPower() * P;
-        float C = 1.9;
-        float Ff = 0.5 * C * 1.09 * (player->getSpeed()*player->getSpeed());
-        float acceleration = (F-Ff) / (vehicule->getWeight()*1000); // acceleration
-        float speed = player->getSpeed() + acceleration;
-        // a faire
-        int x = player->getX() + (control->getPower()) * cos(player->getAngle());
-        int y = player->getY() + (control->getPower()) * -sin(player->getAngle());
-        float angle = player->getAngle() + (player->getAngle()-control->getAngle());*/
-
-        /*int x = player->getX() + (control->getPower()) * cos(control->getAngle());
-        int y = player->getY() + (control->getPower()) * -sin(control->getAngle());
-        float angle = player->getAngle();
-        int speed = player->getSpeed();*/
-
-
-        /*
-        player->setX(x);
-        player->setY(y);
-        player->setAngle(angle);
-        player->setSpeed(speed);*/
-
-        // gerer les checkpoints
-        // gerer les obstacles
-
-        /*this->_gameMode->_players->remove(player->getUuid());
-        this->_gameMode->_players->insert(player->getUuid(), player);*/
-
 }
-
 
 int Engine::getNextCheckpointId(int pCurrentCheckpoint)
 {
@@ -238,6 +198,7 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
 void Engine::receivedMessage(QJsonObject pMessage, QString pTopic)
 {
     if (pTopic == "player/control") this->traitementPlayerControl(pMessage);
+
 }
 
 void Engine::registered(Register *r) {
@@ -255,11 +216,12 @@ void Engine::registered(Register *r) {
     if (!playerGraphics) {
         playerGraphics = new GPlayer(p);
         this->g_engine->addPlayerGraphics(playerGraphics);
+        this->playersGraphics.insert(p->getUuid(), playerGraphics);
     }
 
     playerGraphics->setPos(p->getX(), p->getY());
 
-    delete r;
+    //delete r;
 }
 
 void Engine::updateMap() {
@@ -278,7 +240,6 @@ void Engine::updateMap() {
         obstacleGraphics->setPos(iterObstacle->getX(),iterObstacle->getY());
     }
 
-
     for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
 
         GCheckpoint *checkpointGraphics = checkpointsGraphics.value(iterCheckpoint->getId());
@@ -291,9 +252,23 @@ void Engine::updateMap() {
 
         checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
+
+    for (GPlayer *g_player : this->playersGraphics) {
+        Player *player = _gameMode->_players->value(g_player->getUuid());
+        g_player->setPos(player->getX(), player->getY());
+    }
+
 }
 
 GEngine * Engine::getGEngine()
 {
     return g_engine;
+}
+
+void Engine::traitementPlayerRegister(QJsonObject pMessage)
+{
+    Player *player = new Player();
+    player->deserialize(pMessage);
+    this->_gameMode->_players->remove(player->getUuid());
+    this->_gameMode->_players->insert(player->getUuid(), player);
 }

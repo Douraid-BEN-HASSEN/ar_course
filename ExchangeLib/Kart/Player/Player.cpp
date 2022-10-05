@@ -176,6 +176,23 @@ void Player::setController(QString pController)
     this->_controller = pController;
 }
 
+void Player::copyPlayer(Player *pPlayer)
+{
+    this->_uuid = pPlayer->getUuid();
+    this->_pseudo = pPlayer->getPseudo();
+    this->_color = pPlayer->getColor();
+    this->_team = pPlayer->getTeam();
+    this->_pos.setX(pPlayer->getX());
+    this->_pos.setY(pPlayer->getY());
+    this->_angle = pPlayer->getAngle();
+    this->_speed = pPlayer->getSpeed();
+    this->_vehicle = pPlayer->getVehicule();
+    this->_lastCheckpoint = pPlayer->getLastCheckpoint();
+    this->_currentLap = pPlayer->getCurrentLap();
+    this->_status = pPlayer->getStatus();
+    this->_controller = pPlayer->getController();
+}
+
 //  +--------+
 //  | GETTER |
 //  +--------+
@@ -256,12 +273,6 @@ QPoint Player::getPosition()
 
 void Player::update(Control *control)
 {
-    //qDebug() << this->getX() << " " << this->getY() << " " << this->getAngle() << " " << control->getAngle() << " " << control->getPower();
-    /*this->_angle += control->getAngle()/10;
-    this->_x += control->getPower() * cos(this->_angle);
-    this->_y += -control->getPower() * sin(this->_angle);*/
-
-
     if (!control) {
         return;
     }
@@ -279,7 +290,7 @@ void Player::update(Control *control)
     // Vitesse actuel = sqrt(vx² * vy²)
     float V = sqrt(_vitesse.x()*_vitesse.x() + _vitesse.y()*_vitesse.y());
 
-    this->_vitesse = (this->_vitesse + F) *0.9;
+    this->_vitesse = (this->_vitesse + F) *0.9; //0.9 constante pour trainée
     this->_pos = this->_pos +this->_vitesse.toPoint();
 
     /*
