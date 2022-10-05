@@ -186,6 +186,7 @@ void Engine::registered(Register *r) {
     }
 
     Player *p = new Player(r);
+
     _gameMode->_players->insert(p->getUuid(), p);
 
     GPlayer *playerGraphics = playersGraphics.value(p->getUuid());
@@ -194,6 +195,20 @@ void Engine::registered(Register *r) {
         playerGraphics = new GPlayer(p);
         this->g_engine->addPlayerGraphics(playerGraphics);
         this->playersGraphics.insert(p->getUuid(), playerGraphics);
+    }
+
+    qDebug() << p->getVehicule();
+
+    Vehicle *veh = this->_properties->vehicleOptions->value(p->getVehicule());
+
+    qDebug() << veh->toString();
+
+    if (veh != nullptr) {
+        qDebug() << veh->getHeight();
+        qDebug() << veh->getWidth();
+
+        playerGraphics->setHeigth(veh->getHeight());
+        playerGraphics->setWidth(veh->getWidth());
     }
 
     playerGraphics->setPos(p->getPosition());

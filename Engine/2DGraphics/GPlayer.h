@@ -6,6 +6,7 @@
 #include <QPainter>
 
 #include <Kart/Player/Player.h>
+#include <Kart/Game/Properties.h>
 
 class GPlayer: public QGraphicsObject
 {
@@ -18,13 +19,15 @@ public:
     QString getUuid();
     QPoint getPos();
     qreal getRadius();
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    Player* getPlayer();
+    void setHeigth(int);
+    void setWidth(int);
+
     QString className();
     void update(Control *control);
+    Player* getPlayer();
 
-
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
     QString uuid;
