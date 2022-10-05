@@ -13,6 +13,8 @@ void PlayerUi::keyPressEvent(QKeyEvent *key){
 
 void PlayerUi::keyReleaseEvent(QKeyEvent *key){
     qDebug() << "PlayerUi::keyReleaseEvent()" ;
+    this->_controller->handleReleaseKeyEvent(key);
+    this->updateLabel();
 }
 
 

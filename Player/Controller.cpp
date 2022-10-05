@@ -92,8 +92,19 @@ void Controller::handleReleaseKeyEvent(QKeyEvent *key)
 {
     qDebug() << "Controller::handleReleaseKeyEvent()" ;
     switch(key->key()) {
-    case Qt::Key_Q : case Qt::Key_D:
+    case Qt::Key_Q :
         *this->angle = 0 ;
+        break ;
+    case Qt::Key_D:
+        *this->angle = 0 ;
+        break ;
+    case Qt::Key_Z :
+        qDebug() << "test !!" ;
+        *this->power = 0 ;
+        break ;
+    case Qt::Key_S :
+        qDebug() << "test !!" ;
+        *this->power = 0 ;
         break ;
     }
 }
@@ -105,7 +116,7 @@ void Controller::catchKeyUp()
     qDebug() << "Controller::catchKeyUp()" ;
     if (*this->power != 100) {
         *this->angle = 0 ;
-        *this->power += 1;
+        *this->power = 25;
     }
 }
 
@@ -114,7 +125,7 @@ void Controller::catchKeyDown()
     qDebug() << "Controller::catchKeyDown()" ;
     if(*this->power != -100) {
         *this->angle = 0 ;
-        *this->power -= 1;
+        *this->power = -25;
     }
 
 }
