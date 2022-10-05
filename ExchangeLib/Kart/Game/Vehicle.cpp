@@ -21,30 +21,34 @@ Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
         this->maxSpeed = 300;
         this->acceleration = 10;
         this->weight = 50;
-        this->height = 20;
+        this->height = 10;
+        this->width = 5;
         this->steeringAngle = -1;
     } else if(this->type == "car") {
         this->maxSpeed = 300;
         this->acceleration = 10;
         this->weight = 10;
         this->height = 10;
+        this->width = 10;
         this->steeringAngle = -1;
     } else if(this->type == "truck") {
         this->maxSpeed = 300;
         this->acceleration = 10;
         this->weight = 100;
         this->height = 40;
+        this->width = 10;
         this->steeringAngle = -1;
     }
 }
 
 QString Vehicle::toString() {
-    return QString("%1 | MS : %2 | A : %3 | W : %4 | SA : %5").arg(
+    return QString("MaxSpeed %1 | Acceleration : %2 | Weight : %3 | Height : %4, Width %5 | Angle : %6").arg(
                 QString::number(this->maxSpeed),
                 QString::number(this->acceleration),
                 QString::number(this->weight),
-                QString::number(this->steeringAngle),
-                QString::number(this->height)
+                QString::number(this->height),
+                QString::number(this->width),
+                QString::number(this->steeringAngle)
                 );
 }
 
