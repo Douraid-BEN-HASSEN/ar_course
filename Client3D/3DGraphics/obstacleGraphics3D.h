@@ -5,14 +5,35 @@
 #include <QObject>
 #include <QPainter>
 
+#include "Qt3DExtras/Qt3DWindow"
+#include <Qt3DCore/QEntity>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraLens>
+#include <Qt3DCore/QTransform>
+#include <Qt3DCore/QAspectEngine>
+
+#include <Qt3DInput/QInputAspect>
+
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QTorusMesh>
+#include <Qt3DExtras/QCuboidMesh>
+#include <QPropertyAnimation>
+
+#include <QDiffuseSpecularMaterial>
+#include <QOrbitCameraController>
+
 #include <Kart/Map/Obstacle.h>
 
-class ObstacleGraphics3D : public QGraphicsObject
+class ObstacleGraphics3D : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
-    ObstacleGraphics3D(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = nullptr);
-    ObstacleGraphics3D(Obstacle *, QGraphicsItem *parent = nullptr);
+    ObstacleGraphics3D(QNode *parent = nullptr);
+    ObstacleGraphics3D(Obstacle *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
 
     static qreal heigth;
     static qreal width;
@@ -24,8 +45,8 @@ public:
     qreal getHeigth();
     qreal getWidth();
     qreal getRadius();
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    //QRectF boundingRect() const;
+    //void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 
 private:
