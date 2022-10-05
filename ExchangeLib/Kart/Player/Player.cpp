@@ -271,6 +271,11 @@ QPoint Player::getPosition()
     return _pos;
 }
 
+void Player::setPos(QPoint p)
+{
+    this->_pos = p;
+}
+
 void Player::update(Control *control)
 {
     if (!control) {

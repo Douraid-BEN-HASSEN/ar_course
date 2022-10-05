@@ -12,7 +12,7 @@
 #include "Kart/Game/Control.h"
 #include "Kart/Map/Map.h"
 #include "Kart/Player/Register.h"
-#include "Kart/Game/Vehicle.h" //ajouter avant
+#include "Kart/Game/Vehicle.h"
 #include <QPointF>
 
 class PLAYER_EXPORT Player : public QObject
@@ -64,6 +64,7 @@ public:
     QString getController();
 
     QPoint getPosition();
+    void setPos(QPoint);
 
     void update(Control *control);
     Player *newPos(Control *control);

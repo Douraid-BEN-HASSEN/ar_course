@@ -42,10 +42,9 @@ void Engine::envoiGameInfo()
     this->_gameMode->publish();
 }
 
-QList<QGraphicsItem *> Engine::collision(Player* pPlayer)
+QList<QGraphicsItem *> Engine::collision(GPlayer* g_player)
 {
     QList<QGraphicsItem*> g_items;
-    QGraphicsItem* g_player = this->playersGraphics.value(pPlayer->getUuid());
 
     for(GCheckpoint *g_checkpoint: this->checkpointsGraphics.values()) {
         if(g_checkpoint->collidesWithItem(g_player)) g_items.append(g_checkpoint);
@@ -56,7 +55,7 @@ QList<QGraphicsItem *> Engine::collision(Player* pPlayer)
     }
 
     for(GPlayer *g_player: this->playersGraphics.values()) {
-        if(g_player->getUuid() != pPlayer->getUuid() && g_player->collidesWithItem(g_player)) g_items.append(g_player);
+        if(g_player->getUuid() != g_player->getUuid() && g_player->collidesWithItem(g_player)) g_items.append(g_player);
     }
 
     return g_items;
@@ -67,19 +66,18 @@ qreal Engine::intersectionVal(QGraphicsItem *pItem1, QGraphicsItem *pItem2)
     return pItem1->shape().intersected(pItem2->shape()).boundingRect().height() * pItem1->shape().intersected(pItem2->shape()).boundingRect().width();
 }
 
+
 void Engine::control_th()
 {
     QTimer::singleShot(100, this, &Engine::control_th);
     // traitement
     for (Player *player: this->_gameMode->_players->values()) {
-        QGraphicsItem* g_player = this->playersGraphics.value(player->getUuid());
+        GPlayer* g_player = this->playersGraphics.value(player->getUuid());
         Control *control = this->_controls->value(player->getUuid());
 
-        player->update(control);
-        g_player->setX(player->getX());
-        g_player->setY(player->getY());
+        g_player->update(control);
 
-        QList<QGraphicsItem*> g_items = this->collision(player);
+        QList<QGraphicsItem*> g_items = this->collision(g_player);
 
         for (QGraphicsItem *gItem : g_items ) {
             QGraphicsObject *gObject = static_cast<QGraphicsObject *>(gItem);
@@ -102,43 +100,17 @@ void Engine::control_th()
             } else if (gObject->property("type") == GPlayer::type) {
                 GPlayer* g_player = (GPlayer*)gObject;
 
-
             } else if (gObject->property("type") == GObstacle::type) {
+                qDebug() << "obstacle";
                 GObstacle* g_obstacle = (GObstacle*)gObject;
 
-                // copie du player
-                Player oldPlayer;
-                qreal oldIntersectionVal = this->intersectionVal(g_player, g_obstacle);
-                oldPlayer.copyPlayer(player);
 
                 // faire le déplacement
-                player->update(control);
-
-                // comparer les valeur
-                qreal newIntersectionVal = this->intersectionVal(g_player, g_obstacle);
-                qDebug() << "newIntersectionVal => " << newIntersectionVal;
-                qDebug() << "oldIntersectionVal => " << oldIntersectionVal;
-                if(newIntersectionVal > oldIntersectionVal) {
-                    // restauration du player
-                    player->setUuid(oldPlayer.getUuid());
-                    player->setPseudo(oldPlayer.getPseudo());
-                    player->setColor(oldPlayer.getColor());
-                    player->setTeam(oldPlayer.getTeam());
-                    player->setX(oldPlayer.getX());
-                    player->setY(oldPlayer.getY());
-                    player->setAngle(oldPlayer.getAngle());
-                    player->setSpeed(oldPlayer.getSpeed());
-                    player->setVehicule(oldPlayer.getVehicule());
-                    player->setLastCheckpoint(oldPlayer.getLastCheckpoint());
-                    player->setCurrentLap(oldPlayer.getCurrentLap());
-                    player->setStatus(oldPlayer.getStatus());
-                    player->setController(oldPlayer.getController());
-                }
+                g_player->setPos(player->getPosition());
             }
-
         }
 
-        //g_player->setPos(player->getX(), player->getY());
+        player->setPos(g_player->getPos());
     }
 }
 
@@ -219,7 +191,7 @@ void Engine::registered(Register *r) {
         this->playersGraphics.insert(p->getUuid(), playerGraphics);
     }
 
-    playerGraphics->setPos(p->getX(), p->getY());
+    playerGraphics->setPos(p->getPosition());
 
     //delete r;
 }
@@ -253,10 +225,6 @@ void Engine::updateMap() {
         checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
 
-    for (GPlayer *g_player : this->playersGraphics) {
-        Player *player = _gameMode->_players->value(g_player->getUuid());
-        g_player->setPos(player->getX(), player->getY());
-    }
 
 }
 
