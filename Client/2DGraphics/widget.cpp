@@ -21,6 +21,11 @@ Widget::Widget(QWidget *parent): QWidget(parent)
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(mView);
     setLayout(layout);
+    QGraphicsRectItem* rectItem = new QGraphicsRectItem(0,0,1000,1000);
+    rectItem->setBrush(Qt::gray);
+    mScene->addItem(rectItem);
+    rectItem->setPos(0,0);
+
 
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
@@ -75,7 +80,7 @@ void Widget::updateMap() {
 
         checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
-
+    mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);
 }
 
 void Widget::updateGameMode() {
@@ -89,7 +94,6 @@ void Widget::updateGameMode() {
             mScene->addItem(playerGraphics);
             localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
         }
-
         playerGraphics->setPos(iterPlayer->getX(), iterPlayer->getY());
     }
 

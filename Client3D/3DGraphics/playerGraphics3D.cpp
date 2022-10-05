@@ -1,7 +1,7 @@
 #include "playerGraphics3D.h"
 
 
-PlayerGraphics3D::PlayerGraphics3D(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}
+PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
     this->uuid = player->getUuid();
     //this->pseudo = player->getPseudo();
@@ -9,6 +9,18 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, QGraphicsItem *parent): QGrap
     this->y = player->getY();
     //this->angle = player->getAngle();
     this->_player = player;
+
+    Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
+    material->setDiffuse(QColor(Qt::yellow));
+    Qt3DCore::QEntity *playerEntity = new Qt3DCore::QEntity(mScene);
+    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
+    sphereMesh->setRadius(3);
+    Qt3DCore::QTransform *shpereTransform = new Qt3DCore::QTransform();
+    shpereTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+
+    playerEntity->addComponent(material);
+    playerEntity->addComponent(sphereMesh);
+    playerEntity->addComponent(shpereTransform);
 }
 
 Player* PlayerGraphics3D::getPlayer()
@@ -29,23 +41,4 @@ qreal PlayerGraphics3D::getX()
 qreal PlayerGraphics3D::getY()        //painter->drawEllipse(0,0,this->heigth, this->width);
 {
     return y;
-}
-
-
-QRectF PlayerGraphics3D::boundingRect() const
-{
-    //this->_player->getVehicule()->
-    return QRectF(-50, -50,100.,100.);
-}
-
-void PlayerGraphics3D::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    painter->setBrush(Qt::yellow);
-   // painter->drawRect(-this->heigth/2, -this->width/2, this->heigth*2, this->width*2);
-    painter->drawRect(boundingRect());
-    this->setRotation(this->_player->getAngle());
-
-    painter->setPen(Qt::black);
-    painter->drawText(0, 0, this->_player->getPseudo());
-
 }

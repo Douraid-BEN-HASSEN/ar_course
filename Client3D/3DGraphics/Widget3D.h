@@ -35,7 +35,9 @@
 #include <QDebug>
 
 #include "obstacleGraphics3D.h"
+#include "checkpointGraphics3D.h"
 #include "planeGraphics3D.h"
+#include "playerGraphics3D.h"
 
 class Widget3D: public Qt3DExtras::Qt3DWindow
 {
@@ -48,12 +50,13 @@ public:
 
 private:
     QMap<int, ObstacleGraphics3D*> localObstacles3D;
-    //QMap<int, CheckpointGraphics*> localCheckpoint;
-    //QMap<QString, PlayerGraphics*> localPlayers;
+    QMap<int, CheckpointGraphics3D*> localCheckpoint3D;
+    QMap<QString, PlayerGraphics3D*> localPlayers3D;
 
 
 private slots:
     void updateMap3D();
+    void updateGameMode3D();
 };
 
 #endif // WIDGET3D_H

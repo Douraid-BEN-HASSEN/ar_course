@@ -29,19 +29,17 @@
 
 #include <Kart/Map/Checkpoint.h>
 
-class CheckpointGraphics3D: public QGraphicsObject
+class CheckpointGraphics3D: public Qt3DCore::QEntity
 {
      Q_OBJECT
 public:
     static qreal radiusCheckpoint;
-    CheckpointGraphics3D();
-    CheckpointGraphics3D(Checkpoint *, QGraphicsItem *parent = nullptr);
+    //CheckpointGraphics3D(QNode *parent = nullptr);
+    CheckpointGraphics3D(Checkpoint *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
     qreal getId() ;
     qreal getX();
     qreal getY();
     qreal getRadius();
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
     qreal id;

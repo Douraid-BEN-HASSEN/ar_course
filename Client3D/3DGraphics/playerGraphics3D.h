@@ -30,17 +30,15 @@
 
 #include <Kart/Player/Player.h>
 
-class PlayerGraphics3D : public QGraphicsObject
+class PlayerGraphics3D : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
-    PlayerGraphics3D(Player *, QGraphicsItem *parent = nullptr);
+    PlayerGraphics3D(Player *, Qt3DCore::QEntity* mScene,  QNode *parent = nullptr);
     QString getUuid();
     qreal getX();
     qreal getY();
     qreal getRadius();
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     Player* getPlayer();
 
 private:

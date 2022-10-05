@@ -32,7 +32,6 @@ class ObstacleGraphics3D : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
-    ObstacleGraphics3D(QNode *parent = nullptr);
     ObstacleGraphics3D(Obstacle *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
 
     static qreal heigth;
@@ -45,9 +44,6 @@ public:
     qreal getHeigth();
     qreal getWidth();
     qreal getRadius();
-    //QRectF boundingRect() const;
-    //void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
 
 private:
     qreal id;
