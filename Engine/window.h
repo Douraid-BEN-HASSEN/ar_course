@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include "Engine.h"
-#include "GEngine.h"
+#include "2DGraphics/GEngine.h"
 
 namespace Ui {
 class Window;
