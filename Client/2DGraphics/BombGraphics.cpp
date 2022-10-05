@@ -2,7 +2,7 @@
 
 BombGraphics::BombGraphics(Item *item, QGraphicsItem *parent): ItemGraphics(item, parent)
 {
-    this->type = "Banana";
+    this->type = "Bomb";
 }
 
 QRectF BombGraphics::boundingRect() const

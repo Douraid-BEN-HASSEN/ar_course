@@ -1,19 +1,14 @@
-#ifndef GBANANA_H
-#define GBANANA_H
+#ifndef GROCKET_H
+#define GROCKET_H
 
 #include "GItem.h"
 
-//  +---------------+
-//  | Classe Banana |
-//  +---------------+
-// represente les bananes sur le terain
-
-class GBanana: public GItem
+class GRocket: public GItem
 {
 public:
     static QString type;
 
-    GBanana(Item *item, QGraphicsItem *parent = nullptr);
+    GRocket(Item *item, QGraphicsItem *parent = nullptr);
 
 protected:
     QRectF boundingRect() const override;
@@ -23,4 +18,4 @@ protected:
     const float width = 10;
 };
 
-#endif // GBANANA_H
+#endif // GROCKET_H
