@@ -1,7 +1,7 @@
 #include "playerGraphics3D.h"
 
 
-PlayerGraphics::PlayerGraphics(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}
+PlayerGraphics3D::PlayerGraphics3D(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}
 {
     this->uuid = player->getUuid();
     //this->pseudo = player->getPseudo();
@@ -11,34 +11,34 @@ PlayerGraphics::PlayerGraphics(Player *player, QGraphicsItem *parent): QGraphics
     this->_player = player;
 }
 
-Player* PlayerGraphics::getPlayer()
+Player* PlayerGraphics3D::getPlayer()
 {
     return _player;
 }
 
-QString PlayerGraphics::getUuid()
+QString PlayerGraphics3D::getUuid()
 {
     return uuid;
 }
 
-qreal PlayerGraphics::getX()
+qreal PlayerGraphics3D::getX()
 {
     return x;
 }
 
-qreal PlayerGraphics::getY()        //painter->drawEllipse(0,0,this->heigth, this->width);
+qreal PlayerGraphics3D::getY()        //painter->drawEllipse(0,0,this->heigth, this->width);
 {
     return y;
 }
 
 
-QRectF PlayerGraphics::boundingRect() const
+QRectF PlayerGraphics3D::boundingRect() const
 {
     //this->_player->getVehicule()->
     return QRectF(-50, -50,100.,100.);
 }
 
-void PlayerGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void PlayerGraphics3D::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush(Qt::yellow);
    // painter->drawRect(-this->heigth/2, -this->width/2, this->heigth*2, this->width*2);
