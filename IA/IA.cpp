@@ -3,6 +3,8 @@
 IA::IA(QObject *parent): QObject{parent}
 {
     qDebug() << "Ia::Ia()";
+    this->currentCheckpointId = 0 ;
+    //this->path =b new QList<Checkpoint*> ;
 }
 
 IA::IA(Register *r, QObject *parent): QObject{parent}
@@ -138,11 +140,69 @@ void IA::initIA()
    */
 }
 
+void IA::mooveToCheckpoint()
+{
+    qDebug() << "Ia::mooveToCheckpoint()" ;
+    QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
+
+    if (this->path.size() != 0) {
+        qDebug() <<  this->currentCheckpointId << this->path.size() ;
+    }
+
+
+    qDebug() << this->currentCheckpointId << this->path.size() ;
+    while (this->currentCheckpointId < this->path.size()){
+        //qDebug() << "turn while" ;
+
+        Checkpoint *target = path.at(this->currentCheckpointId);
+        //qDebug() << "target " << target ;
+
+
+        if (target == nullptr) {
+            qDebug() << "no checkpoint";
+            return;
+        }
+
+        this->player = this->getActivePlayer() ;
+        qDebug () << this->player->getPosition() << target->getPosition() ;
+        QLineF WorldDirection = QLineF(this->player->getPosition(), target->getPosition());
+
+        Map::getInstance()->addLine(&WorldDirection );
+        float playerAngle = qRadiansToDegrees(player->getAngle());
+        float relativeDirection = WorldDirection.angle() - playerAngle;
+
+
+        //qDebug() << "SEND ORDER " ;
+        _control->setAngle(qDegreesToRadians(normalizeAngleD(relativeDirection)));
+        _control->setPower(10);
+        _control->publish();
+
+        QEventLoop loop;
+        QTimer::singleShot(10, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        qDebug() << "TEST" ;
+        qDebug() << Properties::getInstance()->getCheckpointRadius();
+        //if (player->getX() == target->getX() && player->getY() == target->getY()) {
+        qDebug() << (player->getX() > ( target->getX() -  Properties::getInstance()->getCheckpointRadius() ))
+                 << (player->getX() < (target->getX() +  Properties::getInstance()->getCheckpointRadius()) )
+                 << (player->getY() > (target->getY() -  Properties::getInstance()->getCheckpointRadius()))
+                 <<( player->getY() < (target->getY() +  Properties::getInstance()->getCheckpointRadius())) ;
+        if (  player->getX() > ( target->getX() -  Properties::getInstance()->getCheckpointRadius())
+              && player->getX() < ( target->getX() +  Properties::getInstance()->getCheckpointRadius())
+              && player->getY() > ( target->getY() -  Properties::getInstance()->getCheckpointRadius())
+              && player->getY() < (target->getY() +  Properties::getInstance()->getCheckpointRadius())
+              ) {
+            qDebug() << "CHECKPOINT ! " ;
+            this->currentCheckpointId ++ ;
+        }
+    }
+}
+
 void IA::determinerChemin()
 {
     QMap<int, Checkpoint*> *checkpoints = Map::getInstance()->getCheckpoints();
     QList<Checkpoint *> path ;
-    qDebug () << checkpoints->size() ;
 
     int lastChoice = -1;
     Checkpoint *currentChoice = new Checkpoint  ;
@@ -156,7 +216,6 @@ void IA::determinerChemin()
             }
 
         }
-        qDebug() << "current best choice " << bestChoice ;
         lastChoice = bestChoice ;
 
         //Vérifier si il y a un obstacle entre l'ancien et le nouveau checkpoitn
@@ -165,11 +224,12 @@ void IA::determinerChemin()
         path.append(currentChoice);
     }
 
-    qDebug()<< "print" ;
+    /*
     QList<Checkpoint*>::iterator i;
     for (i = path.begin(); i != path.end(); ++i)
         qDebug() <<  (*i)->getId() << (*i)->getX() << (*i)->getY() ;
 
+    */
 
     //Faire bouger le truc
     int a = 0 ;
@@ -179,45 +239,13 @@ void IA::determinerChemin()
         return;
 
 
+    qDebug() << path.size() ;
+    this->path = path ;
+    qDebug() << this->path.size() ;
+    qDebug() << "end init" ;
 
+    QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 
-    while (a < checkpoints->size()){
-        Checkpoint *target = path.at(a);
-
-        if (target == nullptr) {
-            qDebug() << "no checkpoint";
-            return;
-        }
-
-        QLineF WorldDirection = QLineF(player->getPosition(), target->getPosition());
-        Map::getInstance()->addLine(&WorldDirection );
-        float playerAngle = qRadiansToDegrees(player->getAngle());
-        float relativeDirection = WorldDirection.angle() - playerAngle;
-
-
-
-
-        _control->setAngle(qDegreesToRadians(normalizeAngleD(relativeDirection)));
-        _control->setPower(25);
-        _control->publish();
-
-        bool checkpointAtteint = false ;
-        while (!checkpointAtteint) {
-            player = this->getActivePlayer();
-            QEventLoop loop;
-            QTimer::singleShot(300, &loop, &QEventLoop::quit);
-            loop.exec();
-            player = this->getActivePlayer();
-            qDebug() << player->getX() << player->getY() << a << player->getPosition();
-            if (player->getX() == target->getX() && player->getY() == target->getY())
-                checkpointAtteint = true ;
-        }
-
-        a++ ;
-    }
-
-    //_control->setPower(0);
-    //_control->publish();
 }
 
 

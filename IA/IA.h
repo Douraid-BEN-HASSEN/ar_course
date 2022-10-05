@@ -17,15 +17,18 @@ public:;
     void brain2() ;
     void brain3();
     void initIA() ;
+    void mooveToCheckpoint();
     float normalizeAngleD(float angle);
     Player *getActivePlayer();
     void setRegister(Register *);
 
     Checkpoint* getNextCheckpoint(int lastCheckpointId);
 private:
+    int currentCheckpointId = 0 ;
     Player *player ;
     Register *_register;
     Control *_control;
+    QList<Checkpoint *>  path ;
 signals:
 
 };
