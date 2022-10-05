@@ -21,6 +21,7 @@ void Obstacle::deserialize(const QJsonObject &jsonObject) {
     this->_y = jsonObject["y"].toInt();
     this->_angle = jsonObject["angle"].toDouble();
     this->_timeout = jsonObject["timeout"].toInt();
+
 }
 
 QString Obstacle::serialize()
