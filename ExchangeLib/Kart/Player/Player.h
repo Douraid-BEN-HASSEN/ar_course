@@ -12,6 +12,8 @@
 #include "Kart/Game/Control.h"
 #include "Kart/Map/Map.h"
 #include "Kart/Player/Register.h"
+#include "Kart/Game/Vehicle.h"
+#include <QPointF>
 
 class PLAYER_EXPORT Player : public QObject
 {
@@ -43,6 +45,7 @@ public:
     void setCurrentLap(int pCurrentLap);
     void setStatus(QString pStatus);
     void setController(QString pController);
+    void copyPlayer(Player *pPlayer); // pointer
 
     // === GETTER ===
     QString getUuid();
@@ -61,6 +64,7 @@ public:
     QString getController();
 
     QPoint getPosition();
+    void setPos(QPoint);
 
     void update(Control *control);
     Player *newPos(Control *control);
@@ -71,8 +75,6 @@ private:
     QString _pseudo;
     QString _color;
     QString _team;
-    int _x = 0;
-    int _y = 0;
     float _angle = 0;
     int _speed = 0;
     QString _vehicle; // enum a modifier
@@ -81,8 +83,8 @@ private:
     int _currentLap = 0;
     QString _status;
     QString _controller;
-    double _vx;
-    double _vy;
+    QPoint _pos;
+    QPointF _vitesse;
 
 
 signals:

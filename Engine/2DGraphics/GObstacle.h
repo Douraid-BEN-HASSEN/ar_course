@@ -30,7 +30,6 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     Obstacle *getObstacle();
 
-
 private:
     Obstacle *obstacle;
     qreal id;

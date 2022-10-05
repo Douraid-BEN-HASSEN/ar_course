@@ -43,7 +43,9 @@ private:
     QMap<int, GObstacle*> obstaclesGraphics;
     QMap<QString, GPlayer*> playersGraphics;
 
-    QList<QGraphicsItem*> collision(Player* pPlayer);
+    QList<QGraphicsItem*> collision(GPlayer*);
+    // retourne la valeur d'intersection entre 2 items
+    qreal intersectionVal(QGraphicsItem* pItem1, QGraphicsItem* pItem2);
 
     // graphic
     GEngine *g_engine;

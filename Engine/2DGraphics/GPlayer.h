@@ -16,21 +16,30 @@ public:
     static QString type;
 
     QString getUuid();
-    qreal getX();
-    qreal getY();
+    QPoint getPos();
     qreal getRadius();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     Player* getPlayer();
     QString className();
+    void update(Control *control);
+
+
 
 private:
     QString uuid;
-    qreal x;
-    qreal y;
     qreal heigth = 50;
     qreal width = 50;
     Player *_player;
+    float _angle = 0;
+    int _speed = 0;
+    QString _vehicle;
+    QMap<QString, int> *_items;
+    int _lastCheckpoint = 0;
+    int _currentLap = 0;
+    QString _status;
+    QString _controller;
+    QPointF _vitesse;
 };
 
 #endif // GPLAYER_H
