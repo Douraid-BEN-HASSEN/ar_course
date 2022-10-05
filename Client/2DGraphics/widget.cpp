@@ -8,11 +8,13 @@
 #include <Kart/Map/Map.h>
 #include <Kart/Game/Properties.h>
 #include <Kart/Player/GameMode.h>
+#include <Kart/Game/Vehicle.h>
 
 #include <Mqtt/MqttService.h>
 
 Widget::Widget(QWidget *parent): QWidget(parent)
 {
+    //ui->setupUi(this);
     mScene = new QGraphicsScene(this);
     mScene->setSceneRect(0, 0, 1000,1000);
     mView = new QGraphicsView(this);
@@ -43,14 +45,10 @@ void Widget::updateProperties() {
     ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
 
     CheckpointGraphics::radiusCheckpoint = Properties::getInstance()->getCheckpointRadius();
+
 }
 
 void Widget::updateMap() {
-
-    qDebug() << "map";
-    //new QMap<int, Obstacle*>();
-    // Faire une boucle sur tous les obstacles
-    // Sur chaque obstacle on va devoir le créer + le placer
 
     for (Obstacle *iterObstacle : Map::getInstance()->getObstacles()->values()) {
         // Verifier si l object ObstacleRect* obstaclerect  exist
@@ -86,7 +84,6 @@ void Widget::updateMap() {
 void Widget::updateGameMode() {
 
     for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
-
         PlayerGraphics *playerGraphics = localPlayers.value(iterPlayer->getUuid());
 
         if (!playerGraphics) {
@@ -94,7 +91,7 @@ void Widget::updateGameMode() {
             mScene->addItem(playerGraphics);
             localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
         }
-        playerGraphics->setPos(iterPlayer->getX(), iterPlayer->getY());
+        playerGraphics->updatePlayer(iterPlayer);
     }
 
 }
