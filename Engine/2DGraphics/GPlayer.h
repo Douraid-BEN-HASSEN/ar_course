@@ -18,9 +18,11 @@ public:
 
     QString getUuid();
     QPoint getPos();
+    float getAngle();
     qreal getRadius();
     void setHeigth(int);
     void setWidth(int);
+    void setAngle(float);
 
     QString className();
     void update(Control *control);

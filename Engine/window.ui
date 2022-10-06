@@ -14,20 +14,16 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_action">
-      <item>
-       <widget class="QPushButton" name="pushButton_reset">
-        <property name="text">
-         <string>Reset</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_main"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_reset">
+      <property name="text">
+       <string>Reset</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

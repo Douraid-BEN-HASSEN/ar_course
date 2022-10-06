@@ -43,6 +43,7 @@ qreal PlayerGraphics::getWidth()
 void PlayerGraphics::updatePlayer(Player *player) {
     this->_player = player;
     this->setPos(player->getX(), player->getY());
+    qDebug() << player->getAngle();
     this->setRotation(qRadiansToDegrees(-player->getAngle()));
 
     Vehicle *veh = Properties::getInstance()->vehicleOptions->value(player->getVehicule());

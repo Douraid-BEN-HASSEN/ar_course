@@ -16,6 +16,11 @@ QPoint GPlayer::getPos()
     return QPoint(this->x(), this->y());
 }
 
+float GPlayer::getAngle()
+{
+    return _angle;
+}
+
 Player* GPlayer::getPlayer()
 {
     return _player;
@@ -44,6 +49,9 @@ void GPlayer::setWidth(int width) {
     this->width = width;
 }
 
+void GPlayer::setAngle(float angle) {
+    _angle = angle;
+}
 
 void GPlayer::update(Control *control)
 {
@@ -51,7 +59,9 @@ void GPlayer::update(Control *control)
         return;
     }
 
-    this->_angle += -control->getAngle()*0.1;
+    float engineCycle = 1./20; // 1 seconde / nombre de sycle
+
+    this->_angle += -control->getAngle() * engineCycle;
 
     float P = 1000;
 
@@ -61,9 +71,7 @@ void GPlayer::update(Control *control)
     // Vitesse actuel = sqrt(vx² * vy²)
     float V = sqrt(_vitesse.x()*_vitesse.x() + _vitesse.y()*_vitesse.y());
 
-    this->_vitesse = (this->_vitesse + F) * 0.1; //0.9 constante pour trainée
-    qDebug() << _vitesse;
-    qDebug() << this->getPos();
+    this->_vitesse = (this->_vitesse + F) * engineCycle;
 
     this->setPos(this->getPos() +this->_vitesse.toPoint());
     this->setRotation(qRadiansToDegrees(-this->_angle));

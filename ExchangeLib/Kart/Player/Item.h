@@ -16,8 +16,8 @@ class ITEM_EXPORT Item : public QObject
     Q_OBJECT
 public:
     explicit Item(QObject *parent = nullptr);
-    explicit Item(QPoint, QObject *parent = nullptr);
-    explicit Item(int x, int y, QObject *parent = nullptr);
+    explicit Item(QPoint, QString type, QObject *parent = nullptr);
+    explicit Item(int x, int y, QString type, QObject *parent = nullptr);
 
     // === UTILS ===
     void deserialize(const QJsonObject &jsonObject);

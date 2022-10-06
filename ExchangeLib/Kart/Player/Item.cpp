@@ -6,16 +6,18 @@ Item::Item(QObject *parent): QObject{parent}
 
 }
 
-Item::Item(QPoint point, QObject *parent): QObject{parent}
+Item::Item(QPoint point, QString type, QObject *parent): QObject{parent}
 {
     this->_x = point.x();
     this->_y = point.y();
+    this->_type = type;
 }
 
-Item::Item(int x, int y, QObject *parent): QObject{parent}
+Item::Item(int x, int y, QString type, QObject *parent): QObject{parent}
 {
     this->_x = x;
     this->_y = y;
+    this->_type = type;
 }
 
 //  +-------+

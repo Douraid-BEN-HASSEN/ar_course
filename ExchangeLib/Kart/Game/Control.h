@@ -35,13 +35,12 @@ public:
     void setUuid(QString pUuid);
     void setAngle(float pAngle);
     void setPower(int pPower);
-    void setButtonsVal(QString pKey, bool pVal);
-    void setButtons(QMap<QString, bool> pButtons);
+    void setButton(QString pKey, bool pVal);
 
     QString getUuid();
     float getAngle();
     int getPower();
-    bool getButtonsVal(QString pKey);
+    bool getButton(QString pKey);
     QMap<QString, bool> getButtons();
 
 private:

@@ -12,10 +12,15 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
     this->_properties = new Properties(5);
+    _properties->setBananaRadius(50);
 
     GObstacle::radius = this->_properties->getCircleRadius();
     GObstacle::heigth = this->_properties->getRectangleHeight();
     GObstacle::width = this->_properties->getRectangleWidth();
+
+    GBanana::radius = this->_properties->getBananaRadius();
+    GBomb::radius = this->_properties->getBombRadius();
+    GRocket::radius = this->_properties->getRocketRadius();
 
     GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
 
@@ -23,8 +28,8 @@ Engine::Engine(QObject *parent): QObject{parent}
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
 
     this->_controls = new QMap<QString, Control*>;
-
     this->g_engine = new GEngine();
+
     this->control_th();
 
     this->envoiGameProperties();
@@ -43,7 +48,7 @@ void Engine::envoiGameProperties()
 
 void Engine::envoiGameInfo()
 {
-    QTimer::singleShot(100, this, &Engine::envoiGameInfo);
+    QTimer::singleShot(ENGINE_FREQUENCY, this, &Engine::envoiGameInfo);
     this->_gameMode->publish();
 }
 
@@ -74,7 +79,7 @@ qreal Engine::intersectionVal(QGraphicsItem *pItem1, QGraphicsItem *pItem2)
 
 void Engine::control_th()
 {
-    QTimer::singleShot(100, this, &Engine::control_th);
+    QTimer::singleShot(ENGINE_FREQUENCY, this, &Engine::control_th);
     // traitement
     for (Player *player: this->_gameMode->_players->values()) {
         GPlayer* g_player = this->playersGraphics.value(player->getUuid());
@@ -112,11 +117,79 @@ void Engine::control_th()
 
                 // faire le déplacement
                 g_player->setPos(player->getPosition());
+                g_player->setRotation(player->getAngle());
             }
         }
 
         player->setPos(g_player->getPos());
+        player->setAngle(g_player->getAngle());
+
+
+        /* --- spawn item ---*/
+        if (control) {
+            if (control->getButton("banana")) {
+                qDebug() << "drop banana";
+                control->setButton("banana", false);
+
+                GBanana *gBanana = new GBanana(player->getPosition());
+                gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
+
+                this->spawnItem(gBanana);
+
+            } else if (control->getButton("bomb")) {
+                qDebug() << "drop bomb";
+                control->setButton("bomb", false);
+
+                GBomb *gBomb = new GBomb(player->getPosition());
+                gBomb->setTtl(_properties->getBombTtl() * ENGINE_CYCLE);
+
+                this->spawnItem(gBomb);
+
+            } else if (control->getButton("rocket")) {
+                qDebug() << "drop rocket";
+                control->setButton("rocket", false);
+
+                GRocket *gRocket = new GRocket(player->getPosition());
+
+                this->spawnItem(gRocket);
+            }
+        }
     }
+
+    for (GItem *gItem: itemsGraphics) {
+        lifeCycleItem(gItem);
+    }
+
+}
+
+void Engine::lifeCycleItem(GItem *gItem) {
+
+    int ttl = gItem->getTtl();
+
+    if (ttl > 0) {
+        gItem->setTtl(ttl - 1);
+    }
+
+    if (ttl == 0) {
+        destoryItem(gItem);
+        return;
+    }
+}
+
+void Engine::spawnItem(GItem *gItem)
+{
+    this->itemsGraphics.append(gItem);
+    this->g_engine->addItemGraphics(gItem);
+    this->_gameMode->_items->append(gItem->getItem());
+}
+
+void Engine::destoryItem(GItem *gItem)
+{
+    this->itemsGraphics.removeAll(gItem);
+    this->g_engine->removeItem(gItem);
+    this->_gameMode->_items->removeAll(gItem->getItem());
+
+    delete gItem;
 }
 
 int Engine::getNextCheckpointId(int pCurrentCheckpoint)
@@ -144,15 +217,8 @@ int Engine::getNextCheckpointId(int pCurrentCheckpoint)
 
 void Engine::traitementPlayerControl(QJsonObject pMessage)
 {
-    //qDebug() << pMessage;
-    QString uuid = pMessage["uuid"].toString();
-    float angle = pMessage["angle"].toDouble();
-    int power = pMessage["power"].toInt();
 
-    QMap<QString, bool> buttons;
-    buttons["banana"] = pMessage["banana"].toBool();
-    buttons["bomb"] = pMessage["bomb"].toBool();
-    buttons["rocket"] = pMessage["rocket"].toBool();
+    QString uuid = pMessage["uuid"].toString();
 
     Player *player = this->_gameMode->_players->value(uuid);
 
@@ -161,10 +227,7 @@ void Engine::traitementPlayerControl(QJsonObject pMessage)
     }
 
     Control *control = new Control();
-    control->setUuid(uuid);
-    control->setAngle(angle);
-    control->setPower(power);
-    control->setButtons(buttons);
+    control->deserialize(pMessage);
 
     this->_controls->insert(player->getUuid(), control);
 }
@@ -279,6 +342,11 @@ void Engine::reset(bool b)
         this->g_engine->removeItem(item);
     }
     this->playersGraphics.clear();
+
+    for (QGraphicsItem *item : this->itemsGraphics) {
+        this->g_engine->removeItem(item);
+    }
+    this->itemsGraphics.clear();
 
     this->_gameMode->reset();
     this->_map->reste();

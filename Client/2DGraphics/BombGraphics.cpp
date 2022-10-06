@@ -2,6 +2,7 @@
 
 BombGraphics::BombGraphics(Item *item, QGraphicsItem *parent): ItemGraphics(item, parent)
 {
+    this->setPos(item->getX(), item->getY());
     this->type = "Bomb";
 }
 

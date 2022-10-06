@@ -1,20 +1,21 @@
 #include "GBanana.h"
 
-QString GBanana::type = "GBanana";
+QString GBanana::type = "banana";
+float GBanana::radius = 10;
 
-GBanana::GBanana(QPoint pos, QGraphicsItem *parent): GItem(pos, parent)
+GBanana::GBanana(QPoint pos, QGraphicsItem *parent): GItem(pos, this->type, parent)
 {
     this->setProperty("type", this->type);
 }
 
-GBanana::GBanana(int x, int y, QGraphicsItem *parent): GItem(QPoint(x, y), parent)
+GBanana::GBanana(int x, int y, QGraphicsItem *parent): GItem(QPoint(x, y), this->type, parent)
 {
     this->setProperty("type", this->type);
 }
 
 QRectF GBanana::boundingRect() const
 {
-    return QRectF(-this->heigth, -this->width,this->heigth*2,this->width*2);
+    return QRectF(-this->radius, -this->radius,this->radius*2,this->radius*2);
 }
 
 void GBanana::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

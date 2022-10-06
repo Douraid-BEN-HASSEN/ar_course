@@ -2,6 +2,7 @@
 
 RocketGraphics::RocketGraphics(Item *item, QGraphicsItem *parent): ItemGraphics(item, parent)
 {
+    this->setPos(item->getX(), item->getY());
     this->type = "Banana";
 }
 

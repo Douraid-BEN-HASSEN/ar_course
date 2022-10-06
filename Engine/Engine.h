@@ -1,6 +1,9 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#define ENGINE_CYCLE 20
+#define ENGINE_FREQUENCY 1000 / ENGINE_CYCLE
+
 #include <QObject>
 
 #include <Mqtt/MqttService.h>
@@ -14,6 +17,10 @@
 #include <Kart/Game/Control.h>
 
 #include "2DGraphics/GEngine.h"
+
+#include "2DGraphics/GBanana.h"
+#include "2DGraphics/GBomb.h"
+#include "2DGraphics/GRocket.h"
 
 class Engine : public QObject
 {
@@ -42,9 +49,14 @@ private:
     void control_th();
     int getNextCheckpointId(int pCurrentCheckpoint);
 
+    void spawnItem(GItem *);
+    void destoryItem(GItem *);
+    void lifeCycleItem(GItem *);
+
     QMap<int, GCheckpoint*> checkpointsGraphics;
     QMap<int, GObstacle*> obstaclesGraphics;
     QMap<QString, GPlayer*> playersGraphics;
+    QList<GItem*> itemsGraphics;
 
     QList<QGraphicsItem*> collision(GPlayer*);
     // retourne la valeur d'intersection entre 2 items
