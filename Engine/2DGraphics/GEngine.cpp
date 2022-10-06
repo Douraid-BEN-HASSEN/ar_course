@@ -32,6 +32,11 @@ void GEngine::addPlayerGraphics(GPlayer* gPlayer)
     this->mScene->addItem(gPlayer);
 }
 
+void GEngine::addItemGraphics(GItem *gItem)
+{
+    this->mScene->addItem(gItem);
+}
+
 void GEngine::removeItem(QGraphicsItem *graphicsItem)
 {
     mScene->removeItem(graphicsItem);

@@ -1,8 +1,21 @@
 #include "Item.h"
+#include "qpoint.h"
 
 Item::Item(QObject *parent): QObject{parent}
 {
 
+}
+
+Item::Item(QPoint point, QObject *parent): QObject{parent}
+{
+    this->_x = point.x();
+    this->_y = point.y();
+}
+
+Item::Item(int x, int y, QObject *parent): QObject{parent}
+{
+    this->_x = x;
+    this->_y = y;
 }
 
 //  +-------+
@@ -35,6 +48,18 @@ QJsonObject Item::toJson() {
 //  +--------+
 //  | SETTER |
 //  +--------+
+
+void Item::setPos(const QPoint &pos)
+{
+    this->_x = pos.x();
+    this->_y = pos.y();
+}
+
+inline void Item::setPos(int x, int y)
+{
+    setPos(QPoint(x, y));
+}
+
 void Item::setX(int pX)
 {
     this->_x = pX;

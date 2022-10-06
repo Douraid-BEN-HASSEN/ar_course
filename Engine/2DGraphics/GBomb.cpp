@@ -1,7 +1,13 @@
 #include "GBomb.h"
 
+QString GBomb::type = "GBomb";
 
-GBomb::GBomb(Item *item, QGraphicsItem *parent): GItem(item, parent)
+GBomb::GBomb(QPoint pos, QGraphicsItem *parent): GItem(pos, parent)
+{
+    this->setProperty("type", this->type);
+}
+
+GBomb::GBomb(int x, int y, QGraphicsItem *parent): GItem(QPoint(x, y), parent)
 {
     this->setProperty("type", this->type);
 }

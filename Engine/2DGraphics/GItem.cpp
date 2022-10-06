@@ -1,11 +1,23 @@
 #include "GItem.h"
 
-GItem::GItem(Item *item, QGraphicsItem *parent): QGraphicsObject(parent)
+GItem::GItem(QPoint pos, QGraphicsItem *parent): QGraphicsObject(parent)
 {
-
+    this->item = new Item(pos);
+    QGraphicsObject::setPos(pos);
 }
 
-QPoint GItem::getPos()
+void GItem::setPos(const QPoint &pos)
 {
-    return QPoint(this->x(), this->y());
+    this->item->setPos(pos);
+    QGraphicsObject::setPos(pos);
+}
+
+inline void GItem::setPos(int x, int y)
+{
+    this->setPos(QPoint(x, y));
+}
+
+Item *GItem::getItem()
+{
+    return item;
 }

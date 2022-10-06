@@ -319,7 +319,7 @@ void Player::update(Control *control)
         _vy = -50;
     }
 
-
+    */
     /* update pos
     this->_x += _vx * 0.1;
     this->_y += _vy * 0.1;

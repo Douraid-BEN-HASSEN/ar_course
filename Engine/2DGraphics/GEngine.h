@@ -14,6 +14,7 @@
 #include "GCheckpoint.h"
 #include "GObstacle.h"
 #include "GPlayer.h"
+#include "GItem.h"
 
 class GEngine: public QWidget
 {
@@ -27,6 +28,8 @@ public:
     void addObstacleGraphics(GObstacle *);
     void addCheckpointGraphics(GCheckpoint *);
     void addPlayerGraphics(GPlayer *);
+    void addItemGraphics(GItem *);
+
     void updateCheckpoint(Checkpoint* pCheckpoint);
     void updateObstacle(Obstacle* pObstacle);
     void updatePlayer(Player* pPlayer);

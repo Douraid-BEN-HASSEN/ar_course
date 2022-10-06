@@ -13,7 +13,8 @@ class GBanana: public GItem
 public:
     static QString type;
 
-    GBanana(Item *item, QGraphicsItem *parent = nullptr);
+    GBanana(QPoint, QGraphicsItem *parent = nullptr);
+    GBanana(int x, int y, QGraphicsItem *parent = nullptr);
 
 protected:
     QRectF boundingRect() const override;
@@ -21,6 +22,8 @@ protected:
 
     const float heigth = 10;
     const float width = 10;
+
+
 };
 
 #endif // GBANANA_H

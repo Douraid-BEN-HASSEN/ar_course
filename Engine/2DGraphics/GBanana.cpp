@@ -1,11 +1,16 @@
 #include "GBanana.h"
 
 QString GBanana::type = "GBanana";
-GBanana::GBanana(Item *item, QGraphicsItem *parent): GItem(item, parent)
+
+GBanana::GBanana(QPoint pos, QGraphicsItem *parent): GItem(pos, parent)
 {
     this->setProperty("type", this->type);
 }
 
+GBanana::GBanana(int x, int y, QGraphicsItem *parent): GItem(QPoint(x, y), parent)
+{
+    this->setProperty("type", this->type);
+}
 
 QRectF GBanana::boundingRect() const
 {

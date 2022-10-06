@@ -1,8 +1,13 @@
 #include "GRocket.h"
 
-QString GRocket::type = "GBanana";
+QString GRocket::type = "GRocket";
 
-GRocket::GRocket(Item *item, QGraphicsItem *parent): GItem(item, parent)
+GRocket::GRocket(QPoint pos, QGraphicsItem *parent): GItem(pos, parent)
+{
+    this->setProperty("type", this->type);
+}
+
+GRocket::GRocket(int x, int y, QGraphicsItem *parent): GItem(QPoint(x, y), parent)
 {
     this->setProperty("type", this->type);
 }

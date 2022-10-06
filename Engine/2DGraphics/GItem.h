@@ -11,9 +11,12 @@ class GItem: public QGraphicsObject
 {
     Q_OBJECT
 public:
-    GItem(Item *item, QGraphicsItem *parent = nullptr);
+    GItem(QPoint pos, QGraphicsItem *parent = nullptr);
 
-    QPoint getPos();
+    void setPos(const QPoint &pos);
+    inline void setPos(int x, int y);
+
+    Item *getItem();
 
     virtual QRectF boundingRect() const = 0;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
@@ -23,6 +26,8 @@ protected:
 
     const float heigth = 5;
     const float width = 5;
+
+    Item *item;
 };
 
 #endif // GITEM_H

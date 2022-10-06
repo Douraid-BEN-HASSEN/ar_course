@@ -8,7 +8,8 @@ class GRocket: public GItem
 public:
     static QString type;
 
-    GRocket(Item *item, QGraphicsItem *parent = nullptr);
+    GRocket(QPoint, QGraphicsItem *parent = nullptr);
+    GRocket(int x, int y, QGraphicsItem *parent = nullptr);
 
 protected:
     QRectF boundingRect() const override;

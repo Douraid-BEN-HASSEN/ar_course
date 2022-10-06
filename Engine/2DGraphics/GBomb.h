@@ -8,7 +8,10 @@
 class GBomb : public GItem
 {
 public:
-    GBomb(Item *item, QGraphicsItem *parent = nullptr);
+    static QString type;
+
+    GBomb(QPoint, QGraphicsItem *parent = nullptr);
+    GBomb(int x, int y, QGraphicsItem *parent = nullptr);
 
 protected:
     QRectF boundingRect() const override;
