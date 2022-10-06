@@ -103,15 +103,14 @@ private slots :
     void onExitRun();
     void onCloseGame();
     void onGamepadUse() ;
-    void onMessageRecieve(QByteArray datas , QMqttTopicName topic ) ;
+
+    void onRunFind() ;
+    void onGameModeReceived();
+
 public:
     PlayerUi(QWidget *parent = nullptr);
     void makeMqttMessage(int keyAction );
     void updateLabel();
-    void connectToMqtt();
-    void onRunFind(QByteArray datas) ;
-    void onGameModeReceived(QByteArray datas);
-
 
     ~PlayerUi();
 

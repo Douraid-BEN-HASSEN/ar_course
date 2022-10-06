@@ -40,11 +40,17 @@ void PlayerUi::buttonPlayPressed()
 }
 
 //When receive mqtt message on topic /game/properties
-void PlayerUi::onRunFind(QByteArray datas)
+void PlayerUi::onRunFind()
 {
     qDebug() << "PlayerUi::onRunFind()" ;
     if ( this->isProperties == false ) {
-        this->props->deserialize(QJsonDocument::fromJson(datas).object());
+
+        this->props = Properties::getInstance();
+
+        if (!this->props) {
+            return;
+        }
+
         this->nbTurn = props->getLaps() ;
         this->nbTeam = props->getTeam() ;
         for (Vehicle *vehicle : this->props->vehicleOptions->values())
@@ -59,13 +65,17 @@ void PlayerUi::onRunFind(QByteArray datas)
     }
 }
 
-void PlayerUi::onGameModeReceived(QByteArray datas)
+void PlayerUi::onGameModeReceived()
 {
-    this->gameMode->deserialize(QJsonDocument::fromJson(datas).object() );
-    this->nbBanana = this->gameMode->_players->value(this->uuid)->getItems()->value("banana") ;
-    this->nbBomb =this->gameMode->_players->value(this->uuid)->getItems()->value("bomb") ;
-    this->nbRocket = this->gameMode->_players->value(this->uuid)->getItems()->value("rocket");
-    this->updateLabel();
+    Player *player = GameMode::getInstance()->_players->value(this->uuid);
+
+    if (!player)
+        return;
+
+    this->nbBanana = player->getItems()->value("banana") ;
+    this->nbBomb = player->getItems()->value("bomb") ;
+    this->nbRocket = player->getItems()->value("rocket");
+    updateLabel();
 }
 
 void PlayerUi::onExitRun()
@@ -93,15 +103,7 @@ void PlayerUi::onGamepadUse()
     }
 }
 
-void PlayerUi::onMessageRecieve(QByteArray datas, QMqttTopicName topic)
-{
-    qDebug() << "PlayerUi::onMessageRecieve" << datas << topic ;
-    if (topic.name() == "game/properties") {
-        this->onRunFind(datas);
-    } else if (topic.name() == "game") {
-        this->onGameModeReceived(datas);
-    }
-}
+
 
 
 //On action, make message for mqtt
@@ -121,13 +123,6 @@ void PlayerUi::updateLabel()
     this->labelBanana->setText(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
     this->labelBomb->setText(" <h4> " + QString::number(this->nbBomb) + " bomb(s) </h4> ");
     this->labelRocket->setText(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
-}
-
-void PlayerUi::connectToMqtt()
-{
-    qDebug() << "PlayerUi::connectToMqtt()" ;
-    MqttService::instance()->subscribe("game/properties");
-    MqttService::instance()->subscribe("game");
 }
 
 //Constructor
@@ -266,11 +261,16 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->setLayout(mainLayout);
 
     _controller = new Controller(&this->uuid , &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket) ;
+
+    props = Properties::getInstance();
+    gameMode = GameMode::getInstance();
+
     //Connect
     this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(this->buttonExit , SIGNAL(clicked()) , this , SLOT(onExitRun()));
-    this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray,  QMqttTopicName)), this, SLOT(onMessageRecieve(const QByteArray &, const QMqttTopicName &)));
+    connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(onGameModeReceived()));
+    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(onRunFind()));
 
     //Connect for the gamepad
     this->connect(this->_controller->getGamepad() , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
@@ -281,9 +281,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->connect(this->_controller->getGamepad() , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
     this->connect(this->_controller->getGamepad() , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
     this->connect(this->_controller->getGamepad() , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
-
-
-    this->connectToMqtt();
 }
 
 
