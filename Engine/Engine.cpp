@@ -165,7 +165,7 @@ void Engine::control_th()
                 control->setButton("bomb", false);
 
                 QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GBomb::radius + 15)).toPoint());
-                GBomb *gBomb = new GBomb(spanwPoint);
+                GBomb *gBomb = new GBomb(spanwPoint, player->getAngle());
                 gBomb->setTtl(_properties->getBombTtl() * ENGINE_CYCLE);
 
                 this->spawnItem(gBomb);
@@ -201,21 +201,16 @@ void Engine::lifeCycleItem(GItem *gItem) {
         return;
     }
 
+    gItem->update();
+
     if (gItem->property("type") == GBanana::type) {
         GBanana* g_banana = (GBanana*)gItem;
-
-
 
     } else if (gItem->property("type") == GBomb::type) {
         GBomb* g_bomb = (GBomb*)gItem;
 
-
-
     } else if (gItem->property("type") == GRocket::type) {
-        gItem->update();
-
         GRocket* g_rocket = (GRocket*)gItem;
-
 
     }
 }

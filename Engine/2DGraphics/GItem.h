@@ -4,6 +4,9 @@
 #include <QGraphicsObject>
 #include <QObject>
 #include <QPainter>
+#include <QVector2D>
+
+#include <QtMath>
 
 #include <Kart/Player/Item.h>
 

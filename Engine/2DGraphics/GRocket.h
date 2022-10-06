@@ -2,7 +2,6 @@
 #define GROCKET_H
 
 #include "GItem.h"
-#include <QtMath>
 #include <QVector2D>
 
 class GRocket: public GItem
