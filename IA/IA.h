@@ -9,21 +9,25 @@
 class IA : public QObject
 {
     Q_OBJECT
-public:
+public:;
     explicit IA(QObject *parent = nullptr);
     IA(Register*, QObject *parent = nullptr);
-
-    void brain();
-
+    void determinePath();
+    void initIA() ;
+    void mooveToCheckpoint();
+    float normalizeAngleD(float angle);
     Player *getActivePlayer();
     void setRegister(Register *);
 
-    Checkpoint* getNextCheckpoint(int lastCheckpointId);
-
 private:
+    int currentCheckpointId = 0 ;
+    int obstacleWidth ;
+    int obstacleHeight ;
+    int obstacleRadius ;
+    Player *player ;
     Register *_register;
     Control *_control;
-
+    QList<Checkpoint *>  path ;
 signals:
 
 };

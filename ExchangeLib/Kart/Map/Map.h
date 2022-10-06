@@ -53,6 +53,8 @@ public:
     void addCheckpoint(Checkpoint *pCheckpoint);
     // méthode pour ajouter un obstacle
     void addObstacle(Obstacle *pObstacle);
+    //méthode pour ajouter une ligne
+    void addLine(QLineF *pLine);
 
     // === GETTER ===
     float getMapWidth();
@@ -72,6 +74,7 @@ protected:
 
     QMap<int, Checkpoint*> *_checkpoints;
     QMap<int, Obstacle*> *_obstacles;
+    QMap<int, QLineF*> *_lines ;
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
