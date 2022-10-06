@@ -29,7 +29,6 @@ ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, Qt3DCore::QEntity *mS
 
         Qt3DExtras::QCuboidMesh *cuboidMesh = new Qt3DExtras::QCuboidMesh();
         Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
-        cuboidTransform->setScale(4.0f);
         // X Y Z
         //cuboidTransform->setTranslation(QVector3D(5.0, -4.0f, 0.0f));
         cuboidTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));

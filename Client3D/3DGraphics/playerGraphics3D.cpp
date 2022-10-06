@@ -14,21 +14,17 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
 
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::yellow));
-   // Qt3DCore::QEntity *playerEntity = new Qt3DCore::QEntity(mScene);
     this->setParent(mScene);
-    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
-    sphereMesh->setRadius(3);
-    Qt3DCore::QTransform *shpereTransform = new Qt3DCore::QTransform();
-    shpereTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+    //Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
+    //sphereMesh->setRadius(3);
+    Qt3DExtras::QCuboidMesh *cuboid = new Qt3DExtras::QCuboidMesh();
 
+    Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
+    cuboidTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+    cuboidTransform->setScale(4.0f);
     this->addComponent(material);
-    this->addComponent(sphereMesh);
-    this->addComponent(shpereTransform);
-
-    qDebug() << "components = " << this->components();
-
-
-
+    this->addComponent(cuboid);
+    this->addComponent(cuboidTransform);
 }
 
 
@@ -38,19 +34,12 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
     this->y = player->getY();
 
     Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
-    obstacleTransform->setTranslation(QVector3D(this->getX()/10, 0.0f, this->getY()));
-
-    //qDebug() << "this->components() = " << this->components();
+    obstacleTransform->setTranslation(QVector3D(this->getX()/10, 0.0f, this->getY()/10));
 
     if(!this->components().empty()){
-        qDebug() << "this->components()1= " << this->components();
-        //this->components().remove(2);
         this->removeComponent(this->components().at(2));
-        qDebug() << "this->components()2= " << this->components();
         this->addComponent(obstacleTransform);
     }
-    //this->addComponent(obstacleTransform);
-
 }
 
 Player* PlayerGraphics3D::getPlayer()
