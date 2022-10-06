@@ -33,7 +33,7 @@ class ObstacleGraphics3D : public Qt3DCore::QEntity
     Q_OBJECT
 public:
     ObstacleGraphics3D(Obstacle *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
-
+    void updateObstacle3D(Obstacle *);
     static qreal heigth;
     static qreal width;
     static qreal radius;

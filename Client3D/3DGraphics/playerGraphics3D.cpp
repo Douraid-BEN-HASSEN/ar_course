@@ -15,8 +15,6 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::yellow));
     this->setParent(mScene);
-    //Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
-    //sphereMesh->setRadius(3);
     Qt3DExtras::QCuboidMesh *cuboid = new Qt3DExtras::QCuboidMesh();
 
     Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
@@ -26,7 +24,6 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     this->addComponent(cuboid);
     this->addComponent(cuboidTransform);
 }
-
 
 
 void PlayerGraphics3D::updatePlayer3D(Player *player){

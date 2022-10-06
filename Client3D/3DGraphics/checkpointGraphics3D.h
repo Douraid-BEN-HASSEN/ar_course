@@ -34,8 +34,8 @@ class CheckpointGraphics3D: public Qt3DCore::QEntity
      Q_OBJECT
 public:
     static qreal radiusCheckpoint;
-    //CheckpointGraphics3D(QNode *parent = nullptr);
     CheckpointGraphics3D(Checkpoint *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
+    void updateCheckpoint3D(Checkpoint *);
     qreal getId() ;
     qreal getX();
     qreal getY();

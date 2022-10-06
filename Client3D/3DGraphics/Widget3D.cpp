@@ -49,12 +49,7 @@ void Widget3D::updateMap3D() {
             localObstacles3D.insert(obstacleGraphics3D->getId(), obstacleGraphics3D);
         }
         // Modifier la position
-        /*
-        Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
-        obstacleTransform->setScale(4.0f);
-        obstacleTransform->setTranslation(QVector3D(5.0, -4.0f, 0.0f));
-        obstacleGraphics3D->addComponent(obstacleTransform);
-        */
+        obstacleGraphics3D->updateObstacle3D(iterObstacle);
     }
 
     for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
@@ -64,12 +59,7 @@ void Widget3D::updateMap3D() {
             localCheckpoint3D.insert(checkpointGraphics3D->getId(), checkpointGraphics3D);
         }
         // Modifier la position
-        /*
-        Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
-        obstacleTransform->setScale(4.0f);
-        obstacleTransform->setTranslation(QVector3D(5.0, -4.0f, 0.0f));
-        obstacleGraphics3D->addComponent(obstacleTransform);
-        */
+        checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint);
     }
 }
 
@@ -79,11 +69,9 @@ void Widget3D::updateGameMode3D() {
         PlayerGraphics3D* playerGraphics3D = localPlayers3D.value(iterPlayer->getUuid());
         if(!playerGraphics3D){
             playerGraphics3D = new PlayerGraphics3D(iterPlayer, mScene);
-            qDebug() << "components2 = " << playerGraphics3D->components();
             localPlayers3D.insert(playerGraphics3D->getUuid(), playerGraphics3D);
         }
         // Modifier la position
-
         playerGraphics3D->updatePlayer3D(iterPlayer);
     }
 

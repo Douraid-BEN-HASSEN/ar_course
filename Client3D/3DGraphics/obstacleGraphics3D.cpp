@@ -14,7 +14,8 @@ ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, Qt3DCore::QEntity *mS
 
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::blue));
-    Qt3DCore::QEntity *obstacleEntity = new Qt3DCore::QEntity(mScene);
+    this->addComponent(material);
+    this->setParent(mScene);
 
     if((int)this->getId() % 2 == 1){
         Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
@@ -22,25 +23,34 @@ ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, Qt3DCore::QEntity *mS
         Qt3DCore::QTransform *shpereTransform = new Qt3DCore::QTransform();
         shpereTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
 
-        obstacleEntity->addComponent(sphereMesh);
-        obstacleEntity->addComponent(shpereTransform);
+        this->addComponent(sphereMesh);
+        this->addComponent(shpereTransform);
 
     }else{
 
         Qt3DExtras::QCuboidMesh *cuboidMesh = new Qt3DExtras::QCuboidMesh();
         Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
         // X Y Z
-        //cuboidTransform->setTranslation(QVector3D(5.0, -4.0f, 0.0f));
         cuboidTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
 
-        obstacleEntity->addComponent(cuboidMesh);
-        obstacleEntity->addComponent(cuboidTransform);
+        this->addComponent(cuboidMesh);
+        this->addComponent(cuboidTransform);
     }
-    obstacleEntity->addComponent(material);
 
 }
 
+void ObstacleGraphics3D::updateObstacle3D(Obstacle *obstacle){
+   this->x =  obstacle->getX();
+   this->y = obstacle->getY();
 
+   Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
+   obstacleTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+
+    if(!this->components().empty()){
+        this->removeComponent(this->components().at(2));
+        this->addComponent(obstacleTransform);
+    }
+}
 
 qreal ObstacleGraphics3D::getId()
 {

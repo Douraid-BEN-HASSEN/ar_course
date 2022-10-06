@@ -11,16 +11,31 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
 
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::green));
-    Qt3DCore::QEntity *obstacleEntity = new Qt3DCore::QEntity(mScene);
+
+    this->setParent(mScene);
+
     Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
     sphereMesh->setRadius(3);
     Qt3DCore::QTransform *shpereTransform = new Qt3DCore::QTransform();
     shpereTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
 
-    obstacleEntity->addComponent(material);
-    obstacleEntity->addComponent(sphereMesh);
-    obstacleEntity->addComponent(shpereTransform);
+    this->addComponent(material);
+    this->addComponent(sphereMesh);
+    this->addComponent(shpereTransform);
 
+}
+
+void CheckpointGraphics3D::updateCheckpoint3D(Checkpoint *checkpoint){
+   this->x =  checkpoint->getX();
+   this->y = checkpoint->getY();
+
+   Qt3DCore::QTransform *checkpointTransform = new Qt3DCore::QTransform();
+   checkpointTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+
+    if(!this->components().empty()){
+        this->removeComponent(this->components().at(2));
+        this->addComponent(checkpointTransform);
+    }
 }
 
 qreal CheckpointGraphics3D::getId()
