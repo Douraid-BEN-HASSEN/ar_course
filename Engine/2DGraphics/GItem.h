@@ -20,7 +20,7 @@ public:
     void setTtl(int);
     int getTtl();
 
-
+    virtual void update() = 0;
     virtual QRectF boundingRect() const = 0;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
 

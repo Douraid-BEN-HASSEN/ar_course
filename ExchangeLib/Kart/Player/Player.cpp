@@ -341,6 +341,11 @@ Player *Player::newPos(Control *control)
      return player;
 }
 
+QVector2D Player::getVector()
+{
+    return QVector2D(cos(this->_angle), -sin(this->_angle));
+}
+
 
 
 

@@ -14,6 +14,7 @@ public:
     GBomb(QPoint, QGraphicsItem *parent = nullptr);
     GBomb(int x, int y, QGraphicsItem *parent = nullptr);
 
+    void update() override;
 protected:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

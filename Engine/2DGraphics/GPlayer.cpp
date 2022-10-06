@@ -59,6 +59,11 @@ void GPlayer::update(Control *control)
         return;
     }
 
+    if (_stunt > 0) {
+        _stunt--;
+        return;
+    }
+
     float engineCycle = 1./20; // 1 seconde / nombre de sycle
 
     this->_angle += -control->getAngle() * engineCycle;
@@ -66,7 +71,7 @@ void GPlayer::update(Control *control)
     float P = 1000;
 
     // Accélération voulu
-    auto F = QPointF(cos(this->_angle), -sin(this->_angle)) *control->getPower();
+    QVector2D F = QVector2D(cos(this->_angle), -sin(this->_angle)) *control->getPower();
 
     // Vitesse actuel = sqrt(vx² * vy²)
     float V = sqrt(_vitesse.x()*_vitesse.x() + _vitesse.y()*_vitesse.y());
@@ -75,6 +80,12 @@ void GPlayer::update(Control *control)
 
     this->setPos(this->getPos() +this->_vitesse.toPoint());
     this->setRotation(qRadiansToDegrees(-this->_angle));
+}
+
+void GPlayer::hit()
+{
+    this->_vitesse = QVector2D(0, 0);
+    this->_stunt = 25;
 }
 
 void GPlayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

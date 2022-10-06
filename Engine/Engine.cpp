@@ -12,7 +12,6 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
     this->_properties = new Properties(5);
-    _properties->setBananaRadius(50);
 
     GObstacle::radius = this->_properties->getCircleRadius();
     GObstacle::heigth = this->_properties->getRectangleHeight();
@@ -68,6 +67,10 @@ QList<QGraphicsItem *> Engine::collision(GPlayer* g_player)
         if(g_player->getUuid() != g_player->getUuid() && g_player->collidesWithItem(g_player)) g_items.append(g_player);
     }
 
+    for(GItem *g_item: this->itemsGraphics) {
+        if(g_item->collidesWithItem(g_player)) g_items.append(g_item);
+    }
+
     return g_items;
 }
 
@@ -107,6 +110,26 @@ void Engine::control_th()
                     }
                 }
 
+            } else if (gObject->property("type") == GBanana::type) {
+                GBanana* g_banana = (GBanana*)gObject;
+                qDebug() << "hit banana";
+
+                g_player->hit();
+                this->destoryItem(g_banana);
+
+            } else if (gObject->property("type") == GBomb::type) {
+                GBomb* g_bomb = (GBomb*)gObject;
+                qDebug() << "hit bomb";
+
+                g_player->hit();
+                this->destoryItem(g_bomb);
+            } else if (gObject->property("type") == GRocket::type) {
+                qDebug() << "hit rocket";
+                GRocket* g_rocket = (GRocket*)gObject;
+
+                g_player->hit();
+                this->destoryItem(g_rocket);
+
             } else if (gObject->property("type") == GPlayer::type) {
                 GPlayer* g_player = (GPlayer*)gObject;
 
@@ -131,7 +154,8 @@ void Engine::control_th()
                 qDebug() << "drop banana";
                 control->setButton("banana", false);
 
-                GBanana *gBanana = new GBanana(player->getPosition());
+                QPoint spanwPoint = (QPoint)(player->getPosition() + (-player->getVector() * (GBanana::radius + 15)).toPoint());
+                GBanana *gBanana = new GBanana(spanwPoint);
                 gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
 
                 this->spawnItem(gBanana);
@@ -140,7 +164,8 @@ void Engine::control_th()
                 qDebug() << "drop bomb";
                 control->setButton("bomb", false);
 
-                GBomb *gBomb = new GBomb(player->getPosition());
+                QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GBomb::radius + 15)).toPoint());
+                GBomb *gBomb = new GBomb(spanwPoint);
                 gBomb->setTtl(_properties->getBombTtl() * ENGINE_CYCLE);
 
                 this->spawnItem(gBomb);
@@ -149,7 +174,8 @@ void Engine::control_th()
                 qDebug() << "drop rocket";
                 control->setButton("rocket", false);
 
-                GRocket *gRocket = new GRocket(player->getPosition());
+                QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GRocket::radius + 15)).toPoint());
+                GRocket *gRocket = new GRocket(spanwPoint, player->getAngle());
 
                 this->spawnItem(gRocket);
             }
@@ -173,6 +199,24 @@ void Engine::lifeCycleItem(GItem *gItem) {
     if (ttl == 0) {
         destoryItem(gItem);
         return;
+    }
+
+    if (gItem->property("type") == GBanana::type) {
+        GBanana* g_banana = (GBanana*)gItem;
+
+
+
+    } else if (gItem->property("type") == GBomb::type) {
+        GBomb* g_bomb = (GBomb*)gItem;
+
+
+
+    } else if (gItem->property("type") == GRocket::type) {
+        gItem->update();
+
+        GRocket* g_rocket = (GRocket*)gItem;
+
+
     }
 }
 

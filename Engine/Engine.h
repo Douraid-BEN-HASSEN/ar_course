@@ -7,6 +7,7 @@
 #include <QObject>
 
 #include <Mqtt/MqttService.h>
+#include <QVector2D>
 
 #include <Kart/Player/Player.h>
 #include <Kart/Player/GameMode.h>

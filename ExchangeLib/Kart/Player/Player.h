@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "qvector2d.h"
 #if defined(PLAYER_LIBRARY)
 #  define PLAYER_EXPORT Q_DECL_EXPORT
 #else
@@ -62,6 +63,8 @@ public:
     int getCurrentLap();
     QString getStatus();
     QString getController();
+    QVector2D getVector();
+
 
     QPoint getPosition();
     void setPos(QPoint);

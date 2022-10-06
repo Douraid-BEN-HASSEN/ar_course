@@ -17,6 +17,7 @@ public:
     GBanana(QPoint, QGraphicsItem *parent = nullptr);
     GBanana(int x, int y, QGraphicsItem *parent = nullptr);
 
+    void update() override;
 protected:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

@@ -24,6 +24,8 @@ public:
     void setWidth(int);
     void setAngle(float);
 
+    void hit();
+
     QString className();
     void update(Control *control);
     Player* getPlayer();
@@ -35,7 +37,7 @@ private:
     QString uuid;
     qreal heigth = 50;
     qreal width = 50;
-    int _speed = 0;
+    int _stunt = 0;
 
     Player *_player;
     float _angle = 0;
@@ -45,7 +47,7 @@ private:
     int _currentLap = 0;
     QString _status;
     QString _controller;
-    QPointF _vitesse;
+    QVector2D _vitesse;
 };
 
 #endif // GPLAYER_H
