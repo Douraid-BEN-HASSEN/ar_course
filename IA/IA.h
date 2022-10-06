@@ -21,6 +21,9 @@ public:;
 
 private:
     int currentCheckpointId = 0 ;
+    int obstacleWidth ;
+    int obstacleHeight ;
+    int obstacleRadius ;
     Player *player ;
     Register *_register;
     Control *_control;

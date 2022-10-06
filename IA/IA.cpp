@@ -4,6 +4,9 @@ IA::IA(QObject *parent): QObject{parent}
 {
     qDebug() << "Ia::Ia()";
     this->currentCheckpointId = 0 ;
+    this->obstacleWidth = Properties::getInstance()->getRectangleWidth() ;
+    this->obstacleHeight = Properties::getInstance()->getRectangleHeight() ;
+    this->obstacleRadius = Properties::getInstance()->getCircleRadius();
 }
 
 IA::IA(Register *r, QObject *parent): QObject{parent}
@@ -14,7 +17,6 @@ IA::IA(Register *r, QObject *parent): QObject{parent}
     this->_control = new Control(r->getUuid());
 
     QTimer::singleShot(1000, this, &IA::initIA);
-
 }
 
 
@@ -49,8 +51,6 @@ float IA::normalizeAngleD(float angle) {
 
     return angle;
 }
-
-
 
 void IA::initIA()
 {
@@ -106,9 +106,7 @@ void IA::determinePath()
     QMap<int, Obstacle*> *obstacles = Map::getInstance()->getObstacles() ;
     QList<Checkpoint *> path ;
 
-    int obstacleWidth = Properties::getInstance()->getRectangleWidth() ;
-    int obstacleHeight = Properties::getInstance()->getRectangleHeight() ;
-    int obstacleRadius = Properties::getInstance()->getCircleRadius();
+
     int lastChoice = -1;
 
     Checkpoint *currentChoice = new Checkpoint  ;
@@ -154,12 +152,12 @@ void IA::determinePath()
             qDebug() << "trajectory , obstacleLine" << trajectory << obstacleLine ;
             trajectory.intersects(obstacleLine , collisionPoint) ;
             qDebug() << "************" << collisionPoint << obstacleLine ;
-            if (collisionPoint->x() > -1 && collisionPoint->y() > -1 && (collisionPoint->y() > -1 && collisionPoint->y() > obstacleLine.y1() &&  test->y() < obstacleLine.y2()) ) {
+            if (collisionPoint->x() > -1 && collisionPoint->y() > -1 && (collisionPoint->y() > -1 && collisionPoint->y() > obstacleLine.y1() &&  collisionPoint->y() < obstacleLine.y2()) ) {
                 qDebug() << "OBSTACLE !!!!" ;
                 isObstacle = true ;
                 Checkpoint *newCheck  = new Checkpoint ;
-                newCheck->setX(collisionPoint->x() + 100 < 1000 ? test->x()+100 : collisionPoint->x() -100 ) ;
-                newCheck->setY(collisionPoint->y() + 100 < 1000 ? test->y()+100 : collisionPoint->y() -100 );
+                newCheck->setX(collisionPoint->x() + 100 < 1000 ? collisionPoint->x()+100 : collisionPoint->x() -100 ) ;
+                newCheck->setY(collisionPoint->y() + 100 < 1000 ? collisionPoint->y()+100 : collisionPoint->y() -100 );
 
                 qDebug() << "add obstacle checkpoint" ;
                 path.append(newCheck);
