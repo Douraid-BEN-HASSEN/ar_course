@@ -78,7 +78,7 @@ void IA::mooveToCheckpoint()
         float playerAngle = qRadiansToDegrees(player->getAngle());
         float relativeDirection = WorldDirection.angle() - playerAngle;
         _control->setAngle(qDegreesToRadians(normalizeAngleD(relativeDirection)));
-        _control->setPower(15);
+        _control->setPower(10);
         _control->publish();
 
         QEventLoop loop;
@@ -105,15 +105,15 @@ void IA::determinePath()
     QMap<int, Checkpoint*> *checkpoints = Map::getInstance()->getCheckpoints();
     QMap<int, Obstacle*> *obstacles = Map::getInstance()->getObstacles() ;
     QList<Checkpoint *> path ;
+
     int obstacleWidth = Properties::getInstance()->getRectangleWidth() ;
     int obstacleHeight = Properties::getInstance()->getRectangleHeight() ;
     int obstacleRadius = Properties::getInstance()->getCircleRadius();
-
     int lastChoice = -1;
+
     Checkpoint *currentChoice = new Checkpoint  ;
 
     for (int i = 0 ; i < checkpoints->size() ; i++) {
-        //qDebug() << "CHECKPOINT " << i ;
         int bestChoice = -1;
         for (Checkpoint *checkpoint : checkpoints->values()){
             if (checkpoint->getId() > lastChoice && (bestChoice == -1 || checkpoint->getId() < bestChoice )) {
@@ -122,18 +122,19 @@ void IA::determinePath()
             }
 
         }
+
         lastChoice = bestChoice ;
 
         //Vérifier si il y a un obstacle entre l'ancien et le nouveau checkpoint
-
+        bool isObstacle = false ;
         QLineF trajectory = QLineF(path.length() == 0 ? QPoint(0,0) :  path.at(path.length()-1)->getPosition(), currentChoice->getPosition());
-        qDebug() << "trajectory : " << trajectory ;
-        QPointF *test = new QPointF(-1,-1);
+        //qDebug() << "trajectory : " << trajectory ;
+        QPointF *collisionPoint = new QPointF(-1,-1);
         QLineF obstacleLine ;
         //qDebug() << "test : " << *test ;
         for (Obstacle *obstacle : obstacles->values()){
-            test->setX(-1) ;
-            test->setY(-1);
+            collisionPoint->setX(-1) ;
+            collisionPoint->setY(-1);
             //qDebug() << " test : " << *test ;
 
             if (obstacle->getId() % 2 == 0) {
@@ -151,13 +152,14 @@ void IA::determinePath()
 
 
             qDebug() << "trajectory , obstacleLine" << trajectory << obstacleLine ;
-            trajectory.intersects(obstacleLine , test) ;
-            qDebug() << "************" << test << obstacleLine ;
-            if (test->x() > -1 && test->y() > -1 && (test->y() > -1 && test->y() > obstacleLine.y1() &&  test->y() < obstacleLine.y2()) ) {
+            trajectory.intersects(obstacleLine , collisionPoint) ;
+            qDebug() << "************" << collisionPoint << obstacleLine ;
+            if (collisionPoint->x() > -1 && collisionPoint->y() > -1 && (collisionPoint->y() > -1 && collisionPoint->y() > obstacleLine.y1() &&  test->y() < obstacleLine.y2()) ) {
                 qDebug() << "OBSTACLE !!!!" ;
+                isObstacle = true ;
                 Checkpoint *newCheck  = new Checkpoint ;
-                newCheck->setX(test->x() +200) ;
-                newCheck->setY(test->y());
+                newCheck->setX(collisionPoint->x() + 100 < 1000 ? test->x()+100 : collisionPoint->x() -100 ) ;
+                newCheck->setY(collisionPoint->y() + 100 < 1000 ? test->y()+100 : collisionPoint->y() -100 );
 
                 qDebug() << "add obstacle checkpoint" ;
                 path.append(newCheck);
@@ -165,7 +167,8 @@ void IA::determinePath()
         }
 
         qDebug() << "add checkpoint" ;
-        path.append(currentChoice);
+        if (isObstacle == false)
+            path.append(currentChoice);
 
     }
 
@@ -183,5 +186,6 @@ void IA::determinePath()
 
     QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 }
+
 
 
