@@ -23,6 +23,7 @@ Window::~Window()
 
 void Window::startIA()
 {
+
     qDebug() << "Window::startIa()";
 
     if ( this->ui->lineEdit_Player->text() != "" ) {
