@@ -34,6 +34,7 @@ class PlayerGraphics3D : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
+    void updatePlayer3D(Player *);
     PlayerGraphics3D(Player *, Qt3DCore::QEntity* mScene,  QNode *parent = nullptr);
     QString getUuid();
     qreal getX();

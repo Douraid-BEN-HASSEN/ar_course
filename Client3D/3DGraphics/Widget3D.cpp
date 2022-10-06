@@ -82,12 +82,11 @@ void Widget3D::updateGameMode3D() {
             localPlayers3D.insert(playerGraphics3D->getUuid(), playerGraphics3D);
         }
         // Modifier la position
-        /*
-        Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
-        obstacleTransform->setScale(4.0f);
-        obstacleTransform->setTranslation(QVector3D(5.0, -4.0f, 0.0f));
-        obstacleGraphics3D->addComponent(obstacleTransform);
-        */
+
+        playerGraphics3D->updatePlayer3D(iterPlayer);
+        qDebug() << "playerGraphics3D x = " << playerGraphics3D->getX();
+         qDebug() << "playerGraphics3D y = " << playerGraphics3D->getY();
+
     }
 
 }
