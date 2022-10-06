@@ -23,11 +23,11 @@ Widget::Widget(QWidget *parent): QWidget(parent)
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(mView);
     setLayout(layout);
-
     QGraphicsRectItem* rectItem = new QGraphicsRectItem(0,0,1000,1000);
     rectItem->setBrush(Qt::gray);
     mScene->addItem(rectItem);
     rectItem->setPos(0,0);
+
 
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
