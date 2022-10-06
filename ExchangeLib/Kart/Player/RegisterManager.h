@@ -10,9 +10,7 @@
 #include <QObject>
 #include "Register.h"
 
-#include "Mqtt/MqttService.h"
-
-class RegisterManager : public QObject
+class REGISTERMANAGER_EXPORT RegisterManager : public QObject
 {
     Q_OBJECT
 public:

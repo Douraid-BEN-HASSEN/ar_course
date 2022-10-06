@@ -1,18 +1,18 @@
-#include "GBanana.h"
+#include "GBomb.h"
 
-QString GBanana::type = "GBanana";
-GBanana::GBanana(Item *item, QGraphicsItem *parent): GItem(item, parent)
+
+GBomb::GBomb(Item *item, QGraphicsItem *parent): GItem(item, parent)
 {
     this->setProperty("type", this->type);
 }
 
 
-QRectF GBanana::boundingRect() const
+QRectF GBomb::boundingRect() const
 {
     return QRectF(-this->heigth, -this->width,this->heigth*2,this->width*2);
 }
 
-void GBanana::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void GBomb::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush(Qt::yellow);
 

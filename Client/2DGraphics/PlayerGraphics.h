@@ -23,13 +23,13 @@ public:
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     Player* getPlayer();
-    static qreal heigth;
-    static qreal width;
 
 private:
     QString uuid;
     qreal x;
     qreal y;
+    qreal heigth = 50;
+    qreal width = 50;
     Player *_player;
 signals:
 

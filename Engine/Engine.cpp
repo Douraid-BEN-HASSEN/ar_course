@@ -13,9 +13,14 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_gameMode = new GameMode();
     this->_properties = new Properties(5);
 
+    GObstacle::radius = this->_properties->getCircleRadius();
+    GObstacle::heigth = this->_properties->getRectangleHeight();
+    GObstacle::width = this->_properties->getRectangleWidth();
+
+    GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
+
     connect(RegisterManager::getInstance(), SIGNAL(application(Register*)), this, SLOT(registered(Register*)));
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
-
 
     this->_controls = new QMap<QString, Control*>;
 
@@ -181,6 +186,7 @@ void Engine::registered(Register *r) {
     }
 
     Player *p = new Player(r);
+
     _gameMode->_players->insert(p->getUuid(), p);
 
     GPlayer *playerGraphics = playersGraphics.value(p->getUuid());
@@ -189,6 +195,20 @@ void Engine::registered(Register *r) {
         playerGraphics = new GPlayer(p);
         this->g_engine->addPlayerGraphics(playerGraphics);
         this->playersGraphics.insert(p->getUuid(), playerGraphics);
+    }
+
+    qDebug() << p->getVehicule();
+
+    Vehicle *veh = this->_properties->vehicleOptions->value(p->getVehicule());
+
+    qDebug() << veh->toString();
+
+    if (veh != nullptr) {
+        qDebug() << veh->getHeight();
+        qDebug() << veh->getWidth();
+
+        playerGraphics->setHeigth(veh->getHeight());
+        playerGraphics->setWidth(veh->getWidth());
     }
 
     playerGraphics->setPos(p->getPosition());
@@ -239,4 +259,27 @@ void Engine::traitementPlayerRegister(QJsonObject pMessage)
     player->deserialize(pMessage);
     this->_gameMode->_players->remove(player->getUuid());
     this->_gameMode->_players->insert(player->getUuid(), player);
+}
+
+void Engine::reset(bool b)
+{
+    qDebug() << "reset";
+
+    for (QGraphicsItem *item : this->checkpointsGraphics.values()) {
+        this->g_engine->removeItem(item);
+    }
+    this->checkpointsGraphics.clear();
+
+    for (QGraphicsItem *item : this->obstaclesGraphics.values()) {
+        this->g_engine->removeItem(item);
+    }
+    this->obstaclesGraphics.clear();
+
+    for (QGraphicsItem *item : this->playersGraphics.values()) {
+        this->g_engine->removeItem(item);
+    }
+    this->playersGraphics.clear();
+
+    this->_gameMode->reset();
+    this->_map->reste();
 }

@@ -40,9 +40,9 @@ Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
     this->rocketSpeed = 10.0f;
     this->rocketRadius = 10;
 
-    this->circleRadius = 50;
+    this->circleRadius = 75;
     this->rectangleWidth = 50;
-    this->rectangleHeight = 50;
+    this->rectangleHeight = 100;
     this->checkpointRadius = 50;
 
     this->vehicleOptions->insert("bike", new Vehicle("bike"));

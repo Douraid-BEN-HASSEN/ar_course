@@ -23,20 +23,26 @@ win32 {
 
 SOURCES += \
     2DGraphics/GBanana.cpp \
+    2DGraphics/GBomb.cpp \
     2DGraphics/GCheckpoint.cpp \
     2DGraphics/GEngine.cpp \
+    2DGraphics/GItem.cpp \
     2DGraphics/GObstacle.cpp \
     2DGraphics/GPlayer.cpp \
+    2DGraphics/GRocket.cpp \
     Engine.cpp \
     main.cpp \
     window.cpp
 
 HEADERS += \
     2DGraphics/GBanana.h \
+    2DGraphics/GBomb.h \
     2DGraphics/GCheckpoint.h \
     2DGraphics/GEngine.h \
+    2DGraphics/GItem.h \
     2DGraphics/GObstacle.h \
     2DGraphics/GPlayer.h \
+    2DGraphics/GRocket.h \
     Engine.h \
     window.h
 

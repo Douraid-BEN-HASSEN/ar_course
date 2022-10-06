@@ -56,6 +56,8 @@ public:
     QString getInfoMessage();
     QString getStatus();
 
+    void reset();
+
 private:
 
     int _elapsedTime;

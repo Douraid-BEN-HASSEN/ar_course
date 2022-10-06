@@ -1,5 +1,5 @@
-#ifndef GITEM_H
-#define GITEM_H
+#ifndef ITEMGRAPHICS_H
+#define ITEMGRAPHICS_H
 
 #include <QGraphicsObject>
 #include <QObject>
@@ -7,11 +7,11 @@
 
 #include <Kart/Player/Item.h>
 
-class GItem: public QGraphicsObject
+class ItemGraphics: public QGraphicsObject
 {
     Q_OBJECT
 public:
-    GItem(Item *item, QGraphicsItem *parent = nullptr);
+    ItemGraphics(Item *item, QGraphicsItem *parent = nullptr);
 
     QPoint getPos();
 
@@ -23,6 +23,7 @@ protected:
 
     const float heigth = 5;
     const float width = 5;
+
 };
 
-#endif // GITEM_H
+#endif // ITEMGRAPHICS_H

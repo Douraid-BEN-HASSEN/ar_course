@@ -148,3 +148,9 @@ QString GameMode::getStatus()
 {
     return this->_status;
 }
+
+void GameMode::reset()
+{
+    _players->clear();
+    _items->clear();
+}

@@ -33,18 +33,17 @@ QString GPlayer::getUuid()
 
 QRectF GPlayer::boundingRect() const
 {
-    return QRectF(-50, -50,100.,100.);
+    return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
 }
 
-void GPlayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    painter->setBrush(Qt::yellow);
-    painter->drawRect(boundingRect());
-    this->setRotation(this->_player->getAngle());
-
-    painter->setPen(Qt::black);
-    painter->drawText(0, 0, this->_player->getPseudo());
+void GPlayer::setHeigth(int heigth) {
+    this->heigth = heigth;
 }
+
+void GPlayer::setWidth(int width) {
+    this->width = width;
+}
+
 
 void GPlayer::update(Control *control)
 {
@@ -52,7 +51,7 @@ void GPlayer::update(Control *control)
         return;
     }
 
-    this->_angle += control->getAngle()*0.1;
+    this->_angle += -control->getAngle()*0.1;
 
     float P = 1000;
 
@@ -67,6 +66,15 @@ void GPlayer::update(Control *control)
     qDebug() << this->getPos();
 
     this->setPos(this->getPos() +this->_vitesse.toPoint());
+    this->setRotation(qRadiansToDegrees(-this->_angle));
+}
+
+void GPlayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    painter->setBrush(Qt::yellow);
+    painter->drawRect(boundingRect());
+    painter->setPen(Qt::black);
+    painter->drawText(0, 0, this->_player->getPseudo());
 }
 
 // void GPlayer::setPos(QPoint a)

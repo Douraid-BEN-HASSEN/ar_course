@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include "Engine.h"
-#include "GEngine.h"
+#include "2DGraphics/GEngine.h"
 
 namespace Ui {
 class Window;
@@ -20,6 +20,9 @@ public:
 
 private:
     Ui::Window *ui;
+
+private slots:
+    void resetEngine(bool);
 };
 
 #endif // WINDOW_H
