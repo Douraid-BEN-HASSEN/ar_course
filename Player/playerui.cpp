@@ -13,6 +13,8 @@ void PlayerUi::keyPressEvent(QKeyEvent *key){
 
 void PlayerUi::keyReleaseEvent(QKeyEvent *key){
     qDebug() << "PlayerUi::keyReleaseEvent()" ;
+    this->_controller->handleReleaseKeyEvent(key);
+    this->updateLabel();
 }
 
 
@@ -43,9 +45,6 @@ void PlayerUi::onRunFind(QByteArray datas)
     qDebug() << "PlayerUi::onRunFind()" ;
     if ( this->isProperties == false ) {
         this->props->deserialize(QJsonDocument::fromJson(datas).object());
-        this->nbBanana = props->getBanana() ;
-        this->nbBomb = props->getBomb() ;
-        this->nbRocket = props->getRocket();
         this->nbTurn = props->getLaps() ;
         this->nbTeam = props->getTeam() ;
         for (Vehicle *vehicle : this->props->vehicleOptions->values())
@@ -58,6 +57,15 @@ void PlayerUi::onRunFind(QByteArray datas)
         this->updateLabel();
         this->isProperties = true ;
     }
+}
+
+void PlayerUi::onGameModeReceived(QByteArray datas)
+{
+    this->gameMode->deserialize(QJsonDocument::fromJson(datas).object() );
+    this->nbBanana = this->gameMode->_players->value(this->uuid)->getItems()->value("banana") ;
+    this->nbBomb =this->gameMode->_players->value(this->uuid)->getItems()->value("bomb") ;
+    this->nbRocket = this->gameMode->_players->value(this->uuid)->getItems()->value("rocket");
+    this->updateLabel();
 }
 
 void PlayerUi::onExitRun()
@@ -85,6 +93,16 @@ void PlayerUi::onGamepadUse()
     }
 }
 
+void PlayerUi::onMessageRecieve(QByteArray datas, QMqttTopicName topic)
+{
+    qDebug() << "PlayerUi::onMessageRecieve" << datas << topic ;
+    if (topic.name() == "game/properties") {
+        this->onRunFind(datas);
+    } else if (topic.name() == "game") {
+        this->onGameModeReceived(datas);
+    }
+}
+
 
 //On action, make message for mqtt
 void PlayerUi::makeMqttMessage( int keyAction)
@@ -108,7 +126,8 @@ void PlayerUi::updateLabel()
 void PlayerUi::connectToMqtt()
 {
     qDebug() << "PlayerUi::connectToMqtt()" ;
-    MqttService::instance()->subscribe("/game/properties");
+    MqttService::instance()->subscribe("game/properties");
+    MqttService::instance()->subscribe("game");
 }
 
 //Constructor
@@ -127,6 +146,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->resize(500 , 300);
     this->uuid = QUuid::createUuid().toString();
     this->props = Properties::getInstance();
+    this->gameMode = GameMode::getInstance();
 
     //Graphic content for loading page
     this->loadingLayout = new QVBoxLayout ;
@@ -250,7 +270,8 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(this->buttonExit , SIGNAL(clicked()) , this , SLOT(onExitRun()));
-    this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray ,  QMqttTopicName)), this ,  SLOT(onRunFind(QByteArray)) );
+    this->connect(MqttService::instance()->client , SIGNAL(messageReceived(QByteArray,  QMqttTopicName)), this, SLOT(onMessageRecieve(const QByteArray &, const QMqttTopicName &)));
+
     //Connect for the gamepad
     this->connect(this->_controller->getGamepad() , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
     this->connect(this->_controller->getGamepad() , SIGNAL(buttonR1Changed(bool)) , this , SLOT(onGamepadUse()));

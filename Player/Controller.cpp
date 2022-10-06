@@ -92,8 +92,21 @@ void Controller::handleReleaseKeyEvent(QKeyEvent *key)
 {
     qDebug() << "Controller::handleReleaseKeyEvent()" ;
     switch(key->key()) {
-    case Qt::Key_Q : case Qt::Key_D:
+    case Qt::Key_Q :
         *this->angle = 0 ;
+        break ;
+    case Qt::Key_D:
+        *this->angle = 0 ;
+        break ;
+    case Qt::Key_Z :
+        qDebug() << "test !!" ;
+        *this->power = 0 ;
+        this->sendMessageControl( 0);
+        break ;
+    case Qt::Key_S :
+        qDebug() << "test !!" ;
+        *this->power = 0 ;
+        this->sendMessageControl( 0);
         break ;
     }
 }
@@ -105,7 +118,7 @@ void Controller::catchKeyUp()
     qDebug() << "Controller::catchKeyUp()" ;
     if (*this->power != 100) {
         *this->angle = 0 ;
-        *this->power += 1;
+        *this->power = 25;
     }
 }
 
@@ -114,7 +127,7 @@ void Controller::catchKeyDown()
     qDebug() << "Controller::catchKeyDown()" ;
     if(*this->power != -100) {
         *this->angle = 0 ;
-        *this->power -= 1;
+        *this->power = -25;
     }
 
 }
@@ -171,8 +184,7 @@ void Controller::handlePressBreake(double value){
     qDebug() << "Controller::handlePresseBreake()";
     if (this->controllerType == "controller") {
         if (value > 0 ) {
-            if (*power != -100)
-                *power -= 1;
+            *this->power = value * - 100 ;
         } else {
             *power = 0 ;
         }
@@ -185,8 +197,7 @@ void Controller::handlePressAccelerate(double value){
 
     if (this->controllerType == "controller") {
         if (value > 0) {
-            if (*power != 100)
-                *power += 1;
+            *this->power = value * 100 ;
         } else
             *power = 0 ;
 
@@ -234,12 +245,12 @@ void Controller::handleTurnLeftJoystick(double value)
     qDebug() << "Controller::handleTurnRightJoystick()" << value ;
     if (this->controllerType == "controller") {
         if (value != 0) {
-            if (value == -1 ) { //Turn left
-                *this->angle += 90;
+            if (value < 0 ) { //Turn left
+                *this->angle += value*90;
                 this->sendMessageControl( 0);
                 *this->angle = 0 ;
-            } else if (value == 1) { //Turn right
-                *this->angle -= 90;
+            } else if (value > 0) { //Turn right
+                *this->angle -= value*90;
                 this->sendMessageControl( 0);
                 *this->angle = 0 ;
             }
