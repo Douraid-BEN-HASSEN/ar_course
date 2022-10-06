@@ -79,14 +79,12 @@ void Widget3D::updateGameMode3D() {
         PlayerGraphics3D* playerGraphics3D = localPlayers3D.value(iterPlayer->getUuid());
         if(!playerGraphics3D){
             playerGraphics3D = new PlayerGraphics3D(iterPlayer, mScene);
+            qDebug() << "components2 = " << playerGraphics3D->components();
             localPlayers3D.insert(playerGraphics3D->getUuid(), playerGraphics3D);
         }
         // Modifier la position
 
         playerGraphics3D->updatePlayer3D(iterPlayer);
-        qDebug() << "playerGraphics3D x = " << playerGraphics3D->getX();
-         qDebug() << "playerGraphics3D y = " << playerGraphics3D->getY();
-
     }
 
 }

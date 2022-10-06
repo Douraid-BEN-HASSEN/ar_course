@@ -42,6 +42,7 @@ public:
     qreal getRadius();
     Player* getPlayer();
 
+
 private:
     QString uuid;
     qreal x;
