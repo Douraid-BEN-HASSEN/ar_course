@@ -64,6 +64,8 @@ void IA::mooveToCheckpoint()
     //qDebug() << "Ia::mooveToCheckpoint()" ;
     QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 
+
+
     while (this->currentCheckpointId < this->path.size()){
 
         Checkpoint *target = path.at(this->currentCheckpointId);
@@ -105,6 +107,7 @@ void IA::determinePath()
     QMap<int, Checkpoint*> *checkpoints = Map::getInstance()->getCheckpoints();
     QMap<int, Obstacle*> *obstacles = Map::getInstance()->getObstacles() ;
     QList<Checkpoint *> path ;
+    QPair<QString , Checkpoint *> path2;
 
 
     int lastChoice = -1;
@@ -161,6 +164,7 @@ void IA::determinePath()
 
                 qDebug() << "add obstacle checkpoint" ;
                 path.append(newCheck);
+
             }
         }
 
@@ -182,7 +186,7 @@ void IA::determinePath()
         qDebug() << this->path.at(i)->getX() << this->path.at(i)->getY() ;
     }
 
-    QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
+    //QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 }
 
 

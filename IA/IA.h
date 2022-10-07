@@ -28,6 +28,7 @@ private:
     Register *_register;
     Control *_control;
     QList<Checkpoint *>  path ;
+    QPair<QString , Checkpoint*> path2;
 signals:
 
 };

@@ -168,8 +168,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->gameLayout->addLayout(this->horizontalLayout_8);
     this->gameLayout->addLayout(this->horizontalLayout_10);
 
-
-
     //Graphic content for the register window
     this->registerLayout = new QVBoxLayout ;
 
@@ -254,7 +252,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->connect(this->_controller->gamepad , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
     this->connect(this->_controller->gamepad , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
     this->connect(this->_controller->gamepad , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
-
 
     this->connectToMqtt();
 }
