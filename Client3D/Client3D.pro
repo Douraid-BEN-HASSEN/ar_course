@@ -23,7 +23,6 @@ SOURCES += \
     3DGraphics/Widget3D.cpp \
     3DGraphics/checkpointGraphics3D.cpp \
     3DGraphics/obstacleGraphics3D.cpp \
-    3DGraphics/orbittransformcontroller.cpp \
     3DGraphics/planeGraphics3D.cpp \
     3DGraphics/playerGraphics3D.cpp \
     main.cpp \
@@ -32,7 +31,6 @@ HEADERS += \
     3DGraphics/Widget3D.h \
     3DGraphics/checkpointGraphics3D.h \
     3DGraphics/obstacleGraphics3D.h \
-    3DGraphics/orbittransformcontroller.h \
     3DGraphics/planeGraphics3D.h \
     3DGraphics/playerGraphics3D.h \
 
@@ -42,3 +40,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    vehiculeObj/DeLorean.obj

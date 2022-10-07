@@ -23,7 +23,6 @@
 #include <QOrbitCameraController>
 
 #include "qt3dwindow.h"
-#include "3DGraphics/orbittransformcontroller.h"
 #include "qorbitcameracontroller.h"
 
 #include <Kart/Map/Map.h>

@@ -1,15 +1,12 @@
 #include "playerGraphics3D.h"
-
-
+//const QUrl url = QUrl("/home/pierre/Documents/ar_course/Client3D/vehiculeObj/DeLorean.obj");
 PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
     this->uuid = player->getUuid();
     //this->pseudo = player->getPseudo();
     this->x = player->getX();
     this->y = player->getY();
-    //this->angle = playe        //Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
-    //obstacleTransform->setTranslation(QVector3D(iterPlayer->getX()/10, 0.0f, iterPlayer->getY()));
-    //playerGraphics3D->addComponent(obstacleTransform);r->getAngle();
+    //this->angle = player->getAngle();
     this->_player = player;
 
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
@@ -17,10 +14,15 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     this->setParent(mScene);
     Qt3DExtras::QCuboidMesh *cuboid = new Qt3DExtras::QCuboidMesh();
 
+    //Qt3DRender::QMesh *dolorean = new Qt3DRender::QMesh();
+    //dolorean->setSource(url);
+
     Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
     cuboidTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
     cuboidTransform->setScale(4.0f);
+
     this->addComponent(material);
+    //this->addComponent(dolorean);
     this->addComponent(cuboid);
     this->addComponent(cuboidTransform);
 }
