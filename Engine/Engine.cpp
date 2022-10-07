@@ -180,7 +180,34 @@ void Engine::control_th()
                 this->spawnItem(gRocket);
             }
         }
+
+        /*limite map*/
+        if(g_player->getPos().x() < 0){
+
+            g_player->setX(0);
+
+
+        }
+
+        if(g_player->getPos().y() < 0){
+
+            g_player->setY(0);
+
+        }
+
+        if (g_player->getPos().x() > _map->getMapHeight()){
+            g_player->setX(_map->getMapWidth());
+
+        }
+
+        if (g_player->getPos().x() > _map->getMapWidth()){
+
+            g_player->setX(_map->getMapHeight());
+
+
+        }
     }
+
 
     for (GItem *gItem: itemsGraphics) {
         lifeCycleItem(gItem);
