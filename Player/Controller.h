@@ -14,10 +14,10 @@ class Controller : public QObject
 {
     Q_OBJECT
 public:
+    //Constructor
     explicit Controller(QObject *parent = nullptr );
-    Controller(QString *uuid , int *power , float *angle , int *nbBananas , int *nbBomb , int *nbRocket);
-    void sendMessageRegister(QString pseudo, QString controller, QString vehicle, QString team);
-    void sendMessageControl( int keyAction);
+
+    //For the keyboard
     void handleKeyEvent( QKeyEvent *key);
     void handleReleaseKeyEvent(QKeyEvent *key) ;
     void catchKeyUp();
@@ -25,18 +25,34 @@ public:
     void catchKeyLeft();
     void catchKeyRight();
     void catchKeyAction( int idKey );
+
+    //For the gamepad
     void createGamepad() ;
 
-    //Getters and setter
+    //For the mqtt
+    void sendMessageRegister(QString pseudo, QString controller, QString vehicle, QString team);
+    void sendMessageControl( int keyAction);
+
+    //Getters
+    int getNbBananas() ;
+    int getNbBombs() ;
+    int getNbRocket();
+    float getAngle() ;
+    int getPower() ;
     QGamepad * getGamepad();
+
+    //Setters
+    void setNbBananas(int n);
+    void setNbBombs(int n);
+    void setNbRocket(int n);
 private:
     Properties* _properties;
-    QString * uuid ;
-    int *power ;
-    float * angle ;
-    int *nbBananas ;
-    int *nbBomb ;
-    int *nbRocket ;
+    QString  uuid ;
+    int power ;
+    float  angle ;
+    int nbBananas ;
+    int nbBomb ;
+    int nbRocket ;
     QString controllerType ;
     Properties* getProperties();
     QGamepad *gamepad ;
@@ -52,7 +68,6 @@ public slots:
     void handlePressAction3 (bool isPushed) ;
     void handlePressAction4 (bool isPushed) ;
     void handleTurnLeftJoystick (double value);
-    //void handleChangeJoystickLeft();
 
     void setControllerType(QString controllerType);
 

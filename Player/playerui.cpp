@@ -75,9 +75,9 @@ void PlayerUi::onGameModeReceived()
     if (!player)
         return;
 
-    this->nbBanana = player->getItems()->value("banana") ;
-    this->nbBomb = player->getItems()->value("bomb") ;
-    this->nbRocket = player->getItems()->value("rocket");
+    this->_controller->setNbBananas(player->getItems()->value("banana")) ;
+    this->_controller->setNbBombs(player->getItems()->value("bomb")) ;
+    this->_controller->setNbRocket(player->getItems()->value("rocket"));
     updateLabel();
 }
 
@@ -122,11 +122,11 @@ void PlayerUi::makeMqttMessage( int keyAction)
 void PlayerUi::updateLabel()
 {
     qDebug() << "PlayerUi::updateLabel()" ;
-    this->labelAngle->setText("<h4> Angle : " + QString::number(this->angle) + " </h4> ");
-    this->labelPower->setText("<h4> Power : " + QString::number(this->power) + " </h4> ");
-    this->labelBanana->setText(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
-    this->labelBomb->setText(" <h4> " + QString::number(this->nbBomb) + " bomb(s) </h4> ");
-    this->labelRocket->setText(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
+    this->labelAngle->setText("<h4> Angle : " + QString::number(this->_controller->getAngle()) + " </h4> ");
+    this->labelPower->setText("<h4> Power : " + QString::number(this->_controller->getPower()) + " </h4> ");
+    this->labelBanana->setText(" <h4> " + QString::number(this->_controller->getNbBananas()) + " banana(s) </h4> ");
+    this->labelBomb->setText(" <h4> " + QString::number(this->_controller->getNbBombs()) + " bomb(s) </h4> ");
+    this->labelRocket->setText(" <h4> " + QString::number(this->_controller->getNbRocket()) + " rocket(s) </h4>");
 }
 
 //Constructor
@@ -136,11 +136,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     //Init parameters
     this->isProperties = false ;
     this->isGame = false ;
-    this->angle = 0 ;
-    this->power = 0 ;
-    this->nbBanana = 0 ;
-    this->nbBomb = 0 ;
-    this->nbRocket = 0 ;
 
     this->resize(500 , 300);
     this->uuid = QUuid::createUuid().toString();
@@ -170,16 +165,16 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->horizontalLayout_6->addWidget(this->labelSelectionVehicle);
 
     this->horizontalLayout_7 = new QHBoxLayout ;
-    this->labelBanana = new QLabel(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
-    this->labelBomb = new QLabel(" <h4> " + QString::number(this->nbBomb) + " bomb(s) </h4> ");
-    this->labelRocket = new QLabel(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
+    this->labelBanana = new QLabel(" <h4> " + QString::number(this->_controller->getNbBananas()) + " banana(s) </h4> ");
+    this->labelBomb = new QLabel(" <h4> " + QString::number(this->_controller->getNbBombs()) + " bomb(s) </h4> ");
+    this->labelRocket = new QLabel(" <h4> " + QString::number(this->_controller->getNbRocket()) + " rocket(s) </h4>");
     this->horizontalLayout_7->addWidget(this->labelBanana);
     this->horizontalLayout_7->addWidget(this->labelBomb);
     this->horizontalLayout_7->addWidget(this->labelRocket);
 
     this->horizontalLayout_8 = new QHBoxLayout ;
-    this->labelPower = new QLabel("<h4> Power : " + QString::number(this->power) + " </h4>") ;
-    this->labelAngle = new QLabel("<h4> Angle : " + QString::number(this->angle) + " </h4> ") ;
+    this->labelPower = new QLabel("<h4> Power : " + QString::number(this->_controller->getPower()) + " </h4>") ;
+    this->labelAngle = new QLabel("<h4> Angle : " + QString::number(this->_controller->getAngle()) + " </h4> ") ;
     this->horizontalLayout_8->addWidget(this->labelPower);
     this->horizontalLayout_8->addWidget(this->labelAngle);
 
@@ -264,7 +259,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     mainLayout->addWidget(stackedWidget);
     this->setLayout(mainLayout);
 
-    _controller = new Controller(&this->uuid , &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket) ;
+    _controller = new Controller() ;
 
     props = Properties::getInstance();
     gameMode = GameMode::getInstance();

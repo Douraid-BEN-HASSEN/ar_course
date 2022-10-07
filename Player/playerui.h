@@ -30,11 +30,6 @@ private :
 
     QStackedWidget * stackedWidget;
     QString uuid ;
-    float angle ;
-    int power ;
-    int nbBanana ;
-    int nbBomb ;
-    int nbRocket ;
     int nbTurn ;
     int nbTeam ;
     bool isProperties ;
