@@ -90,7 +90,7 @@ void Engine::control_th()
 
         g_player->update(control);
 
-        QList<QGraphicsItem*> g_items = this->collision(g_player);
+        QList<QGraphicsItem*> g_items = g_player->collidingItems();
 
         for (QGraphicsItem *gItem : g_items ) {
             QGraphicsObject *gObject = static_cast<QGraphicsObject *>(gItem);
