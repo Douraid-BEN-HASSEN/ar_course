@@ -87,6 +87,7 @@ void PlayerUi::onExitRun()
     this->stackedWidget->setCurrentIndex(0);
     this->controllerType = "" ;
     this->_controller->setControllerType("");
+    this->uuid = QUuid::createUuid().toString();
 }
 
 void PlayerUi::onCloseGame()
