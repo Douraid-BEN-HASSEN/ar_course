@@ -21,6 +21,7 @@ void Obstacle::deserialize(const QJsonObject &jsonObject) {
     this->_y = jsonObject["y"].toInt();
     this->_angle = jsonObject["angle"].toDouble();
     this->_timeout = jsonObject["timeout"].toInt();
+
 }
 
 QString Obstacle::serialize()
@@ -86,6 +87,11 @@ int Obstacle::getX()
 int Obstacle::getY()
 {
     return this->_y;
+}
+
+QPoint Obstacle::getPos()
+{
+    return QPoint(_x, _y);
 }
 
 float Obstacle::getAngle()

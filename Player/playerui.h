@@ -19,6 +19,7 @@
 #include <Kart/Game/Properties.h>
 
 #include "Controller.h"
+#include "Kart/Player/GameMode.h"
 
 class PlayerUi : public QWidget
 {
@@ -43,6 +44,7 @@ private :
     QString team ;
     QString vehicle ;
     Properties *props;
+    GameMode *gameMode ;
 
     //Graphic component for the loading
     QVBoxLayout *loadingLayout ;
@@ -97,18 +99,18 @@ protected :
 private slots :
     //Call when the user validate the initial form
     void buttonPlayPressed() ;
-    void onRunFind(QByteArray datas) ;
+
     void onExitRun();
     void onCloseGame();
     void onGamepadUse() ;
+
+    void onRunFind() ;
+    void onGameModeReceived();
 
 public:
     PlayerUi(QWidget *parent = nullptr);
     void makeMqttMessage(int keyAction );
     void updateLabel();
-    void connectToMqtt();
-
-
 
     ~PlayerUi();
 

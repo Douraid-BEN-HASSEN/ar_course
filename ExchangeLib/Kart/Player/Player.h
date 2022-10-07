@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "qvector2d.h"
 #if defined(PLAYER_LIBRARY)
 #  define PLAYER_EXPORT Q_DECL_EXPORT
 #else
@@ -11,12 +12,16 @@
 #include <QMap>
 #include "Kart/Game/Control.h"
 #include "Kart/Map/Map.h"
+#include "Kart/Player/Register.h"
+#include "Kart/Game/Vehicle.h"
+#include <QPointF>
 
 class PLAYER_EXPORT Player : public QObject
 {
     Q_OBJECT
 public:
     explicit Player(QObject *parent = nullptr);
+    Player(Register* r, QObject *parent = nullptr);
     ~Player();
 
     // === UTILS ===
@@ -41,6 +46,7 @@ public:
     void setCurrentLap(int pCurrentLap);
     void setStatus(QString pStatus);
     void setController(QString pController);
+    void copyPlayer(Player *pPlayer); // pointer
 
     // === GETTER ===
     QString getUuid();
@@ -57,10 +63,14 @@ public:
     int getCurrentLap();
     QString getStatus();
     QString getController();
+    QVector2D getVector();
+
 
     QPoint getPosition();
+    void setPos(QPoint);
 
     void update(Control *control);
+    Player *newPos(Control *control);
 
 private:
     Map *_map;
@@ -68,16 +78,16 @@ private:
     QString _pseudo;
     QString _color;
     QString _team;
-    int _x;
-    int _y;
-    float _angle;
-    int _speed;
+    float _angle = 0;
+    int _speed = 0;
     QString _vehicle; // enum a modifier
     QMap<QString, int> *_items;
-    int _lastCheckpoint;
-    int _currentLap;
+    int _lastCheckpoint = 0;
+    int _currentLap = 0;
     QString _status;
     QString _controller;
+    QPoint _pos;
+    QPointF _vitesse;
 
 signals:
 

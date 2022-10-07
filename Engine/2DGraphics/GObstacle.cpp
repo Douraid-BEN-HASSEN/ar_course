@@ -2,12 +2,16 @@
 
 #include <QBrush>
 
+QString GObstacle::type = "GObstacle";
+
 qreal GObstacle::heigth = 100;
 qreal GObstacle::width = 100;
-qreal GObstacle::radius = 50;
+qreal GObstacle::radius = 100;
 
 GObstacle::GObstacle(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject(parent)
 {
+    this->setProperty("type", this->type);
+
     this->obstacle = obstacle;
     this->id = obstacle->getId();
     this->x = obstacle->getX();
@@ -48,8 +52,10 @@ qreal GObstacle::getRadius()
 
 QRectF GObstacle::boundingRect() const
 {
+    this->pos();
+
     if((int)this->id % 2 == 1){
-        return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
+        return QRectF(this->x-this->heigth/2, this->y-this->width/2,this->heigth,this->width);
     } else {
         return QRectF(-this->heigth/2, -this->width/2,this->radius*2,this->radius*2);
     }

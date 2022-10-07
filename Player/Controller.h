@@ -16,8 +16,8 @@ class Controller : public QObject
 public:
     explicit Controller(QObject *parent = nullptr );
     Controller(QString *uuid , int *power , float *angle , int *nbBananas , int *nbBomb , int *nbRocket);
-    void sendMessageRegister(QString uuid, QString pseudo, QString controller, QString vehicle, QString team);
-    void sendMessageControl(QString uuid, int angle, int power, int keyAction);
+    void sendMessageRegister(QString pseudo, QString controller, QString vehicle, QString team);
+    void sendMessageControl( int keyAction);
     void handleKeyEvent( QKeyEvent *key);
     void handleReleaseKeyEvent(QKeyEvent *key) ;
     void catchKeyUp();
@@ -51,6 +51,8 @@ public slots:
     void handlePressAction2 (bool isPushed) ;
     void handlePressAction3 (bool isPushed) ;
     void handlePressAction4 (bool isPushed) ;
+    void handleTurnLeftJoystick (double value);
+    //void handleChangeJoystickLeft();
 
     void setControllerType(QString controllerType);
 

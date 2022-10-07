@@ -112,6 +112,7 @@ void GameMode::receivedMessage(QJsonObject message, QString topic) {
     }
 }
 
+
 //  +--------+
 //  | SETTER |
 //  +--------+
@@ -146,4 +147,10 @@ QString GameMode::getInfoMessage()
 QString GameMode::getStatus()
 {
     return this->_status;
+}
+
+void GameMode::reset()
+{
+    _players->clear();
+    _items->clear();
 }
