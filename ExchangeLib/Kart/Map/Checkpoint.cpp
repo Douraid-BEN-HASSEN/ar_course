@@ -3,7 +3,7 @@
 // constructor
 Checkpoint::Checkpoint(QObject *parent): QObject{ parent }
 {
-    qDebug() << "new Instance Checkpoint";
+    //qDebug() << "new Instance Checkpoint";
 }
 
 // destructor
