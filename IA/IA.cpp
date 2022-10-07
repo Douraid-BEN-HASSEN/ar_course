@@ -66,9 +66,11 @@ void IA::mooveToCheckpoint()
 
 
 
-    while (this->currentCheckpointId < this->path.size()){
+    //while (this->currentCheckpointId < this->path.size() ){
 
-        Checkpoint *target = path.at(this->currentCheckpointId);
+    while (this->currentCheckpointId < this->path2.size() ){
+        //Checkpoint *target = path.at(this->currentCheckpointId);
+        Checkpoint *target = path2.at(this->currentCheckpointId).second;
         if (target == nullptr) {
             qDebug() << "no checkpoint";
             return;
@@ -107,8 +109,7 @@ void IA::determinePath()
     QMap<int, Checkpoint*> *checkpoints = Map::getInstance()->getCheckpoints();
     QMap<int, Obstacle*> *obstacles = Map::getInstance()->getObstacles() ;
     QList<Checkpoint *> path ;
-    QPair<QString , Checkpoint *> path2;
-
+    QList<QPair<QString , Checkpoint*>> path2;
 
     int lastChoice = -1;
 
@@ -121,7 +122,6 @@ void IA::determinePath()
                 bestChoice = checkpoint->getId();
                 currentChoice = checkpoint ;
             }
-
         }
 
         lastChoice = bestChoice ;
@@ -132,7 +132,6 @@ void IA::determinePath()
         //qDebug() << "trajectory : " << trajectory ;
         QPointF *collisionPoint = new QPointF(-1,-1);
         QLineF obstacleLine ;
-        //qDebug() << "test : " << *test ;
         for (Obstacle *obstacle : obstacles->values()){
             collisionPoint->setX(-1) ;
             collisionPoint->setY(-1);
@@ -151,7 +150,6 @@ void IA::determinePath()
                 obstacleLine.setP2(QPointF(obstacle->getX() - (obstacleWidth/2) - 20, obstacle->getY() + (obstacleWidth/2) + 20));
             }
 
-
             qDebug() << "trajectory , obstacleLine" << trajectory << obstacleLine ;
             trajectory.intersects(obstacleLine , collisionPoint) ;
             qDebug() << "************" << collisionPoint << obstacleLine ;
@@ -164,13 +162,18 @@ void IA::determinePath()
 
                 qDebug() << "add obstacle checkpoint" ;
                 path.append(newCheck);
+                QPair<QString, Checkpoint*> p("obstacle" , newCheck);
+                path2.append(p);
 
             }
         }
 
         qDebug() << "add checkpoint" ;
-        if (isObstacle == false)
+        if (isObstacle == false) {
+            QPair<QString, Checkpoint*> p("obstacle" , currentChoice);
+            path2.append(p);
             path.append(currentChoice);
+        }
 
     }
 
@@ -179,6 +182,7 @@ void IA::determinePath()
         return;
 
     this->path = path ;
+    this->path2 = path2 ;
 
     qDebug() << "Nombre de checkpoints " << this->path.size() ;
 
@@ -186,7 +190,7 @@ void IA::determinePath()
         qDebug() << this->path.at(i)->getX() << this->path.at(i)->getY() ;
     }
 
-    //QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
+    QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 }
 
 
