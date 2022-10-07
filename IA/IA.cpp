@@ -74,7 +74,6 @@ void IA::mooveToCheckpoint()
         qDebug() << target->getPosition() ;
         this->player = this->getActivePlayer() ;
         QLineF WorldDirection = QLineF(this->player->getPosition(), target->getPosition());
-        Map::getInstance()->addLine(&WorldDirection );
         float playerAngle = qRadiansToDegrees(player->getAngle());
         float relativeDirection = WorldDirection.angle() - playerAngle;
         _control->setAngle(qDegreesToRadians(normalizeAngleD(relativeDirection)));
