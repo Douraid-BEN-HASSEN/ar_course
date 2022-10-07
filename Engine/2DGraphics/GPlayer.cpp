@@ -66,7 +66,7 @@ void GPlayer::update(Control *control)
 
     float engineCycle = 1./20; // 1 seconde / nombre de sycle
 
-    this->_angle += -control->getAngle() * engineCycle;
+    this->_angle += control->getAngle() * engineCycle;
 
     float P = 1000;
 

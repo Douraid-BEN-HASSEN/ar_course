@@ -55,6 +55,8 @@ QList<QGraphicsItem *> Engine::collision(GPlayer* g_player)
 {
     QList<QGraphicsItem*> g_items;
 
+//    if(g_checkpoint->shape().intersects(g_player->shape()))
+
     for(GCheckpoint *g_checkpoint: this->checkpointsGraphics.values()) {
         if(g_checkpoint->collidesWithItem(g_player)) g_items.append(g_checkpoint);
     }
@@ -83,6 +85,7 @@ qreal Engine::intersectionVal(QGraphicsItem *pItem1, QGraphicsItem *pItem2)
 void Engine::control_th()
 {
     QTimer::singleShot(ENGINE_FREQUENCY, this, &Engine::control_th);
+
     // traitement
     for (Player *player: this->_gameMode->_players->values()) {
         GPlayer* g_player = this->playersGraphics.value(player->getUuid());
@@ -90,7 +93,7 @@ void Engine::control_th()
 
         g_player->update(control);
 
-        QList<QGraphicsItem*> g_items = g_player->collidingItems();
+        QList<QGraphicsItem*> g_items = this->collision(g_player);
 
         for (QGraphicsItem *gItem : g_items ) {
             QGraphicsObject *gObject = static_cast<QGraphicsObject *>(gItem);
@@ -109,6 +112,8 @@ void Engine::control_th()
                         player->setLastCheckpoint(0);
                     }
                 }
+
+                qDebug() << player->getPseudo() << " checkpoint : " << player->getLastCheckpoint();
 
             } else if (gObject->property("type") == GBanana::type) {
                 GBanana* g_banana = (GBanana*)gObject;
