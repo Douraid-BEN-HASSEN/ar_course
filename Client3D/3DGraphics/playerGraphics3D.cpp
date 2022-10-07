@@ -18,7 +18,7 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     //dolorean->setSource(url);
 
     Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
-    cuboidTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+    cuboidTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
     cuboidTransform->setScale(4.0f);
 
     this->addComponent(material);
@@ -33,7 +33,7 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
     this->y = player->getY();
 
     Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
-    obstacleTransform->setTranslation(QVector3D(this->getX()/10, 0.0f, this->getY()/10));
+    obstacleTransform->setTranslation(QVector3D(this->getX(), 0.0f, this->getY()));
 
     if(!this->components().empty()){
         this->removeComponent(this->components().at(2));

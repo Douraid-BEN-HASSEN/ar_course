@@ -21,7 +21,7 @@ ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, Qt3DCore::QEntity *mS
         Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
         sphereMesh->setRadius(3);
         Qt3DCore::QTransform *shpereTransform = new Qt3DCore::QTransform();
-        shpereTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+        shpereTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
 
         this->addComponent(sphereMesh);
         this->addComponent(shpereTransform);
@@ -31,7 +31,7 @@ ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, Qt3DCore::QEntity *mS
         Qt3DExtras::QCuboidMesh *cuboidMesh = new Qt3DExtras::QCuboidMesh();
         Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
         // X Y Z
-        cuboidTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+        cuboidTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
 
         this->addComponent(cuboidMesh);
         this->addComponent(cuboidTransform);
@@ -44,7 +44,7 @@ void ObstacleGraphics3D::updateObstacle3D(Obstacle *obstacle){
    this->y = obstacle->getY();
 
    Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
-   obstacleTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+   obstacleTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
 
     if(!this->components().empty()){
         this->removeComponent(this->components().at(2));
