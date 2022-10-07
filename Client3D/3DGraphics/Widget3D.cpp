@@ -9,9 +9,11 @@ Qt3DCore::QEntity* Widget3D::createScene()
 
     PlaneGraphics3D *planeEntity = new PlaneGraphics3D(rootEntity);
 
-     planeEntity->mesh()->setHeight(10.0f);
-     planeEntity->mesh()->setWidth(10.0f);
-     planeEntity->mesh()->setMeshResolution(QSize(20, 20));
+     planeEntity->mesh()->setHeight(5000.0f);
+     planeEntity->mesh()->setWidth(5000.0f);
+
+     planeEntity->m_transform->setTranslation(QVector3D(0, 0, 0));
+     //planeEntity->mesh()->setMeshResolution(QSize(20, 20));
 
 
     return rootEntity;
@@ -21,22 +23,30 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
 {
     mScene = this->createScene();
     // Camera
-    Qt3DRender::QCamera *camera = this->camera();
-    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    camera->setPosition(QVector3D(0, 0, 4.0f));
-    camera->setViewCenter(QVector3D(0, 0, 0));
+    camerA = this->camera();
+    camerA->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    camerA->setPosition(QVector3D(0, 0, 4));
+    camerA->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
     Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(mScene);
     camController->setLinearSpeed( 50.0f );
     camController->setLookSpeed( 180.0f );
-    camController->setCamera(camera);
+    camController->setCamera(camerA);
 
 
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap3D()));
-    //connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
+    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties3D()));
     connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode3D()));
     this->setRootEntity(mScene);
+}
+
+void Widget3D::updateProperties3D(){
+    ObstacleGraphics3D::heigth = Properties::getInstance()->getRectangleHeight();
+    ObstacleGraphics3D::width = Properties::getInstance()->getRectangleWidth();
+    ObstacleGraphics3D::radius = Properties::getInstance()->getCircleRadius();
+    CheckpointGraphics3D::radiusCheckpoint = Properties::getInstance()->getCheckpointRadius();
+
 }
 
 void Widget3D::updateMap3D() {
@@ -73,6 +83,7 @@ void Widget3D::updateGameMode3D() {
         }
         // Modifier la position
         playerGraphics3D->updatePlayer3D(iterPlayer);
+        playerGraphics3D->followCameraPlayer(iterPlayer, camerA);
     }
 
 }

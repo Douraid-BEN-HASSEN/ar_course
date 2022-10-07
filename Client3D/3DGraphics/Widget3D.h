@@ -38,6 +38,7 @@
 #include "planeGraphics3D.h"
 #include "playerGraphics3D.h"
 
+
 class Widget3D: public Qt3DExtras::Qt3DWindow
 {
     Q_OBJECT
@@ -46,6 +47,7 @@ public:
     static Qt3DCore::QEntity *createScene();
     Widget3D();
     Qt3DCore::QEntity* mScene;
+    Qt3DRender::QCamera *camerA;
 
 private:
     QMap<int, ObstacleGraphics3D*> localObstacles3D;
@@ -55,6 +57,7 @@ private:
 
 private slots:
     void updateMap3D();
+    void updateProperties3D();
     void updateGameMode3D();
 };
 

@@ -30,26 +30,31 @@
 #include <QOrbitCameraController>
 
 #include <Kart/Player/Player.h>
+#include <Kart/Game/Vehicle.h>
+#include <Kart/Game/Properties.h>
 
 class PlayerGraphics3D : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
     void updatePlayer3D(Player *);
+    void followCameraPlayer(Player *, Qt3DRender::QCamera *camerA);
     PlayerGraphics3D(Player *, Qt3DCore::QEntity* mScene,  QNode *parent = nullptr);
     QString getUuid();
     qreal getX();
     qreal getY();
     qreal getRadius();
+    qreal getHeigth();
+    qreal getWidth();
     Player* getPlayer();
+    static qreal heigth;
+    static qreal width;
 
 
 private:
     QString uuid;
     qreal x;
     qreal y;
-    qreal heigth = 50;
-    qreal width = 50;
     Player *_player;
 signals:
 

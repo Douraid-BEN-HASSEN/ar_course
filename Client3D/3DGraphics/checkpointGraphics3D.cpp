@@ -14,14 +14,19 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
 
     this->setParent(mScene);
 
-    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
-    sphereMesh->setRadius(3);
-    Qt3DCore::QTransform *shpereTransform = new Qt3DCore::QTransform();
-    shpereTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
+
+    //Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
+    //sphereMesh->setRadius(radiusCheckpoint);
+    Qt3DExtras::QCylinderMesh *cylindreMesh = new Qt3DExtras::QCylinderMesh;
+    cylindreMesh->setRadius(radiusCheckpoint);
+    cylindreMesh->setLength(1);
+
+    Qt3DCore::QTransform *cylindreTransform = new Qt3DCore::QTransform();
+    cylindreTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
 
     this->addComponent(material);
-    this->addComponent(sphereMesh);
-    this->addComponent(shpereTransform);
+    this->addComponent(cylindreMesh);
+    this->addComponent(cylindreTransform);
 
 }
 
