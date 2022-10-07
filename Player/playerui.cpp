@@ -53,6 +53,7 @@ void PlayerUi::onRunFind()
 
         this->nbTurn = props->getLaps() ;
         this->nbTeam = props->getTeam() ;
+        this->comboBoxVehicle->clear();
         for (Vehicle *vehicle : this->props->vehicleOptions->values())
             this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
         this->stackedWidget->setCurrentIndex(1);
