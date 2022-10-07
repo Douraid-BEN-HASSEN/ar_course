@@ -42,7 +42,6 @@ qreal GCheckpoint::getRadius()
 QRectF GCheckpoint::boundingRect() const
 {
     return QRectF(-this->radiusCheckpoint, -this->radiusCheckpoint,this->radiusCheckpoint*2,this->radiusCheckpoint*2);
-
 }
 
 void GCheckpoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -52,6 +51,6 @@ void GCheckpoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     painter->drawEllipse(boundingRect());
 
     painter->setPen(Qt::black);
-    painter->drawText(0,0,QString::number(this->getId()));
+    painter->drawText(0, 0, QString::number(this->getId()));
 
 }

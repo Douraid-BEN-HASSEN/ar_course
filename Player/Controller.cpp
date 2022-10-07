@@ -51,7 +51,7 @@ Properties* Controller::getProperties()
 
 void Controller::handleKeyEvent(QKeyEvent *key )
 {
-    qDebug() << "Controller::handleKeyEvent()" ;
+    qDebug() << "Controller::handleKeyEvent() " << Qt::Key(key->key()) ;
     int keyAction = key->key() == Qt::Key_1 ? 1 : key->key() == Qt::Key_2 ? 2 : key->key() == Qt::Key_3 ? 3 : 0  ;
     bool isCorrectAction = ( keyAction == 1 && *nbBananas > 0) || (keyAction == 2 && *nbBomb > 0) || (keyAction ==3 && *nbRocket > 0) || (keyAction == 0) ? true : false  ;
     switch(key->key()) {
@@ -80,6 +80,22 @@ void Controller::handleKeyEvent(QKeyEvent *key )
         this->catchKeyAction(3 );
         break ;
     case Qt::Key_4:
+        keyAction = 4 ;
+        this->catchKeyAction(4 );
+        break ;
+    case Qt::Key_Ampersand :
+        keyAction = 1 ;
+        this->catchKeyAction(1 );
+        break ;
+    case Qt::Key_Eacute :
+        keyAction = 2 ;
+        this->catchKeyAction(2 );
+        break ;
+    case Qt::Key_QuoteDbl :
+        keyAction = 3 ;
+        this->catchKeyAction(3 );
+        break ;
+    case Qt::Key_Apostrophe :
         keyAction = 4 ;
         this->catchKeyAction(4 );
         break ;
@@ -118,7 +134,7 @@ void Controller::catchKeyUp()
     qDebug() << "Controller::catchKeyUp()" ;
     if (*this->power != 100) {
         *this->angle = 0 ;
-        *this->power = 25;
+        *this->power = 100;
     }
 }
 
@@ -127,7 +143,7 @@ void Controller::catchKeyDown()
     qDebug() << "Controller::catchKeyDown()" ;
     if(*this->power != -100) {
         *this->angle = 0 ;
-        *this->power = -25;
+        *this->power = -100;
     }
 
 }
