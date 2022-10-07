@@ -9,6 +9,14 @@ GPlayer::GPlayer(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}
     this->uuid = player->getUuid();
     this->setPos(player->getPosition());
     this->_player = player;
+
+    this->_nBanane = 0;
+    this->_nBomb = 0;
+    this->_nRocket = 0;
+
+    this->_bananaCooldown = 0;
+    this->_bombCooldown = 0;
+    this->_rocketCooldown = 0;
 }
 
 QPoint GPlayer::getPos()
@@ -19,6 +27,36 @@ QPoint GPlayer::getPos()
 float GPlayer::getAngle()
 {
     return _angle;
+}
+
+int GPlayer::getBananaCooldown()
+{
+    return this->_bananaCooldown;
+}
+
+int GPlayer::getBombCooldown()
+{
+    return this->_bombCooldown;
+}
+
+int GPlayer::getRocketCooldown()
+{
+    return this->_rocketCooldown;
+}
+
+int GPlayer::getnBanana()
+{
+    return this->_nBanane;
+}
+
+int GPlayer::getnRocket()
+{
+    return this->_nRocket;
+}
+
+int GPlayer::getnBomb()
+{
+    return this->_nBomb;
 }
 
 Player* GPlayer::getPlayer()
@@ -51,6 +89,36 @@ void GPlayer::setWidth(int width) {
 
 void GPlayer::setAngle(float angle) {
     _angle = angle;
+}
+
+void GPlayer::setBananaCooldown(int pBananaCooldown)
+{
+    this->_bananaCooldown = pBananaCooldown;
+}
+
+void GPlayer::setBombCooldown(int pBombCooldown)
+{
+    this->_bombCooldown = pBombCooldown;
+}
+
+void GPlayer::setRocketCooldown(int pRockerCooldown)
+{
+    this->_rocketCooldown = pRockerCooldown;
+}
+
+void GPlayer::setnBanana(int pnBanana)
+{
+    this->_nBanane = pnBanana;
+}
+
+void GPlayer::setnBomb(int pnBomb)
+{
+    this->_nBomb = pnBomb;
+}
+
+void GPlayer::setnRocket(int pnRocket)
+{
+    this->_nRocket = pnRocket;
 }
 
 void GPlayer::update(Control *control)
