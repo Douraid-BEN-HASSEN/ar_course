@@ -52,8 +52,10 @@ qreal GObstacle::getRadius()
 
 QRectF GObstacle::boundingRect() const
 {
+    this->pos();
+
     if((int)this->id % 2 == 1){
-        return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
+        return QRectF(this->x-this->heigth/2, this->y-this->width/2,this->heigth,this->width);
     } else {
         return QRectF(-this->heigth/2, -this->width/2,this->radius*2,this->radius*2);
     }

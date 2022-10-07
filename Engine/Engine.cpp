@@ -107,16 +107,27 @@ void Engine::control_th()
                 int nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
 
                 if (g_checkpoint->getId() == nextCheckpoint) {
+
+
                     player->setLastCheckpoint(nextCheckpoint);
                     nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
-                    if (nextCheckpoint == -1) {
-                        qDebug() << "new checkpoint";
-                        player->setCurrentLap(player->getCurrentLap()+1);
-                        player->setLastCheckpoint(0);
-                    }
+
+                     Checkpoint *ch = Map::getInstance()->getCheckpoints()->first();
+
+                     if (!ch) {
+                         if (g_checkpoint->getCheckpoint()->getId() == ch->getId()) {
+                             player->setCurrentLap(player->getCurrentLap()+1);
+                         }
+
+//                         if (nextCheckpoint == ch->getId()) {
+//                             qDebug() << "new checkpoint";
+//                             player->setCurrentLap(player->getCurrentLap()+1);
+//                             player->setLastCheckpoint(nextCheckpoint);
+//                         }
+                     }
                 }
 
-                qDebug() << player->getPseudo() << " checkpoint : " << player->getLastCheckpoint();
+                qDebug() << player->getPseudo() << " Last checkpoint : " << player->getLastCheckpoint() << " nextCheckpoint : " << nextCheckpoint << " laps " << player->getCurrentLap();
 
             } else if (gObject->property("type") == GBanana::type) {
                 GBanana* g_banana = (GBanana*)gObject;
@@ -297,7 +308,7 @@ int Engine::getNextCheckpointId(int pCurrentCheckpoint)
     for(int iCheckpoint=0; iCheckpoint<ids.count(); iCheckpoint++) {
         if(ids[iCheckpoint] == pCurrentCheckpoint) {
             if(iCheckpoint+1 >= ids.count()) {
-                return -1;
+                return ids[0];
             } else return ids[iCheckpoint+1];
             break;
         }
@@ -347,6 +358,21 @@ void Engine::registered(Register *r) {
 
     if (!playerGraphics) {
         playerGraphics = new GPlayer(p);
+
+        QPoint spawnPoint = QPoint(0, 0);
+
+        Checkpoint *c = Map::getInstance()->getCheckpoints()->first();
+        if (c != nullptr) {
+            spawnPoint = c->getPosition();
+            p->setLastCheckpoint(c->getId());
+        }
+
+        qDebug() << "spwn point" << spawnPoint;
+
+        p->setPos(spawnPoint);
+
+        playerGraphics->setPos(spawnPoint);
+
 
         playerGraphics->setnBanana(this->_properties->getBanana());
         playerGraphics->setnBomb(this->_properties->getBomb());
