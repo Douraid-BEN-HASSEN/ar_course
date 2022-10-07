@@ -25,7 +25,8 @@ SOURCES += \
     3DGraphics/obstacleGraphics3D.cpp \
     3DGraphics/planeGraphics3D.cpp \
     3DGraphics/playerGraphics3D.cpp \
-    main.cpp \
+    3DGraphics/roadgraphics3d.cpp \
+    main.cpp
 
 HEADERS += \
     3DGraphics/Widget3D.h \
@@ -33,6 +34,7 @@ HEADERS += \
     3DGraphics/obstacleGraphics3D.h \
     3DGraphics/planeGraphics3D.h \
     3DGraphics/playerGraphics3D.h \
+    3DGraphics/roadgraphics3d.h
 
 FORMS += \
 
