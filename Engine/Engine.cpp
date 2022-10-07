@@ -79,13 +79,16 @@ qreal Engine::intersectionVal(QGraphicsItem *pItem1, QGraphicsItem *pItem2)
     return pItem1->shape().intersected(pItem2->shape()).boundingRect().height() * pItem1->shape().intersected(pItem2->shape()).boundingRect().width();
 }
 
-
 void Engine::control_th()
 {
     QTimer::singleShot(ENGINE_FREQUENCY, this, &Engine::control_th);
     // traitement
     for (Player *player: this->_gameMode->_players->values()) {
         GPlayer* g_player = this->playersGraphics.value(player->getUuid());
+        if(g_player->getBananaCooldown() > 0) g_player->setBananaCooldown(g_player->getBananaCooldown() - 1);
+        if(g_player->getBombCooldown() > 0) g_player->setBombCooldown(g_player->getBombCooldown() - 1);
+        if(g_player->getRocketCooldown() > 0) g_player->setRocketCooldown(g_player->getRocketCooldown() - 1);
+
         Control *control = this->_controls->value(player->getUuid());
 
         g_player->update(control);
@@ -150,34 +153,51 @@ void Engine::control_th()
 
         /* --- spawn item ---*/
         if (control) {
+            //  SI cooldown =< 0 ET nItem > 0
+            //  ALORS:  => placer item
+            //          => cooldown = 5
+            //  FIN SI
             if (control->getButton("banana")) {
-                qDebug() << "drop banana";
-                control->setButton("banana", false);
+                if(g_player->getBananaCooldown() <= 0 && g_player->getnBanana() > 0) {
+                    qDebug() << "drop banana";
+                    control->setButton("banana", false);
 
-                QPoint spanwPoint = (QPoint)(player->getPosition() + (-player->getVector() * (GBanana::radius + 15)).toPoint());
-                GBanana *gBanana = new GBanana(spanwPoint);
-                gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
+                    QPoint spanwPoint = (QPoint)(player->getPosition() + (-player->getVector() * (GBanana::radius + 15)).toPoint());
+                    GBanana *gBanana = new GBanana(spanwPoint);
+                    gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
 
-                this->spawnItem(gBanana);
+                    this->spawnItem(gBanana);
+                    // engine cycle enfoiré alexis
+                    g_player->setBananaCooldown(5*20);
+                    g_player->setnBanana(g_player->getnBanana()-1);
+                }
+            } else if (control->getButton("bomb") && g_player->getnBomb() > 0) {
+                if(g_player->getBombCooldown() <= 0) {
+                    qDebug() << "drop bomb";
+                    control->setButton("bomb", false);
 
-            } else if (control->getButton("bomb")) {
-                qDebug() << "drop bomb";
-                control->setButton("bomb", false);
+                    QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GBomb::radius + 15)).toPoint());
+                    GBomb *gBomb = new GBomb(spanwPoint, player->getAngle());
+                    gBomb->setTtl(_properties->getBombTtl() * ENGINE_CYCLE);
 
-                QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GBomb::radius + 15)).toPoint());
-                GBomb *gBomb = new GBomb(spanwPoint, player->getAngle());
-                gBomb->setTtl(_properties->getBombTtl() * ENGINE_CYCLE);
-
-                this->spawnItem(gBomb);
-
+                    this->spawnItem(gBomb);
+                    // engine cycle enfoiré alexis
+                    g_player->setBombCooldown(5*20);
+                    g_player->setnBomb(g_player->getnBomb()-1);
+                }
             } else if (control->getButton("rocket")) {
-                qDebug() << "drop rocket";
-                control->setButton("rocket", false);
+                if(g_player->getRocketCooldown() <= 0 && g_player->getnRocket() > 0) {
+                    qDebug() << "drop rocket";
+                    control->setButton("rocket", false);
 
-                QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GRocket::radius + 15)).toPoint());
-                GRocket *gRocket = new GRocket(spanwPoint, player->getAngle());
+                    QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GRocket::radius + 15)).toPoint());
+                    GRocket *gRocket = new GRocket(spanwPoint, player->getAngle());
 
-                this->spawnItem(gRocket);
+                    this->spawnItem(gRocket);
+                    // engine cycle enfoiré alexis
+                    g_player->setRocketCooldown(5*20);
+                    g_player->setnRocket(g_player->getnRocket()-1);
+                }
             }
         }
 
@@ -322,6 +342,11 @@ void Engine::registered(Register *r) {
 
     if (!playerGraphics) {
         playerGraphics = new GPlayer(p);
+
+        playerGraphics->setnBanana(this->_properties->getBanana());
+        playerGraphics->setnBomb(this->_properties->getBomb());
+        playerGraphics->setnRocket(this->_properties->getRocket());
+
         this->g_engine->addPlayerGraphics(playerGraphics);
         this->playersGraphics.insert(p->getUuid(), playerGraphics);
     }

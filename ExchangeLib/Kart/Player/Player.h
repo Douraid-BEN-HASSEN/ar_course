@@ -89,7 +89,6 @@ private:
     QPoint _pos;
     QPointF _vitesse;
 
-
 signals:
 
 };
