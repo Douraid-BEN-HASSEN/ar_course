@@ -153,15 +153,15 @@ void Controller::catchKeyDown()
 void Controller::catchKeyRight()
 {
     qDebug() << "Controller::catchKeyRight()";
-    if (*this->angle != 90 )
-        *this->angle = 90;
+    if (*this->angle != -90 )
+        *this->angle = -90;
 }
 
 void Controller::catchKeyLeft()
 {
     qDebug() << "Controller::catchKeyLeft()";
-    if (*this->angle != -90)
-        *this->angle = -90;
+    if (*this->angle != +90)
+        *this->angle = +90;
 }
 
 void Controller::catchKeyAction( int idKey)
