@@ -114,7 +114,10 @@ void Engine::control_th()
 
                      Checkpoint *ch = Map::getInstance()->getCheckpoints()->first();
 
-                     if (!ch) {
+                     if (ch) {
+
+                         qDebug() << "first is : " << ch->getId();
+
                          if (g_checkpoint->getCheckpoint()->getId() == ch->getId()) {
                              player->setCurrentLap(player->getCurrentLap()+1);
                          }
@@ -127,7 +130,13 @@ void Engine::control_th()
                      }
                 }
 
-                qDebug() << player->getPseudo() << " Last checkpoint : " << player->getLastCheckpoint() << " nextCheckpoint : " << nextCheckpoint << " laps " << player->getCurrentLap();
+                if (player->getCurrentLap() == this->_properties->getLaps()) {
+                    qDebug() << player->getPseudo() << " finish!";
+
+                    this->_gameMode->_players->remove(player->getUuid());
+                }
+
+//                qDebug() << player->getPseudo() << " Last checkpoint : " << player->getLastCheckpoint() << " nextCheckpoint : " << nextCheckpoint << " laps " << player->getCurrentLap();
 
             } else if (gObject->property("type") == GBanana::type) {
                 GBanana* g_banana = (GBanana*)gObject;
