@@ -110,9 +110,11 @@ void Controller::handleReleaseKeyEvent(QKeyEvent *key)
     switch(key->key()) {
     case Qt::Key_Q :
         *this->angle = 0 ;
+        this->sendMessageControl(0);
         break ;
     case Qt::Key_D:
         *this->angle = 0 ;
+        this->sendMessageControl(0);
         break ;
     case Qt::Key_Z :
         qDebug() << "test !!" ;
