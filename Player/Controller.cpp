@@ -110,9 +110,11 @@ void Controller::handleReleaseKeyEvent(QKeyEvent *key)
     switch(key->key()) {
     case Qt::Key_Q :
         *this->angle = 0 ;
+        this->sendMessageControl(0);
         break ;
     case Qt::Key_D:
         *this->angle = 0 ;
+        this->sendMessageControl(0);
         break ;
     case Qt::Key_Z :
         qDebug() << "test !!" ;
@@ -151,15 +153,15 @@ void Controller::catchKeyDown()
 void Controller::catchKeyRight()
 {
     qDebug() << "Controller::catchKeyRight()";
-    if (*this->angle != 90 )
-        *this->angle = 90;
+    if (*this->angle != -90 )
+        *this->angle = -90;
 }
 
 void Controller::catchKeyLeft()
 {
     qDebug() << "Controller::catchKeyLeft()";
-    if (*this->angle != -90)
-        *this->angle = -90;
+    if (*this->angle != +90)
+        *this->angle = +90;
 }
 
 void Controller::catchKeyAction( int idKey)
@@ -262,11 +264,11 @@ void Controller::handleTurnLeftJoystick(double value)
     if (this->controllerType == "controller") {
         if (value != 0) {
             if (value < 0 ) { //Turn left
-                *this->angle += value*90;
+                *this->angle = -1.0 * (value * 90);
                 this->sendMessageControl( 0);
                 *this->angle = 0 ;
             } else if (value > 0) { //Turn right
-                *this->angle -= value*90;
+                *this->angle = -(value*90);
                 this->sendMessageControl( 0);
                 *this->angle = 0 ;
             }
