@@ -40,6 +40,21 @@ Engine::~Engine()
 {
 }
 
+void Engine::gameUpdate()
+{
+    emit updated();
+}
+
+void Engine::startGame()
+{
+    this->gameStartAt = QDateTime::currentDateTime();
+}
+
+QDateTime Engine::getGameStartAt() const
+{
+    return this->gameStartAt;
+}
+
 void Engine::envoiGameProperties()
 {
     QTimer::singleShot(1000, this, &Engine::envoiGameProperties);
@@ -80,18 +95,11 @@ QList<QGraphicsItem *> Engine::collision(GPlayer* g_player)
 
     for(GPlayer *g_player: this->playersGraphics.values()) {
         if(g_player->getUuid() != g_player->getUuid() && g_player->collidesWithItem(g_player)) g_items.append(g_player);
-
-//        if(g_player->getUuid() != g_player->getUuid() && g_player->shape().intersects(g_player->shape())) {
-//            g_items.append(g_player);
-//        }
     }
 
     for(GItem *g_item: this->itemsGraphics) {
-        if(g_item->collidesWithItem(g_player)) g_items.append(g_item);
-
-//        if(g_item->shape().intersects(g_player->shape())) {
-//            g_items.append(g_item);
-//        }
+        if(g_item->collidesWithItem(g_player))
+            g_items.append(g_item);
     }
 
     return g_items;
@@ -116,10 +124,6 @@ void Engine::control_th()
         Control *control = this->_controls->value(player->getUuid());
 
         g_player->update(control);
-
-//        QList<QGraphicsItem*> g_items = g_player->collidingItems();
-//        QList<QGraphicsItem*> g_items = g_engine->getScene()->collidingItems(g_player);
-//        QList<QGraphicsItem*> g_items = this->collision(g_player);
 
         QList<QGraphicsItem*> g_items = g_player->collidingItems();
 
@@ -289,7 +293,6 @@ void Engine::control_th()
     for (GItem *gItem: itemsGraphics) {
         lifeCycleItem(gItem);
     }
-
 }
 
 void Engine::lifeCycleItem(GItem *gItem) {
@@ -439,7 +442,9 @@ void Engine::registered(Register *r) {
 
     playerGraphics->setPos(p->getPosition());
 
-    //delete r;
+    delete r;
+
+    gameUpdate();
 }
 
 void Engine::updateMap() {
@@ -487,7 +492,17 @@ void Engine::traitementPlayerRegister(QJsonObject pMessage)
     this->_gameMode->_players->insert(player->getUuid(), player);
 }
 
-void Engine::reset(bool b)
+GameMode *Engine::getGameMode()
+{
+    return _gameMode;
+}
+
+Properties *Engine::getProperties()
+{
+    return _properties;
+}
+
+void Engine::reset()
 {
     qDebug() << "reset";
 
@@ -513,4 +528,6 @@ void Engine::reset(bool b)
 
     this->_gameMode->reset();
     this->_map->reste();
+
+    this->gameUpdate();
 }

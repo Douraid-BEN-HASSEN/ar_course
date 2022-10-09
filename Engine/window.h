@@ -21,8 +21,18 @@ public:
 private:
     Ui::Window *ui;
 
+    Engine *engine;
+    void chronoTimer();
+
+    QTimer *timer;
+    void init();
+
 private slots:
-    void resetEngine(bool);
+    void startGame();
+    void reset();
+    void gameInfoUpdated();
+    void teamNumberUpdated(int);
+
 };
 
 #endif // WINDOW_H
