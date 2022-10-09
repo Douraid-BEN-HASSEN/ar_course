@@ -39,6 +39,17 @@ qreal GCheckpoint::getRadius()
     return radiusCheckpoint;
 }
 
+QPainterPath GCheckpoint::shape() const
+{
+    QPainterPath path;
+    if (this->boundingRect().isNull())
+        return path;
+
+    path.addEllipse(this->boundingRect());
+
+    return path;
+}
+
 QRectF GCheckpoint::boundingRect() const
 {
     return QRectF(-this->radiusCheckpoint, -this->radiusCheckpoint,this->radiusCheckpoint*2,this->radiusCheckpoint*2);

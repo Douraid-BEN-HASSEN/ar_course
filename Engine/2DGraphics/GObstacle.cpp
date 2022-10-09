@@ -12,6 +12,22 @@ GObstacle::GObstacle(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject
 {
     this->setProperty("type", this->type);
 
+
+    if (this->getId() % 2) {
+        item = new QGraphicsEllipseItem(this->radius/2, - this->radius/2, this->radius*2, this->radius*2);
+    } else {
+        item = new QGraphicsRectItem(this->heigth/2, - this->width/2, this->heigth*2, this->width*2);
+    }
+
+    qDebug() << item->boundingRect();
+
+
+//    if ((int)this->getId() % 2 == 1){
+//        item = new QGraphicsRectItem(this->heigth/2, - this->width/2, this->heigth*2, this->width*2);
+//    } else {
+
+//    }
+
     this->obstacle = obstacle;
     this->id = obstacle->getId();
     this->x = obstacle->getX();
@@ -50,26 +66,29 @@ qreal GObstacle::getRadius()
     return radius;
 }
 
+bool GObstacle::isObscuredBy(const QGraphicsItem *item) const
+{
+    return item->isObscuredBy(item);
+}
+
+QPainterPath GObstacle::shape() const
+{
+    return item->shape();
+}
+
 QRectF GObstacle::boundingRect() const
 {
-    this->pos();
-
-    if ((int)this->id % 2 == 1){
-        return QRectF(this->heigth/2, - this->width/2, this->heigth, this->width);
-    } else {
-        return QRectF(this->radius/2, - this->radius/2, this->radius*2, this->radius*2);
-    }
+    return item->boundingRect();
 }
 
 void GObstacle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush(Qt::blue);
 
-    QGraphicsEllipseItem a;
-    if ((int)this->getId() % 2 == 1){
-        painter->drawRect(boundingRect());
-    } else {
+    if (this->getId() % 2) {
         painter->drawEllipse(boundingRect());
+    } else {
+        painter->drawRect(boundingRect());
     }
 
     painter->setPen(Qt::black);
