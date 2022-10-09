@@ -121,6 +121,11 @@ void GPlayer::setnRocket(int pnRocket)
     this->_nRocket = pnRocket;
 }
 
+void GPlayer::setVitesse(QVector2D vectorSpeed)
+{
+    this->_vitesse = vectorSpeed;
+}
+
 void GPlayer::update(Control *control)
 {
     if (!control) {

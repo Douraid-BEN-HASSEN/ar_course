@@ -17,7 +17,7 @@ GEngine::GEngine(QWidget *parent): QWidget(parent)
 //    for(int i = 0; i < 11; i++) {
 //        this->mScene->addLine(0,i*100,1000,i*100);
 //        this->mScene->addLine(i*100,0,i*100,1000);
-//    }
+//   }
 }
 
 GEngine::~GEngine() {}
