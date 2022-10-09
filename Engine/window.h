@@ -30,6 +30,7 @@ private:
 private slots:
     void startGame();
     void reset();
+    void reload();
     void gameInfoUpdated();
     void teamNumberUpdated(int);
 

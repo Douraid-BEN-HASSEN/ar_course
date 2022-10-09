@@ -13,9 +13,9 @@ Window::Window(QWidget *parent) :
     ui->setupUi(this);
     ui->verticalLayout_main->addWidget(engine->getGEngine());
 
-    connect(ui->pushButton_reset, SIGNAL(clicked()), this, SLOT(reset()));
     connect(ui->pushButton_start, SIGNAL(clicked()), this, SLOT(startGame()));
-
+    connect(ui->pushButton_reset, SIGNAL(clicked()), this, SLOT(reset()));
+    connect(ui->pushButton_reload, SIGNAL(clicked()), this, SLOT(reload()));
 
     connect(ui->spinBox_teamNumber, SIGNAL(valueChanged(int)), this, SLOT(teamNumberUpdated(int)));
 
@@ -59,6 +59,11 @@ void Window::reset()
     ui->label_timer->setText("0:00");
 
     ui->spinBox_teamNumber->setDisabled(false);
+}
+
+void Window::reload()
+{
+
 }
 
 void Window::chronoTimer()

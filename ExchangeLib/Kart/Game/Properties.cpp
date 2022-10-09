@@ -18,10 +18,8 @@ Properties *Properties::getInstance() {
     return instance;
 }
 
-Properties::Properties(QObject *parent) : QObject{parent} {}
-
-Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
-    this->laps = laps;
+Properties::Properties(QObject *parent) : QObject{parent} {
+    this->laps = 3;
     this->team = 2;
 
     this->banana = 10;
@@ -48,6 +46,40 @@ Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
     this->vehicleOptions->insert("bike", new Vehicle("bike"));
     this->vehicleOptions->insert("car", new Vehicle("car"));
     this->vehicleOptions->insert("truck", new Vehicle("truck"));
+}
+
+Properties *Properties::FromFile(QString fileName) {
+    if (fileName == nullptr) {
+        fileName = "Properties.json";
+    }
+
+    QString folder = QString("Config/");
+    QDir dir;
+    if(!dir.exists(folder)) {
+         dir.mkpath(folder);
+    }
+
+    Properties *properties = new Properties();
+
+    QFile file(folder + fileName);
+
+    if (file.exists()) {
+        file.open(QIODevice::ReadWrite);
+        QByteArray content = file.readAll();
+        qDebug() << " -- test --";
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(content);
+        properties->deserialize(jsonDocument.object());
+    } else {
+        file.open(QIODevice::ReadWrite);
+    }
+
+    QJsonDocument doc(properties->toJson());
+
+    file.resize(0);
+    file.write(doc.toJson(QJsonDocument::Indented));
+    file.close();
+
+    return properties;
 }
 
 

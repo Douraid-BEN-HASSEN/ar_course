@@ -10,7 +10,7 @@ Engine::Engine(QObject *parent): QObject{parent}
 
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
-    this->_properties = new Properties(5);
+    this->_properties = Properties::FromFile();
 
     GObstacle::radius = this->_properties->getCircleRadius();
     GObstacle::heigth = this->_properties->getRectangleHeight();
