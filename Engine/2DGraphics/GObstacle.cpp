@@ -12,13 +12,14 @@ GObstacle::GObstacle(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject
 {
     this->setProperty("type", this->type);
 
-    this->id = obstacle->getId();
     this->obstacle = obstacle;
+
+    this->id = obstacle->getId();
     this->x = obstacle->getX();
     this->y = obstacle->getY();
 
     if ((int)this->getId() % 2 == 1) {
-        item = new QGraphicsRectItem(-this->heigth/2, -this->width/2, this->heigth, this->width);
+        item = new QGraphicsRectItem(-this->width/2, -this->heigth/2, this->width, this->heigth);
     } else {
         item = new QGraphicsEllipseItem(-this->radius, -this->radius, this->radius*2, this->radius*2);
     }

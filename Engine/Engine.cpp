@@ -192,8 +192,15 @@ void Engine::control_th()
 
 
                 // faire le déplacement
-                g_player->setPos(player->getPosition());
-                g_player->setRotation(player->getAngle());
+//                g_player->setPos(player->getPosition());
+//                g_player->setRotation(player->getAngle());
+
+                auto direction =player->getPosition() - QPoint(g_obstacle->getX()-g_obstacle->getRadius(),g_obstacle->getY()-g_obstacle->getRadius());
+                qDebug() << player->getPosition() << g_obstacle->getX() << g_obstacle->getY() << player->getAngle()/3.14*180 << direction;
+
+                auto angle = atan2(direction.y(),direction.x());
+                QPointF FRepousse(cos(-angle),-sin(-angle));
+                g_player->setPos(g_player->getPos()+FRepousse*10);
             }
         }
 
