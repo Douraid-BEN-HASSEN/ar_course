@@ -73,10 +73,13 @@ private:
     GEngine *g_engine;
     QDateTime gameStartAt;
 
+    bool gameStarted = false;
+
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
     void registered(Register *);
     void updateMap();
+    void initProperties();
 
 public: signals:
     void updated();

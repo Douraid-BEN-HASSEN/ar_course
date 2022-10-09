@@ -12,20 +12,11 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_gameMode = new GameMode();
     this->_properties = Properties::FromFile();
 
-    GObstacle::radius = this->_properties->getCircleRadius();
-    GObstacle::heigth = this->_properties->getRectangleHeight();
-    GObstacle::width = this->_properties->getRectangleWidth();
-
-    GBanana::radius = this->_properties->getBananaRadius(); 
-    GBomb::radius = this->_properties->getBombRadius();
-
-    GRocket::radius = this->_properties->getRocketRadius();
-    GRocket::speed = this->_properties->getRocketSpeed();
-
-    GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
+    this->initProperties();
 
     connect(RegisterManager::getInstance(), SIGNAL(application(Register*)), this, SLOT(registered(Register*)));
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
+    connect(_properties, SIGNAL(updated()), this, SLOT(initProperties()));
 
     this->_controls = new QMap<QString, Control*>;
     this->g_engine = new GEngine();
@@ -40,14 +31,32 @@ Engine::~Engine()
 {
 }
 
+void Engine::initProperties()
+{
+    qDebug() << "initProperties";
+
+    GObstacle::radius = this->_properties->getCircleRadius();
+    GObstacle::heigth = this->_properties->getRectangleHeight();
+    GObstacle::width = this->_properties->getRectangleWidth();
+
+    qDebug() <<  this->_properties->getCircleRadius();
+    qDebug() << GObstacle::radius;
+
+    GBanana::radius = this->_properties->getBananaRadius();
+    GBomb::radius = this->_properties->getBombRadius();
+
+    GRocket::radius = this->_properties->getRocketRadius();
+    GRocket::speed = this->_properties->getRocketSpeed();
+
+    GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
+
+    qDebug() <<  this->_properties->getCheckpointRadius();
+    qDebug() << GCheckpoint::radiusCheckpoint;
+}
+
 void Engine::gameUpdate()
 {
     emit updated();
-}
-
-void Engine::startGame()
-{
-    this->gameStartAt = QDateTime::currentDateTime();
 }
 
 QDateTime Engine::getGameStartAt() const
@@ -502,9 +511,19 @@ Properties *Engine::getProperties()
     return _properties;
 }
 
+void Engine::startGame()
+{
+    if (!gameStarted) {
+        this->gameStartAt = QDateTime::currentDateTime();
+        this->gameStarted = true;
+    }
+}
+
 void Engine::reset()
 {
     qDebug() << "reset";
+
+    this->gameStarted = false;
 
     for (QGraphicsItem *item : this->checkpointsGraphics.values()) {
         this->g_engine->removeItem(item);

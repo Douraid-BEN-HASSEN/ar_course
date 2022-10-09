@@ -91,6 +91,8 @@ private:
 
 signals:
 
+public: signals:
+    void stateUpdated();
 };
 
 #endif // PLAYER_H

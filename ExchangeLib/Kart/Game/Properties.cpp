@@ -49,6 +49,15 @@ Properties::Properties(QObject *parent) : QObject{parent} {
 }
 
 Properties *Properties::FromFile(QString fileName) {
+
+    Properties *properties = new Properties();
+    properties->loadFile(fileName);
+
+    return properties;
+}
+
+void Properties::loadFile(QString fileName)
+{
     if (fileName == nullptr) {
         fileName = "Properties.json";
     }
@@ -59,27 +68,23 @@ Properties *Properties::FromFile(QString fileName) {
          dir.mkpath(folder);
     }
 
-    Properties *properties = new Properties();
-
     QFile file(folder + fileName);
 
     if (file.exists()) {
         file.open(QIODevice::ReadWrite);
         QByteArray content = file.readAll();
-        qDebug() << " -- test --";
+
         QJsonDocument jsonDocument = QJsonDocument::fromJson(content);
-        properties->deserialize(jsonDocument.object());
+        this->deserialize(jsonDocument.object());
     } else {
         file.open(QIODevice::ReadWrite);
     }
 
-    QJsonDocument doc(properties->toJson());
+    QJsonDocument doc(this->toJson());
 
     file.resize(0);
     file.write(doc.toJson(QJsonDocument::Indented));
     file.close();
-
-    return properties;
 }
 
 
@@ -96,7 +101,7 @@ void Properties::receivedMessage(QJsonObject message, QString topic) {
 void Properties::deserialize(const QJsonObject &jsonObject) {
 
     laps = jsonObject["lapsNb"].toInt();
-    team = jsonObject["teamNb"].toInt();
+    team = jsonObject["teamNb"].toInt(1);
 
     circleRadius = jsonObject["circleRadius"].toInt();
     rectangleWidth = jsonObject["rectangleWidth"].toInt();
