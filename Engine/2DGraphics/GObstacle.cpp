@@ -21,7 +21,7 @@ GObstacle::GObstacle(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject
 }
 
 
-qreal GObstacle::getId()
+int GObstacle::getId()
 {
     return id;
 }
@@ -54,10 +54,10 @@ QRectF GObstacle::boundingRect() const
 {
     this->pos();
 
-    if((int)this->id % 2 == 1){
-        return QRectF(this->x-this->heigth/2, this->y-this->width/2,this->heigth,this->width);
+    if ((int)this->id % 2 == 1){
+        return QRectF(this->heigth/2, - this->width/2, this->heigth, this->width);
     } else {
-        return QRectF(-this->heigth/2, -this->width/2,this->radius*2,this->radius*2);
+        return QRectF(this->radius/2, - this->radius/2, this->radius*2, this->radius*2);
     }
 }
 
@@ -65,15 +65,15 @@ void GObstacle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     painter->setBrush(Qt::blue);
 
-    if((int)this->getId() % 2 == 1){
+    QGraphicsEllipseItem a;
+    if ((int)this->getId() % 2 == 1){
         painter->drawRect(boundingRect());
     } else {
-         painter->drawEllipse(boundingRect());
+        painter->drawEllipse(boundingRect());
     }
 
     painter->setPen(Qt::black);
-    painter->drawText(0,0,QString::number(this->getId()));
-
+    painter->drawText(0, 0, QString::number(this->getId()));
 }
 
 Obstacle *GObstacle::getObstacle()

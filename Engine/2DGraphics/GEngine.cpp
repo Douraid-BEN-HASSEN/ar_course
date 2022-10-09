@@ -42,6 +42,11 @@ void GEngine::removeItem(QGraphicsItem *graphicsItem)
     mScene->removeItem(graphicsItem);
 }
 
+QGraphicsScene *GEngine::getScene()
+{
+    return mScene;
+}
+
 void GEngine::resizeEvent(QResizeEvent *event)
 {
     mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);

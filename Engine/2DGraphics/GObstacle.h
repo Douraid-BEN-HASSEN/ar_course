@@ -20,7 +20,7 @@ public:
     static qreal width;
     static qreal radius;
 
-    qreal getId() ;
+    int getId() ;
     qreal getX();
     qreal getY();
     qreal getHeigth();
@@ -32,7 +32,7 @@ public:
 
 private:
     Obstacle *obstacle;
-    qreal id;
+    int id;
     qreal x;
     qreal y;
     // Récupérer depuis /game/properties

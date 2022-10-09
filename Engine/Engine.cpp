@@ -8,7 +8,6 @@ Engine::Engine(QObject *parent): QObject{parent}
     connect(this->_mqtt, SIGNAL(message(QJsonObject,QString)), this, SLOT(receivedMessage(QJsonObject,QString)));
     this->_mqtt->subscribe("player/control");
 
-
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
     this->_properties = new Properties(5);
@@ -55,22 +54,42 @@ QList<QGraphicsItem *> Engine::collision(GPlayer* g_player)
 {
     QList<QGraphicsItem*> g_items;
 
-//    if(g_checkpoint->shape().intersects(g_player->shape()))
 
     for(GCheckpoint *g_checkpoint: this->checkpointsGraphics.values()) {
         if(g_checkpoint->collidesWithItem(g_player)) g_items.append(g_checkpoint);
+
+//        if(g_checkpoint->shape().intersects(g_player->shape())) {
+
+//            g_items.append(g_checkpoint);
+//        }
     }
 
     for(GObstacle *g_obstacle: this->obstaclesGraphics.values()) {
-        if(g_obstacle->collidesWithItem(g_player)) g_items.append(g_obstacle);
+//        if(g_obstacle->collidesWithItem(g_player)) g_items.append(g_obstacle);
+
+        QPainterPath pp = g_obstacle->shape();
+        pp.translate(g_player->pos());
+        qDebug() << pp;
+
+        if(pp.intersects(g_player->shape().translated(g_player->pos()))) {
+            g_items.append(g_obstacle);
+        }
     }
 
     for(GPlayer *g_player: this->playersGraphics.values()) {
         if(g_player->getUuid() != g_player->getUuid() && g_player->collidesWithItem(g_player)) g_items.append(g_player);
+
+//        if(g_player->getUuid() != g_player->getUuid() && g_player->shape().intersects(g_player->shape())) {
+//            g_items.append(g_player);
+//        }
     }
 
     for(GItem *g_item: this->itemsGraphics) {
         if(g_item->collidesWithItem(g_player)) g_items.append(g_item);
+
+//        if(g_item->shape().intersects(g_player->shape())) {
+//            g_items.append(g_item);
+//        }
     }
 
     return g_items;
@@ -96,7 +115,11 @@ void Engine::control_th()
 
         g_player->update(control);
 
-        QList<QGraphicsItem*> g_items = this->collision(g_player);
+//        QList<QGraphicsItem*> g_items = g_player->collidingItems();
+//        QList<QGraphicsItem*> g_items = g_engine->getScene()->collidingItems(g_player);
+//        QList<QGraphicsItem*> g_items = this->collision(g_player);
+
+        QList<QGraphicsItem*> g_items = g_player->collidingItems();
 
         for (QGraphicsItem *gItem : g_items ) {
             QGraphicsObject *gObject = static_cast<QGraphicsObject *>(gItem);
