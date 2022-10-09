@@ -46,38 +46,24 @@ void PlayerUi::onRunFind()
 {
     qDebug() << "PlayerUi::onRunFind()" ;
     if ( this->isProperties == false ) {
-
-        this->props = Properties::getInstance();
-
-        if (!this->props) {
-            return;
-        }
-
-        this->nbTurn = props->getLaps() ;
-        this->nbTeam = props->getTeam() ;
-        this->comboBoxVehicle->clear();
-        for (Vehicle *vehicle : this->props->vehicleOptions->values())
-            this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
-        this->stackedWidget->setCurrentIndex(1);
-        this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
-        this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
-        for (int i = 1 ; i < this->nbTeam+1 ; i++)
-            this->comboBoxTeam->addItem(QString::number(i));
-        this->updateLabel();
+        this->labelNbLaps->setText("<h4> " + QString::number(this->_controller->getNbTurn()) + " laps </h4>");
+        this->labelNbTeam->setText("<h4> " + QString::number(this->_controller->getNbTeams()) + " teams </h4>");
+        this->updateLabel() ;
         this->isProperties = true ;
+        this->comboBoxVehicle->clear();
+
+        for (Vehicle *vehicle : this->_controller->getVehicleOptions()->values())
+            this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
+
+        for (int i = 1 ; i < this->_controller->getNbTeams()+1 ; i++)
+            this->comboBoxTeam->addItem(QString::number(i));
+
+        this->stackedWidget->setCurrentIndex(1);
     }
 }
 
 void PlayerUi::onGameModeReceived()
 {
-    Player *player = GameMode::getInstance()->_players->value(this->uuid);
-
-    if (!player)
-        return;
-
-    this->_controller->setNbBananas(player->getItems()->value("banana")) ;
-    this->_controller->setNbBombs(player->getItems()->value("bomb")) ;
-    this->_controller->setNbRocket(player->getItems()->value("rocket"));
     updateLabel();
 }
 
@@ -107,16 +93,12 @@ void PlayerUi::onGamepadUse()
     }
 }
 
-
-
-
 //On action, make message for mqtt
 void PlayerUi::makeMqttMessage( int keyAction)
 {
     qDebug() << "PlayerUi::makeMqttMessage()";
     this->_controller->sendMessageControl( keyAction);
 }
-
 
 //Function to update label when catching keyboard actions
 void PlayerUi::updateLabel()
@@ -187,8 +169,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->gameLayout->addLayout(this->horizontalLayout_7);
     this->gameLayout->addLayout(this->horizontalLayout_8);
     this->gameLayout->addLayout(this->horizontalLayout_10);
-
-
 
     //Graphic content for the register window
     this->registerLayout = new QVBoxLayout ;
@@ -268,8 +248,10 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(this->buttonExit , SIGNAL(clicked()) , this , SLOT(onExitRun()));
-    connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(onGameModeReceived()));
-    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(onRunFind()));
+
+
+    connect(this->_controller , SIGNAL(runFind()) , this , SLOT(onRunFind()));
+    connect(this->_controller , SIGNAL(gamemodeFind()) , this , SLOT(onGameModeReceived()));
 
     //Connect for the gamepad
     this->connect(this->_controller->getGamepad() , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));

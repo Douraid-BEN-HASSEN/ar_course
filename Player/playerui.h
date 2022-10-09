@@ -30,8 +30,7 @@ private :
 
     QStackedWidget * stackedWidget;
     QString uuid ;
-    int nbTurn ;
-    int nbTeam ;
+
     bool isProperties ;
     bool isGame ;
     QString controllerType ;
@@ -98,9 +97,8 @@ private slots :
     void onExitRun();
     void onCloseGame();
     void onGamepadUse() ;
-
-    void onRunFind() ;
     void onGameModeReceived();
+    void onRunFind() ;
 
 public:
     PlayerUi(QWidget *parent = nullptr);

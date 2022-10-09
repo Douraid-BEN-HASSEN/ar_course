@@ -1,4 +1,5 @@
 #include "Controller.h"
+
 #include <QtMath>
 
 Controller::Controller(QObject *parent): QObject{parent}
@@ -14,6 +15,33 @@ Controller::Controller(QObject *parent): QObject{parent}
     this->nbBomb = 0 ;
     this->nbRocket = 0 ;
     this->_properties = Properties::getInstance();
+
+    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(onRunFind()));
+    connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(onGamemodeFind()));
+}
+
+void Controller::onRunFind() {
+    qDebug() << "Controller::onRunFind()" ;
+
+
+    this->nbTurn = Properties::getInstance()->getLaps() ;
+    this->nbTeam = Properties::getInstance()->getTeam() ;
+    this->vehicleOptions = Properties::getInstance()->vehicleOptions;
+    emit this->runFind() ;
+}
+
+void Controller::onGamemodeFind()
+{
+    qDebug() << "Controller::onGamemodeFind()" ;
+    Player *player = GameMode::getInstance()->_players->value(this->uuid);
+
+    if (!player)
+        return;
+
+    this->nbBananas = player->getItems()->value("banana") ;
+    this->nbBomb = player->getItems()->value("bomb") ;
+    this->nbRocket = player->getItems()->value("rocket");
+    emit this->gamemodeFind() ;
 }
 
 void Controller::createGamepad(){
@@ -21,6 +49,7 @@ void Controller::createGamepad(){
     QLoggingCategory::setFilterRules(QStringLiteral("qt.gamepad.debug=true"));
     auto gamepads = QGamepadManager::instance()->connectedGamepads();
     this->gamepad = new QGamepad(*gamepads.begin(), this);
+
     //Connect
     connect(gamepad, SIGNAL(buttonL1Changed(bool)), this, SLOT(handlePressTurnLeft(bool)));
     connect(gamepad, SIGNAL(buttonR1Changed(bool)), this, SLOT(handlePressTurnRight(bool)));
@@ -31,6 +60,7 @@ void Controller::createGamepad(){
     connect(gamepad,SIGNAL(buttonXChanged(bool)), this, SLOT(handlePressAction3(bool)));
     connect(gamepad,SIGNAL(buttonYChanged(bool)), this, SLOT(handlePressAction4(bool)));
     connect(gamepad, SIGNAL(axisLeftXChanged(double)) , this , SLOT(handleTurnLeftJoystick(double)));
+
 }
 
 QGamepad *Controller::getGamepad()
@@ -38,10 +68,20 @@ QGamepad *Controller::getGamepad()
     return this->gamepad ;
 }
 
+void Controller::setUuid(QString uuid)
+{
+    this->uuid = uuid ;
+}
+
 Properties* Controller::getProperties()
 {
     qDebug() << "Controller::getProperties()" ;
     return this->_properties;
+}
+
+QMap<QString, Vehicle *> *Controller::getVehicleOptions() const
+{
+    return vehicleOptions;
 }
 
 void Controller::handleKeyEvent(QKeyEvent *key )
@@ -304,6 +344,11 @@ void Controller::sendMessageControl(int keyAction)
     MqttService::instance()->publish("player/control" , strJson);
 }
 
+QString Controller::getUuid()
+{
+    return this->uuid ;
+}
+
 int Controller::getNbBananas(){
     return this->nbBananas ;
 }
@@ -325,6 +370,13 @@ void Controller::setNbBombs(int n) {
 
 void Controller::setNbRocket(int n) {
     this->nbRocket = n ;
+}
+
+int Controller::getNbTurn(){
+    return this->nbTurn ;
+}
+int Controller::getNbTeams() {
+    return this->nbTeam  ;
 }
 
 float Controller::getAngle(){

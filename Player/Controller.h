@@ -8,6 +8,7 @@
 #include <QGamepad>
 #include <Mqtt/MqttService.h>
 #include <Kart/Game/Properties.h>
+#include "Kart/Player/GameMode.h"
 
 
 class Controller : public QObject
@@ -34,20 +35,29 @@ public:
     void sendMessageControl( int keyAction);
 
     //Getters
+    QString getUuid() ;
     int getNbBananas() ;
     int getNbBombs() ;
     int getNbRocket();
     float getAngle() ;
+    int getNbTurn() ;
+    int getNbTeams() ;
     int getPower() ;
     QGamepad * getGamepad();
 
     //Setters
+    void setUuid(QString uuid);
     void setNbBananas(int n);
     void setNbBombs(int n);
     void setNbRocket(int n);
+
+    QMap<QString, Vehicle *> *getVehicleOptions() const;
+
 private:
     Properties* _properties;
     QString  uuid ;
+    int nbTurn ;
+    int nbTeam ;
     int power ;
     float  angle ;
     int nbBananas ;
@@ -56,6 +66,11 @@ private:
     QString controllerType ;
     Properties* getProperties();
     QGamepad *gamepad ;
+    QMap<QString , Vehicle *>*vehicleOptions ;
+
+signals:
+    void runFind() ;
+    void gamemodeFind() ;
 
 public slots:
     //Callbacks for gamepad
@@ -69,8 +84,10 @@ public slots:
     void handlePressAction4 (bool isPushed) ;
     void handleTurnLeftJoystick (double value);
 
+    //Callback for the player ui
     void setControllerType(QString controllerType);
-
+    void onRunFind() ;
+    void onGamemodeFind();
 };
 
 #endif // CONTROLLER_H
