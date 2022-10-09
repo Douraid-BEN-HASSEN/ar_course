@@ -1,5 +1,7 @@
 #include "BananaGraphics.h"
 
+qreal BananaGraphics::radius = 10;
+
 BananaGraphics::BananaGraphics(Item *item, QGraphicsItem *parent): ItemGraphics(item, parent)
 {
     this->setPos(item->getX(), item->getY());
@@ -8,7 +10,7 @@ BananaGraphics::BananaGraphics(Item *item, QGraphicsItem *parent): ItemGraphics(
 
 QRectF BananaGraphics::boundingRect() const
 {
-    return QRectF(-this->heigth, -this->width,this->heigth*2,this->width*2);
+    return QRectF(-this->radius, -this->radius, this->radius*2, this->radius*2);
 
 }
 

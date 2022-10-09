@@ -37,7 +37,7 @@ Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
 
     this->rocket = 10;
     this->rocketCooldown = 10;
-    this->rocketSpeed = 10.0f;
+    this->rocketSpeed = 250.;
     this->rocketRadius = 10;
 
     this->circleRadius = 75;

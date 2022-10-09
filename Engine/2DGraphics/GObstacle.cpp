@@ -12,28 +12,16 @@ GObstacle::GObstacle(Obstacle *obstacle, QGraphicsItem *parent): QGraphicsObject
 {
     this->setProperty("type", this->type);
 
-
-    if (this->getId() % 2) {
-        item = new QGraphicsEllipseItem(this->radius/2, - this->radius/2, this->radius*2, this->radius*2);
-    } else {
-        item = new QGraphicsRectItem(this->heigth/2, - this->width/2, this->heigth*2, this->width*2);
-    }
-
-    qDebug() << item->boundingRect();
-
-
-//    if ((int)this->getId() % 2 == 1){
-//        item = new QGraphicsRectItem(this->heigth/2, - this->width/2, this->heigth*2, this->width*2);
-//    } else {
-
-//    }
-
-    this->obstacle = obstacle;
     this->id = obstacle->getId();
+    this->obstacle = obstacle;
     this->x = obstacle->getX();
     this->y = obstacle->getY();
-    //this->heigth = Properties::getInstance()->getRectangleWidth();
-    //this->width = Properties::getInstance()->getRectangleHeight();
+
+    if ((int)this->getId() % 2 == 1) {
+        item = new QGraphicsRectItem(-this->heigth/2, -this->width/2, this->heigth, this->width);
+    } else {
+        item = new QGraphicsEllipseItem(-this->radius, -this->radius, this->radius*2, this->radius*2);
+    }
 }
 
 
@@ -85,10 +73,10 @@ void GObstacle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     painter->setBrush(Qt::blue);
 
-    if (this->getId() % 2) {
-        painter->drawEllipse(boundingRect());
-    } else {
+    if ((int)this->getId() % 2 == 1) {
         painter->drawRect(boundingRect());
+    } else {
+        painter->drawEllipse(boundingRect());
     }
 
     painter->setPen(Qt::black);

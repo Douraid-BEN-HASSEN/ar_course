@@ -52,7 +52,7 @@ QPainterPath GCheckpoint::shape() const
 
 QRectF GCheckpoint::boundingRect() const
 {
-    return QRectF(-this->radiusCheckpoint, -this->radiusCheckpoint,this->radiusCheckpoint*2,this->radiusCheckpoint*2);
+    return QRectF(-this->radiusCheckpoint, -this->radiusCheckpoint, this->radiusCheckpoint*2, this->radiusCheckpoint*2);
 }
 
 void GCheckpoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

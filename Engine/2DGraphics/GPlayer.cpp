@@ -76,7 +76,7 @@ QString GPlayer::getUuid()
 
 QRectF GPlayer::boundingRect() const
 {
-    return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
+    return QRectF(-this->heigth/2, -this->width/2, this->heigth, this->width);
 }
 
 void GPlayer::setHeigth(int heigth) {

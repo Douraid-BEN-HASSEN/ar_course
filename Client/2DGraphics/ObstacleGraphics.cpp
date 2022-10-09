@@ -49,7 +49,7 @@ QRectF ObstacleGraphics::boundingRect() const
     if((int)this->id % 2 == 1){
         return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
     } else {
-        return QRectF(-this->heigth/2, -this->width/2,this->radius*2,this->radius*2);
+        return QRectF(-this->radius, -this->radius, this->radius*2, this->radius*2);
     }
 }
 

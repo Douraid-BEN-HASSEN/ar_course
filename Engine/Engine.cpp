@@ -16,9 +16,11 @@ Engine::Engine(QObject *parent): QObject{parent}
     GObstacle::heigth = this->_properties->getRectangleHeight();
     GObstacle::width = this->_properties->getRectangleWidth();
 
-    GBanana::radius = this->_properties->getBananaRadius();
+    GBanana::radius = this->_properties->getBananaRadius(); 
     GBomb::radius = this->_properties->getBombRadius();
+
     GRocket::radius = this->_properties->getRocketRadius();
+    GRocket::speed = this->_properties->getRocketSpeed();
 
     GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
 

@@ -10,12 +10,11 @@ class RocketGraphics : public ItemGraphics
 public:
     RocketGraphics(Item *item, QGraphicsItem *parent = nullptr);
 
+    static qreal radius;
+
 protected:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
-    const float heigth = 15;
-    const float width = 5;
 };
 
 #endif // ROCKETGRAPHICS_H

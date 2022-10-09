@@ -46,6 +46,9 @@ void Widget::updateProperties() {
 
     CheckpointGraphics::radiusCheckpoint = Properties::getInstance()->getCheckpointRadius();
 
+    BananaGraphics::radius = Properties::getInstance()->getBananaRadius();
+    BombGraphics::radius = Properties::getInstance()->getBombRadius();
+    RocketGraphics::radius = Properties::getInstance()->getRocketRadius();
 }
 
 void Widget::updateMap() {
