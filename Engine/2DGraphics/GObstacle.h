@@ -29,10 +29,9 @@ public:
 
     Obstacle *getObstacle();
 
-    bool isObscuredBy(const QGraphicsItem *item) const;
-    QPainterPath shape() const;
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QPainterPath shape() const override;
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
     Obstacle *obstacle;
@@ -40,7 +39,6 @@ private:
     qreal x;
     qreal y;
 
-    QGraphicsItem *item;
     // Récupérer depuis /game/properties
 
 };
