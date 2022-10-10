@@ -104,6 +104,28 @@ void MapWidget::updateGameMode() {
 
 }
 
+void MapWidget::drawPath(QList<QPair<QString, Checkpoint *>> path)
+{
+    qDebug() << "ICIIIIIIIIIIIIIIIIIIIIIIIIIIIII";
+    // draw path
+    int pairs = path.count();
+    for(int nPair=0; nPair < path.count(); nPair++) {
+
+        if((nPair+1) < pairs) {
+            QLineF ligne(QPoint(path[nPair].second->getX(), path[nPair].second->getY()),
+                    QPoint(path[nPair+1].second->getX(), path[nPair+1].second->getY()));
+
+
+            this->mScene->addLine(ligne, QPen( Qt::black, 10 ));
+        } else {
+            QLineF ligne(QPoint(path[nPair].second->getX(), path[nPair].second->getY()),
+                    QPoint(path[0].second->getX(), path[0].second->getY()));
+            this->mScene->addLine(ligne, QPen( Qt::black, 10 ));
+        }
+
+    }
+}
+
 void MapWidget::resizeEvent(QResizeEvent *event)
 {
     mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);

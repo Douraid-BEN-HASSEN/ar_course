@@ -9,6 +9,8 @@ Window::Window(QWidget *parent): QMainWindow(parent), ui(new Ui::Window)
     ui->setupUi(this);
     MapWidget *mapWidget = new MapWidget;
 
+    connect(this, SIGNAL(drawPath(QList<QPair<QString, Checkpoint *>>)), mapWidget, SLOT(drawPath(QList<QPair<QString, Checkpoint *>>)));
+
     ui->verticalLayout_map->addWidget(mapWidget);
 
     //Connect
@@ -17,7 +19,6 @@ Window::Window(QWidget *parent): QMainWindow(parent), ui(new Ui::Window)
 
 Window::~Window()
 {
-
     delete ui;
 }
 
@@ -28,8 +29,9 @@ void Window::startIA()
 
     if ( this->ui->lineEdit_Player->text() != "" && this->ui->lineEdit_Speed->text() != " " ) {
         QString pseudo = this->ui->lineEdit_Player->text();
-        Register *r = new Register(pseudo, "ia", "car", 0, this);
+        Register *r = new Register(pseudo, "ia", "car", 0, this);p
         IA *ia = new IA(r , (int)this->ui->lineEdit_Speed->text().toInt());
+        connect(ia, SIGNAL(determinePathDone(QList<QPair<QString , Checkpoint*>>)), this, SLOT(getPath(QList<QPair<QString, Checkpoint *>>)));
 
         ia->setRegister(r);
         r->publish();
@@ -44,4 +46,8 @@ void Window::startIA()
        //
     }
 
+}
+
+void Window::getPath(QList<QPair<QString, Checkpoint *>> path) {
+    emit this->drawPath(path);
 }

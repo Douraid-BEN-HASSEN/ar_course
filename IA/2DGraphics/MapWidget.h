@@ -29,10 +29,14 @@ private:
     QGraphicsScene* mScene;
     QGraphicsView* mView;
 
+public slots:
+    void drawPath(QList<QPair<QString, Checkpoint *>> path);
+
 private slots:
     void updateMap();
     void updateProperties();
     void updateGameMode();
+
 
     // QWidget interface
 protected:

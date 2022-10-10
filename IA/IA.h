@@ -32,6 +32,7 @@ private:
     QList<QPair<QString , Checkpoint*>> path;
 
 signals:
+    void determinePathDone(QList<QPair<QString , Checkpoint*>> resultPath);
 
 };
 

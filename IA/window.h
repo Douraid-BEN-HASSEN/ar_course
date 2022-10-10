@@ -26,5 +26,10 @@ private:
 
 private slots:
     void startIA();
+    void getPath(QList<QPair<QString, Checkpoint *>> path);
+
+
+signals:
+    void drawPath(QList<QPair<QString, Checkpoint *>> path);
 };
 #endif // WINDOW_H
