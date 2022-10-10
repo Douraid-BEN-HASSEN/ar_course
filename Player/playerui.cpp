@@ -193,8 +193,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->gameLayout->addLayout(this->horizontalLayout_8);
     this->gameLayout->addLayout(this->horizontalLayout_10);
 
-
-
     //Graphic content for the register window
     this->registerLayout = new QVBoxLayout ;
 
@@ -277,14 +275,16 @@ PlayerUi::PlayerUi(QWidget *parent)
     connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(onRunFind()));
 
     //Connect for the gamepad
-    this->connect(this->_controller->getGamepad() , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->getGamepad() , SIGNAL(buttonR1Changed(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->getGamepad() , SIGNAL(buttonR2Changed(double)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->getGamepad() , SIGNAL(buttonL2Changed(double)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->getGamepad() , SIGNAL(buttonAChanged(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->getGamepad() , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->getGamepad() , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->getGamepad() , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonR1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonR2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonL2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonAChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->gamepad , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
+
+    this->connectToMqtt();
 }
 
 

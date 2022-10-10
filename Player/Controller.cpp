@@ -135,7 +135,6 @@ void Controller::catchKeyUp()
 {
     qDebug() << "Controller::catchKeyUp()" ;
     if (*this->power != 100) {
-        *this->angle = 0 ;
         *this->power = 100;
     }
 }
@@ -144,10 +143,8 @@ void Controller::catchKeyDown()
 {
     qDebug() << "Controller::catchKeyDown()" ;
     if(*this->power != -100) {
-        *this->angle = 0 ;
         *this->power = -100;
     }
-
 }
 
 void Controller::catchKeyRight()
