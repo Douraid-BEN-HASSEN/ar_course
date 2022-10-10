@@ -26,10 +26,10 @@ void Window::startIA()
 
     qDebug() << "Window::startIa()";
 
-    if ( this->ui->lineEdit_Player->text() != "" ) {
+    if ( this->ui->lineEdit_Player->text() != "" && this->ui->lineEdit_Speed->text() != " " ) {
         QString pseudo = this->ui->lineEdit_Player->text();
         Register *r = new Register(pseudo, "ia", "car", 0, this);
-        IA *ia = new IA(r);
+        IA *ia = new IA(r , (int)this->ui->lineEdit_Speed->text().toInt());
 
         ia->setRegister(r);
         r->publish();
@@ -40,6 +40,8 @@ void Window::startIA()
         this->ia = ia;
 
         ui->pushButton_start->setDisabled(true);
+
+       //
     }
 
 }

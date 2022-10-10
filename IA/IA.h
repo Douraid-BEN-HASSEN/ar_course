@@ -11,24 +11,26 @@ class IA : public QObject
     Q_OBJECT
 public:;
     explicit IA(QObject *parent = nullptr);
-    IA(Register*, QObject *parent = nullptr);
+    IA(Register*, int ,  QObject *parent = nullptr);
     void determinePath();
     void initIA() ;
     void mooveToCheckpoint();
     float normalizeAngleD(float angle);
     Player *getActivePlayer();
     void setRegister(Register *);
-
+    void updateLabel() ;
 private:
+    bool takeNextCheckpoint = true ;
     int currentCheckpointId = 0 ;
     int obstacleWidth ;
     int obstacleHeight ;
     int obstacleRadius ;
+    int speedSelected ;
     Player *player ;
     Register *_register;
     Control *_control;
-    QList<Checkpoint *>  path ;
-    QList<QPair<QString , Checkpoint*>> path2;
+    QList<QPair<QString , Checkpoint*>> path;
+
 signals:
 
 };
