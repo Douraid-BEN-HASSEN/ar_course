@@ -20,29 +20,35 @@ Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
     if(this->type == "bike") {
         this->maxSpeed = 300;
         this->acceleration = 10;
-        this->weight = 0;
+        this->weight = 200;
+        this->height = 5;
+        this->width = 2;
         this->steeringAngle = -1;
     } else if(this->type == "car") {
         this->maxSpeed = 300;
         this->acceleration = 10;
-        this->weight = 2;
+        this->weight = 1500;
+        this->height = 10;
+        this->width = 5;
         this->steeringAngle = -1;
     } else if(this->type == "truck") {
         this->maxSpeed = 300;
         this->acceleration = 10;
-        this->weight = 38;
+        this->weight = 35000;
+        this->height = 50;
+        this->width = 8;
         this->steeringAngle = -1;
     }
 }
 
 QString Vehicle::toString() {
-    return QString("%1 | MS : %2 | A : %3 | W : %4 | SA : %5").arg(
+    return QString("MaxSpeed %1 | Acceleration : %2 | Weight : %3 | Height : %4, Width %5 | Angle : %6").arg(
                 QString::number(this->maxSpeed),
                 QString::number(this->acceleration),
                 QString::number(this->weight),
-                QString::number(this->steeringAngle),
-                QString::number(this->weight),
-                QString::number(this->height)
+                QString::number(this->height),
+                QString::number(this->width),
+                QString::number(this->steeringAngle)
                 );
 }
 
@@ -64,8 +70,8 @@ QJsonObject Vehicle::toJson() {
     jObject["maxSpeed"] = this->maxSpeed;
     jObject["acceleration"] = this->acceleration;
     jObject["weight"] = this->weight;
-    jObject["steeringAngle"] = this->weight;
-    jObject["width"] = this->weight;
+    jObject["steeringAngle"] = this->steeringAngle;
+    jObject["width"] = this->width;
     jObject["height"] = this->height;
 
     return jObject;

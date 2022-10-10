@@ -17,8 +17,8 @@
 #include <QStackedWidget>
 #include <Mqtt/MqttService.h>
 #include <Kart/Game/Properties.h>
-
 #include "Controller.h"
+#include "Kart/Player/GameMode.h"
 
 class PlayerUi : public QWidget
 {
@@ -29,13 +29,7 @@ private :
 
     QStackedWidget * stackedWidget;
     QString uuid ;
-    float angle ;
-    int power ;
-    int nbBanana ;
-    int nbBomb ;
-    int nbRocket ;
-    int nbTurn ;
-    int nbTeam ;
+
     bool isProperties ;
     bool isGame ;
     QString controllerType ;
@@ -43,6 +37,7 @@ private :
     QString team ;
     QString vehicle ;
     Properties *props;
+    GameMode *gameMode ;
 
     //Graphic component for the loading
     QVBoxLayout *loadingLayout ;
@@ -61,6 +56,7 @@ private :
     QHBoxLayout *horizontalLayout_8 ;
     QHBoxLayout *horizontalLayout_9 ;
     QHBoxLayout *horizontalLayout_10;
+    QHBoxLayout *horizontalLayout_11 ;
 
     QLabel *labelTitle ;
     QLabel *labelPseudo ;
@@ -97,18 +93,17 @@ protected :
 private slots :
     //Call when the user validate the initial form
     void buttonPlayPressed() ;
-    void onRunFind(QByteArray datas) ;
+
     void onExitRun();
     void onCloseGame();
     void onGamepadUse() ;
+    void onGameModeReceived();
+    void onRunFind() ;
 
 public:
     PlayerUi(QWidget *parent = nullptr);
     void makeMqttMessage(int keyAction );
     void updateLabel();
-    void connectToMqtt();
-
-
 
     ~PlayerUi();
 

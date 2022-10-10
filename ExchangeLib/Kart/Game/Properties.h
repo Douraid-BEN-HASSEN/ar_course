@@ -25,6 +25,9 @@ public:
     explicit Properties(QObject *parent = nullptr);
     explicit Properties(int laps, QObject *parent = nullptr);
 
+    static Properties *FromFile(QString fileName = nullptr);
+    void loadFile(QString fileName = nullptr);
+
     const QString topic = "game/properties";
 
     QMap<QString, Vehicle *> *vehicleOptions = new QMap<QString, Vehicle *>;

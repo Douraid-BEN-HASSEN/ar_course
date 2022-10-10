@@ -18,10 +18,8 @@ Properties *Properties::getInstance() {
     return instance;
 }
 
-Properties::Properties(QObject *parent) : QObject{parent} {}
-
-Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
-    this->laps = laps;
+Properties::Properties(QObject *parent) : QObject{parent} {
+    this->laps = 3;
     this->team = 2;
 
     this->banana = 10;
@@ -37,17 +35,56 @@ Properties::Properties(int laps ,QObject *parent) : QObject{parent} {
 
     this->rocket = 10;
     this->rocketCooldown = 10;
-    this->rocketSpeed = 10.0f;
+    this->rocketSpeed = 250.;
     this->rocketRadius = 10;
 
-    this->circleRadius = 50;
+    this->circleRadius = 75;
     this->rectangleWidth = 50;
-    this->rectangleHeight = 50;
+    this->rectangleHeight = 100;
     this->checkpointRadius = 50;
 
     this->vehicleOptions->insert("bike", new Vehicle("bike"));
     this->vehicleOptions->insert("car", new Vehicle("car"));
     this->vehicleOptions->insert("truck", new Vehicle("truck"));
+}
+
+Properties *Properties::FromFile(QString fileName) {
+
+    Properties *properties = new Properties();
+    properties->loadFile(fileName);
+
+    return properties;
+}
+
+void Properties::loadFile(QString fileName)
+{
+    if (fileName == nullptr) {
+        fileName = "Properties.json";
+    }
+
+    QString folder = QString("Config/");
+    QDir dir;
+    if(!dir.exists(folder)) {
+         dir.mkpath(folder);
+    }
+
+    QFile file(folder + fileName);
+
+    if (file.exists()) {
+        file.open(QIODevice::ReadWrite);
+        QByteArray content = file.readAll();
+
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(content);
+        this->deserialize(jsonDocument.object());
+    } else {
+        file.open(QIODevice::ReadWrite);
+    }
+
+    QJsonDocument doc(this->toJson());
+
+    file.resize(0);
+    file.write(doc.toJson(QJsonDocument::Indented));
+    file.close();
 }
 
 
@@ -64,7 +101,7 @@ void Properties::receivedMessage(QJsonObject message, QString topic) {
 void Properties::deserialize(const QJsonObject &jsonObject) {
 
     laps = jsonObject["lapsNb"].toInt();
-    team = jsonObject["teamNb"].toInt();
+    team = jsonObject["teamNb"].toInt(1);
 
     circleRadius = jsonObject["circleRadius"].toInt();
     rectangleWidth = jsonObject["rectangleWidth"].toInt();
