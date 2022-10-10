@@ -108,7 +108,7 @@ void PlayerUi::updateLabel()
     this->labelPower->setText("<h4> Power : " + QString::number(this->_controller->getPower()) + " </h4> ");
     this->labelBanana->setText(" <h4> " + QString::number(this->_controller->getNbBananas()) + " banana(s) </h4> ");
     this->labelBomb->setText(" <h4> " + QString::number(this->_controller->getNbBombs()) + " bomb(s) </h4> ");
-    this->labelRocket->setText(" <h4> " + QString::number(this->_controller->getNbRocket()) + " rocket(s) </h4>");
+    this->labelRocket->setText("<h4> " + QString::number(this->_controller->getNbRocket()) + " rocket(s) </h4>");
 }
 
 //Constructor
@@ -132,6 +132,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->labelLoading->setAlignment(Qt::AlignCenter);
     this->loadingLayout->addWidget(labelLoading);
     this->loadingLayout->addWidget(buttonClose);
+
     this->gameLayout = new QVBoxLayout ;
 
     this->horizontalLayout_5 = new QHBoxLayout ;
@@ -156,9 +157,13 @@ PlayerUi::PlayerUi(QWidget *parent)
 
     this->horizontalLayout_8 = new QHBoxLayout ;
     this->labelPower = new QLabel("<h4> Power : " + QString::number(this->_controller->getPower()) + " </h4>") ;
-    this->labelAngle = new QLabel("<h4> Angle : " + QString::number(this->_controller->getAngle()) + " </h4> ") ;
+    //this->progressBarSpeed = new QProgressBar() ;
     this->horizontalLayout_8->addWidget(this->labelPower);
-    this->horizontalLayout_8->addWidget(this->labelAngle);
+    //this->horizontalLayout_8->addWidget(this->progressBarSpeed);
+
+    this->horizontalLayout_11 = new QHBoxLayout ;
+    this->labelAngle = new QLabel("<h4> Angle : " + QString::number(this->_controller->getAngle()) + " </h4> ") ;
+    this->horizontalLayout_11->addWidget(this->labelAngle);
 
     this->horizontalLayout_10 = new QHBoxLayout ;
     this->buttonExit = new QPushButton("EXIT THE GAME");
@@ -168,6 +173,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->gameLayout->addLayout(this->horizontalLayout_6);
     this->gameLayout->addLayout(this->horizontalLayout_7);
     this->gameLayout->addLayout(this->horizontalLayout_8);
+    this->gameLayout->addLayout(this->horizontalLayout_11);
     this->gameLayout->addLayout(this->horizontalLayout_10);
 
     //Graphic content for the register window

@@ -169,15 +169,12 @@ void Controller::handleReleaseKeyEvent(QKeyEvent *key)
 void Controller::catchKeyUp()
 {
     qDebug() << "Controller::catchKeyUp()" ;
-    this->angle = 0 ;
     this->power = 100;
-
 }
 
 void Controller::catchKeyDown()
 {
     qDebug() << "Controller::catchKeyDown()" ;
-    this->angle = 0 ;
     this->power = -100;
 }
 
