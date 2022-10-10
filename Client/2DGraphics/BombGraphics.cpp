@@ -16,6 +16,9 @@ QRectF BombGraphics::boundingRect() const
 
 void BombGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED( widget )
+    Q_UNUSED( option )
+
     painter->setBrush(Qt::red);
 
     painter->drawEllipse(boundingRect());

@@ -443,10 +443,12 @@ void Engine::registered(Register *r) {
 
         QPoint spawnPoint = QPoint(0, 0);
 
-        Checkpoint *c = Map::getInstance()->getCheckpoints()->first();
-        if (c != nullptr) {
-            spawnPoint = c->getPosition();
-            p->setLastCheckpoint(c->getId());
+        if (Map::getInstance()->getCheckpoints()->size() > 0) {
+            Checkpoint *c = Map::getInstance()->getCheckpoints()->first();
+            if (c != nullptr) {
+                spawnPoint = c->getPosition();
+                p->setLastCheckpoint(c->getId());
+            }
         }
 
         qDebug() << "spwn point" << spawnPoint;
