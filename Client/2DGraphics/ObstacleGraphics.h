@@ -1,5 +1,6 @@
 #ifndef OBSTACLEGRAPH_H
 #define OBSTACLEGRAPH_H
+#include "Kart/Game/Properties.h"
 
 #include <QGraphicsObject>
 #include <QObject>

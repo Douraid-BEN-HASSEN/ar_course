@@ -1,5 +1,4 @@
 #include "ObstacleGraphics.h"
-#include "Kart/Game/Properties.h"
 
 #include <QBrush>
 

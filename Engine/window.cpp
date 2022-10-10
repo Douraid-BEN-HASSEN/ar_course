@@ -13,14 +13,27 @@ Window::Window(QWidget *parent) :
     ui->setupUi(this);
     ui->verticalLayout_main->addWidget(engine->getGEngine());
 
-    ui->tabWidget_scoreboard->widget(0)->setLayout(new QVBoxLayout());
+    scorebordLayout = new QVBoxLayout();
+
+    QVBoxLayout *main_scorebordLayout = new QVBoxLayout();
+
+    QWidget *widget = new QWidget();
+    widget->setLayout(new QHBoxLayout());
+
+    widget->layout()->addWidget(new QLabel("player"));
+    widget->layout()->addWidget(new QLabel("checkpoint"));
+    widget->layout()->addWidget(new QLabel("tour"));
+    widget->layout()->addWidget(new QLabel("time"));
+    widget->layout()->addWidget(new QLabel("state"));
+    widget->layout()->addWidget(new QLabel("controller"));
+
+    main_scorebordLayout->addWidget(widget);
+    main_scorebordLayout->addLayout(scorebordLayout);
+    main_scorebordLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
+
+    ui->tabWidget_scoreboard->widget(0)->setLayout(main_scorebordLayout);
 
     scorebordItem = new QMap<QString, PlayerScoreItem*>;
-
-//    QAbstractItemModel *model = new QStandardItemModel(4, 2, this);
-//    ui->tabWidget_scorebord->setModel(model);
-
-//    model->ins
 
     connect(ui->pushButton_start, SIGNAL(clicked()), this, SLOT(startGame()));
     connect(ui->pushButton_reset, SIGNAL(clicked()), this, SLOT(reset()));
@@ -47,22 +60,17 @@ void Window::gameInfoUpdated()
 {
     ui->spinBox_playersCount->setValue(engine->getGameMode()->_players->count());
 
-    for (Player *player : engine->getGameMode()->_players->values()) {
+    for (GPlayer *g_player : engine->getPlayersGraphics().values()) {
 
-        PlayerScoreItem *playerScoreItem = scorebordItem->value(player->getUuid());
+        PlayerScoreItem *playerScoreItem = scorebordItem->value(g_player->getPlayer()->getUuid());
 
         if (playerScoreItem == nullptr) {
-            playerScoreItem = new PlayerScoreItem(player);
+            playerScoreItem = new PlayerScoreItem(g_player);
 
-            scorebordItem->insert(player->getUuid(), playerScoreItem);
-            ui->tabWidget_scoreboard->widget(0)->layout()->addWidget(playerScoreItem);
+            scorebordLayout->addWidget(playerScoreItem);
+            scorebordItem->insert(g_player->getPlayer()->getUuid(), playerScoreItem);
         }
     }
-
-//    QAbstractItemModel *model = new QStandardItemModel(4,2,this);
-
-
-//    ui->tableView_scoreboard->setModel(model);
 }
 
 void Window::teamNumberUpdated(int team)
@@ -82,13 +90,33 @@ void Window::startGame()
 
 void Window::reset()
 {
-    ui->pushButton_start->setDisabled(false);
-
     this->timer->stop();
-    engine->reset();
-    ui->label_timer->setText("0:00:000");
 
+    ui->pushButton_start->setDisabled(false);
+    clearLayout(scorebordLayout);
+
+    scorebordItem->clear();
+
+    ui->label_timer->setText("0:00:000");
     ui->spinBox_teamNumber->setDisabled(false);
+
+    engine->reset();
+}
+
+void Window::clearLayout(QLayout *layout) {
+    if (layout == NULL)
+        return;
+    QLayoutItem *item;
+    while((item = layout->takeAt(0))) {
+        if (item->layout()) {
+            clearLayout(item->layout());
+            delete item->layout();
+        }
+        if (item->widget()) {
+           delete item->widget();
+        }
+        delete item;
+    }
 }
 
 void Window::reload()
@@ -102,8 +130,6 @@ void Window::chronoTimer()
     double time = QDateTime::currentDateTime().toMSecsSinceEpoch() - engine->getGameStartAt().toMSecsSinceEpoch();
 
     QString timeText = QTime::fromMSecsSinceStartOfDay(time).toString("m:ss:zzz");
-
-    qDebug() << timeText;
 
     ui->label_timer->setText(timeText);
 }

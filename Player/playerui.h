@@ -17,7 +17,6 @@
 #include <QStackedWidget>
 #include <Mqtt/MqttService.h>
 #include <Kart/Game/Properties.h>
-
 #include "Controller.h"
 #include "Kart/Player/GameMode.h"
 
@@ -30,13 +29,7 @@ private :
 
     QStackedWidget * stackedWidget;
     QString uuid ;
-    float angle ;
-    int power ;
-    int nbBanana ;
-    int nbBomb ;
-    int nbRocket ;
-    int nbTurn ;
-    int nbTeam ;
+
     bool isProperties ;
     bool isGame ;
     QString controllerType ;
@@ -63,6 +56,7 @@ private :
     QHBoxLayout *horizontalLayout_8 ;
     QHBoxLayout *horizontalLayout_9 ;
     QHBoxLayout *horizontalLayout_10;
+    QHBoxLayout *horizontalLayout_11 ;
 
     QLabel *labelTitle ;
     QLabel *labelPseudo ;
@@ -103,9 +97,8 @@ private slots :
     void onExitRun();
     void onCloseGame();
     void onGamepadUse() ;
-
-    void onRunFind() ;
     void onGameModeReceived();
+    void onRunFind() ;
 
 public:
     PlayerUi(QWidget *parent = nullptr);

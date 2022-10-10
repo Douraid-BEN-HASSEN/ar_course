@@ -87,6 +87,12 @@
             <property name="buttonSymbols">
              <enum>QAbstractSpinBox::PlusMinus</enum>
             </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="displayIntegerBase">
+             <number>10</number>
+            </property>
            </widget>
           </item>
          </layout>
@@ -143,7 +149,7 @@
          <widget class="QTabWidget" name="tabWidget_scoreboard">
           <property name="maximumSize">
            <size>
-            <width>300</width>
+            <width>500</width>
             <height>16777215</height>
            </size>
           </property>

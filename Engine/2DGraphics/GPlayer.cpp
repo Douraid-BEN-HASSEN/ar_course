@@ -221,6 +221,30 @@ void GPlayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->drawText(0, 0, this->_player->getPseudo());
 }
 
+QTime GPlayer::getTime()
+{
+    return timeLaps;
+}
+
+void GPlayer::setTime(QTime time)
+{
+    timeLaps = time;
+    qDebug() << timeLaps;
+    emit stateUpdated();
+}
+
+QString GPlayer::getState()
+{
+    return state;
+}
+
+void GPlayer::setState(QString state)
+{
+    this->state = state;
+    emit stateUpdated();
+}
+
+
 // void GPlayer::setPos(QPoint a)
 // {
 //     qDebug("connard");

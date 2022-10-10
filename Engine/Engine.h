@@ -29,12 +29,15 @@ class Engine : public QObject
 public:
     explicit Engine(QObject *parent = nullptr);
     ~Engine();
-    GEngine *getGEngine();
 
+    QMap<QString, GPlayer*> getPlayersGraphics();
+
+    GEngine *getGEngine();
     GameMode *getGameMode();
     Properties *getProperties();
-    void startGame();
     QDateTime getGameStartAt() const;
+
+    void startGame();
 
 public slots:
     void reset();
