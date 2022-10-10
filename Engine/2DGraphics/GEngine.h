@@ -25,6 +25,8 @@ public:
 
     GPlayer *getGPlayer(QString uuid);
 
+    QGraphicsScene *getScene();
+
     void addObstacleGraphics(GObstacle *);
     void addCheckpointGraphics(GCheckpoint *);
     void addPlayerGraphics(GPlayer *);

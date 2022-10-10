@@ -30,3 +30,13 @@ int GItem::getTtl() {
     return this->ttl;
 }
 
+QPainterPath GItem::shape() const
+{
+    QPainterPath path;
+    if (this->boundingRect().isNull())
+        return path;
+
+    path.addEllipse(this->boundingRect());
+
+    return path;
+}

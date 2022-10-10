@@ -76,7 +76,7 @@ QString GPlayer::getUuid()
 
 QRectF GPlayer::boundingRect() const
 {
-    return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
+    return QRectF(-this->heigth/2, -this->width/2, this->heigth, this->width);
 }
 
 void GPlayer::setHeigth(int heigth) {
@@ -119,6 +119,11 @@ void GPlayer::setnBomb(int pnBomb)
 void GPlayer::setnRocket(int pnRocket)
 {
     this->_nRocket = pnRocket;
+}
+
+void GPlayer::setVitesse(QVector2D vectorSpeed)
+{
+    this->_vitesse = vectorSpeed;
 }
 
 void GPlayer::update(Control *control)

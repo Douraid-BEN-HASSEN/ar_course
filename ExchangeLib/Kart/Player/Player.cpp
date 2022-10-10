@@ -113,21 +113,25 @@ QJsonObject Player::toJson() {
 void Player::setUuid(QString pUuid)
 {
     this->_uuid = pUuid;
+    emit stateUpdated();
 }
 
 void Player::setPseudo(QString pPseudo)
 {
     this->_pseudo = pPseudo;
+    emit stateUpdated();
 }
 
 void Player::setColor(QString pColor)
 {
     this->_color = pColor;
+    emit stateUpdated();
 }
 
 void Player::setTeam(QString pTeam)
 {
     this->_team = pTeam;
+    emit stateUpdated();
 }
 
 void Player::setX(int pX)
@@ -154,43 +158,31 @@ void Player::setSpeed(int pSpeed)
 void Player::setVehicule(QString pVehicule)
 {
     this->_vehicle = pVehicule;
+    emit stateUpdated();
 }
 
 void Player::setLastCheckpoint(int pLastCheckpoint)
 {
     this->_lastCheckpoint = pLastCheckpoint;
+    emit stateUpdated();
 }
 
 void Player::setCurrentLap(int pCurrentLap)
 {
     this->_currentLap = pCurrentLap;
+    emit stateUpdated();
 }
 
 void Player::setStatus(QString pStatus)
 {
     this->_status = pStatus;
+    emit stateUpdated();
 }
 
 void Player::setController(QString pController)
 {
     this->_controller = pController;
-}
-
-void Player::copyPlayer(Player *pPlayer)
-{
-    this->_uuid = pPlayer->getUuid();
-    this->_pseudo = pPlayer->getPseudo();
-    this->_color = pPlayer->getColor();
-    this->_team = pPlayer->getTeam();
-    this->_pos.setX(pPlayer->getX());
-    this->_pos.setY(pPlayer->getY());
-    this->_angle = pPlayer->getAngle();
-    this->_speed = pPlayer->getSpeed();
-    this->_vehicle = pPlayer->getVehicule();
-    this->_lastCheckpoint = pPlayer->getLastCheckpoint();
-    this->_currentLap = pPlayer->getCurrentLap();
-    this->_status = pPlayer->getStatus();
-    this->_controller = pPlayer->getController();
+    emit stateUpdated();
 }
 
 //  +--------+
@@ -333,12 +325,6 @@ void Player::update(Control *control)
         this->_y += newY;
     }
     */
-}
-
-Player *Player::newPos(Control *control)
-{
-     Player *player = new Player();
-     return player;
 }
 
 QVector2D Player::getVector()

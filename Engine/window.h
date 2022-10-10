@@ -2,8 +2,11 @@
 #define WINDOW_H
 
 #include <QMainWindow>
+#include <QMap>
+#include <QVBoxLayout>
 
 #include "Engine.h"
+#include "PlayerScoreItem.h"
 #include "2DGraphics/GEngine.h"
 
 namespace Ui {
@@ -21,8 +24,20 @@ public:
 private:
     Ui::Window *ui;
 
+    QMap<QString, PlayerScoreItem*> *scorebordItem;
+
+    Engine *engine;
+    QTimer *timer;
+    void chronoTimer();
+    void init();
+
 private slots:
-    void resetEngine(bool);
+    void startGame();
+    void reset();
+    void reload();
+    void gameInfoUpdated();
+    void teamNumberUpdated(int);
+
 };
 
 #endif // WINDOW_H

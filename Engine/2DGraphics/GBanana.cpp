@@ -20,7 +20,7 @@ void GBanana::update()
 
 QRectF GBanana::boundingRect() const
 {
-    return QRectF(-this->radius, -this->radius,this->radius*2,this->radius*2);
+    return QRectF(-this->radius, -this->radius, this->radius*2, this->radius*2);
 }
 
 void GBanana::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
