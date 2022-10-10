@@ -260,16 +260,14 @@ PlayerUi::PlayerUi(QWidget *parent)
     connect(this->_controller , SIGNAL(gamemodeFind()) , this , SLOT(onGameModeReceived()));
 
     //Connect for the gamepad
-    this->connect(this->_controller->gamepad , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->gamepad , SIGNAL(buttonR1Changed(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->gamepad , SIGNAL(buttonR2Changed(double)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->gamepad , SIGNAL(buttonL2Changed(double)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->gamepad , SIGNAL(buttonAChanged(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->gamepad , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->gamepad , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
-    this->connect(this->_controller->gamepad , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
-
-    this->connectToMqtt();
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonR1Changed(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonR2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonL2Changed(double)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonAChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonBChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonXChanged(bool)) , this , SLOT(onGamepadUse()));
+    this->connect(this->_controller->getGamepad() , SIGNAL(buttonYChanged(bool)) , this , SLOT(onGamepadUse()));
 }
 
 

@@ -166,7 +166,6 @@ void IA::determinePath()
 
             }
         }
-
         */
 
         qDebug() << "add checkpoint" ;
