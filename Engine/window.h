@@ -26,6 +26,8 @@ private:
 
     QMap<QString, PlayerScoreItem*> *scorebordItem;
 
+    QVBoxLayout *scorebordLayout;
+
     Engine *engine;
     QTimer *timer;
     void chronoTimer();

@@ -13,14 +13,24 @@ Window::Window(QWidget *parent) :
     ui->setupUi(this);
     ui->verticalLayout_main->addWidget(engine->getGEngine());
 
-    ui->tabWidget_scoreboard->widget(0)->setLayout(new QVBoxLayout());
+    scorebordLayout = new QVBoxLayout();
+
+    QVBoxLayout *main_scorebordLayout = new QVBoxLayout();
+
+    QWidget *widget = new QWidget();
+    widget->setLayout(new QHBoxLayout());
+
+    widget->layout()->addWidget(new QLabel("player"));
+    widget->layout()->addWidget(new QLabel("checkpoint"));
+    widget->layout()->addWidget(new QLabel("tour"));
+
+    main_scorebordLayout->addWidget(widget);
+    main_scorebordLayout->addLayout(scorebordLayout);
+    main_scorebordLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
+
+    ui->tabWidget_scoreboard->widget(0)->setLayout(main_scorebordLayout);
 
     scorebordItem = new QMap<QString, PlayerScoreItem*>;
-
-//    QAbstractItemModel *model = new QStandardItemModel(4, 2, this);
-//    ui->tabWidget_scorebord->setModel(model);
-
-//    model->ins
 
     connect(ui->pushButton_start, SIGNAL(clicked()), this, SLOT(startGame()));
     connect(ui->pushButton_reset, SIGNAL(clicked()), this, SLOT(reset()));
@@ -54,8 +64,8 @@ void Window::gameInfoUpdated()
         if (playerScoreItem == nullptr) {
             playerScoreItem = new PlayerScoreItem(player);
 
+            scorebordLayout->addWidget(playerScoreItem);
             scorebordItem->insert(player->getUuid(), playerScoreItem);
-            ui->tabWidget_scoreboard->widget(0)->layout()->addWidget(playerScoreItem);
         }
     }
 

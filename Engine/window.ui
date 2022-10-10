@@ -87,6 +87,12 @@
             <property name="buttonSymbols">
              <enum>QAbstractSpinBox::PlusMinus</enum>
             </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="displayIntegerBase">
+             <number>10</number>
+            </property>
            </widget>
           </item>
          </layout>
