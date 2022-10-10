@@ -203,17 +203,21 @@ void Engine::control_th()
 
                 // faire le déplacement
 
-                auto posObst = QPoint(g_obstacle->getX(),g_obstacle->getY());
+                QPoint posObst = QPoint(g_obstacle->getX(),g_obstacle->getY());
 
 
-                auto direction =g_player->getPos() - posObst;
+                QPoint direction = g_player->getPos() - posObst;
 
-                auto angle = atan2(direction.y(),direction.x());
+                qDebug() << direction;
+
+                float angle = atan2(direction.y(),direction.x());
+
+                qDebug() << angle;
+
                 QPointF FRepousse(cos(-angle),-sin(-angle));
 
-                g_player->setPos(g_player->getPos()+FRepousse*10);
-
-                g_player->setVitesse(QVector2D(FRepousse.x()*10,FRepousse.y()*10));
+                g_player->setPos(g_player->getPos() + FRepousse * 10);
+//                g_player->setVitesse(QVector2D(FRepousse.x() * 10, FRepousse.y() * 10));
 
             }
         }
@@ -224,10 +228,6 @@ void Engine::control_th()
 
         /* --- spawn item ---*/
         if (control) {
-            //  SI cooldown =< 0 ET nItem > 0
-            //  ALORS:  => placer item
-            //          => cooldown = 5
-            //  FIN SI
             if (control->getButton("banana")) {
                 if(g_player->getBananaCooldown() <= 0 && g_player->getnBanana() > 0) {
                     qDebug() << "drop banana";
@@ -238,8 +238,7 @@ void Engine::control_th()
                     gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
 
                     this->spawnItem(gBanana);
-                    // engine cycle enfoiré alexis
-                    g_player->setBananaCooldown(5*20);
+                    g_player->setBananaCooldown(5 * ENGINE_CYCLE);
                     g_player->setnBanana(g_player->getnBanana()-1);
                 }
             } else if (control->getButton("bomb") && g_player->getnBomb() > 0) {
@@ -252,8 +251,7 @@ void Engine::control_th()
                     gBomb->setTtl(_properties->getBombTtl() * ENGINE_CYCLE);
 
                     this->spawnItem(gBomb);
-                    // engine cycle enfoiré alexis
-                    g_player->setBombCooldown(5*20);
+                    g_player->setBombCooldown(5 * ENGINE_CYCLE);
                     g_player->setnBomb(g_player->getnBomb()-1);
                 }
             } else if (control->getButton("rocket")) {
@@ -265,8 +263,7 @@ void Engine::control_th()
                     GRocket *gRocket = new GRocket(spanwPoint, player->getAngle());
 
                     this->spawnItem(gRocket);
-                    // engine cycle enfoiré alexis
-                    g_player->setRocketCooldown(5*20);
+                    g_player->setRocketCooldown(5 * ENGINE_CYCLE);
                     g_player->setnRocket(g_player->getnRocket()-1);
                 }
             }

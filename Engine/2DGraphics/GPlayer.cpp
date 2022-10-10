@@ -83,7 +83,14 @@ void GPlayer::setWidth(int width) {
 }
 
 void GPlayer::setAngle(float angle) {
-    _angle = angle;
+
+    while (angle > 0) {
+        angle -= 2 * M_PI;
+    }
+
+    while (angle < -M_PI) {
+        angle += 2 * M_PI;
+    }
 }
 
 void GPlayer::setBananaCooldown(int pBananaCooldown)
@@ -146,87 +153,66 @@ void GPlayer::update(Control *control)
         return;
     }
 
-
-    long double vehiculeWeight = vehiculePlayer->getWeight();
+    float vehiculeWeight = vehiculePlayer->getWeight();
 
     QVector2D angleV(cos(this->_angle), -sin(this->_angle));
 
-    long double FDrag = -CDRAG * _speedV.length() * abs(_speedV.length());
+    float FDrag = -CDRAG * _speedV.length() * abs(_speedV.length());
     QVector2D FDragV = angleV * FDrag;
 
-    long double Fgr = -CRR * _speedV.length() * 0;
+    float Fgr = -CRR * _speedV.length() * 0;
     QVector2D FgrV = angleV * Fgr;
 
-    long double FGravity = vehiculeWeight * GRAVITY * sin(0);
+    float FGravity = vehiculeWeight * GRAVITY * sin(0);
     QVector2D FGravityV = angleV * FGravity;
 
+    float power = ((float)control->getPower() / 100);
 
-    long double FTraction = ((long double)control->getPower() / 100) * vehiculePlayer->getAcceleration() * 1000; // traction
+//    qDebug() << "Power : " << power;
+
+    float FTraction = power * vehiculePlayer->getAcceleration() * 1000; // traction
     QVector2D FTractionV = angleV * FTraction;
+
+//    qDebug() << "Ftraction : " << FTraction << " " << FTractionV;
 
     _Flower = FDrag + FGravity + Fgr;
     _FlowerV = FDragV + FgrV + FGravityV;
 
-    long double F = FTraction + FDrag + FGravity + Fgr;
+    float F = FTraction + FDrag + FGravity + Fgr;
     QVector2D FV = FTractionV + FDragV + FgrV + FGravityV;
 
-//    qDebug() << "ct aero" << FcontrainteAero << "Ftraction" << Ftraction  << "_vitesse.length()" << _vitesse.length();
+//    qDebug() << "F : " << F << " " << FV;
 
-    long double Acceleration = F / vehiculeWeight;
+    float Acceleration = F / vehiculeWeight;
     QVector2D AccelerationV = FV / vehiculeWeight;
 
-    this->_angle += control->getAngle() * engineCycle ; // pensser a la vitesse
-
-//    qDebug() << "Acceleration :" << Acceleration;
-
-    // Accélération voulu
-
-
-
-    _accelerationV = angleV * Acceleration;
-//    _accelerationV = QVector2D(Acceleration, 0);
-
-//    qDebug() << "AccelerationVector :" << _accelerationV;
+    this->_angle = (_angle + control->getAngle() * engineCycle); // pensser a la vitesse
+    _accelerationV = AccelerationV;
 
     _speedV += _accelerationV * engineCycle;
 
-    _speedV = angleV * _speedV.length();
 
-//    _speedV *= this->_angle / 2;
-//    _speedV = _accelerationV;
+    float a = QLineF(QPointF(0, 0), _speedV.toPointF()).angle();
 
-//    qDebug() << "Vitesse :" << _speedV;
+//    qDebug() << a;
+//    qDebug() << qRadiansToDegrees(_angle);
 
-    this->setPos(this->pos() + (this->_speedV).toPoint());
+    if (power >= 0) {
+        _speedV = angleV * _speedV.length();
+    } else {
+        _speedV = angleV * -_speedV.length();
+    }
+
+
+    if (_speedV.length() <= 2 && _accelerationV.length() < 0.2 && _accelerationV.length() > -0.2) {
+        _speedV *= 0;
+    }
+
+    this->setPos(this->pos() + (this->_speedV).toPointF());
 //    this->setRotation(qRadiansToDegrees(-this->_angle));
-    this->setRotation(qRadiansToDegrees(0.1));
-    this->setRotation(qRadiansToDegrees(0.));
-//    qDebug() << "Ftot :" << ForceTot << "accel" << Accel << "_angle" <<_angle << "f" << F << "vitesse" << _vitesse;
-/*
-    Vehicle *vehiculePlayer = Properties::getInstance()->vehicleOptions->value(_vehicle);
-    qDebug() << vehiculePlayer;
-    this->_angle += control->getAngle() * engineCycle;
 
-    float P = 1000;
-
-    // Accélération voulu
-    //QVector2D F = QVector2D(cos(this->_angle), -sin(this->_angle)) *control->getPower();
-    QVector2D F = QVector2D(cos(this->_angle*(control->getPower()/100)), -sin(this->_angle)*(control->getPower()/100)) * vehiculePlayer->getMaxSpeed();
-    qDebug() << vehiculePlayer->getMaxSpeed();
-
-    // Vitesse actuel = sqrt(vx² * vy²)
-    float V = sqrt(_vitesse.x()*_vitesse.x() + _vitesse.y()*_vitesse.y());
-    QVector2D V_Vector(V_Vector.x()*V,V_Vector.y()*V);
-    qDebug() << V_Vector.x() << V_Vector.y();
-    qDebug() << "F: " << F;
-
-
-    //this->_vitesse = (this->_vitesse + F) * engineCycle;
-    this->_vitesse = (_vitesse + F) * engineCycle;
-
-    this->setPos(this->getPos() +this->_vitesse.toPoint());
-    this->setRotation(qRadiansToDegrees(-this->_angle));
-*/
+//    qDebug() << "Speed :" << _speedV.length() * 1 / engineCycle;
+//    qDebug() << "Acceleration :" << _accelerationV.length();
 }
 
 void GPlayer::hit()
@@ -275,12 +261,9 @@ QRectF GPlayer::boundingRect() const
 
 void GPlayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    qDebug() << _angle;
-
     QVector2D orientation = QVector2D(cos(this->_angle), -sin(this->_angle));
 
     painter->drawLine(QLineF(QPointF(0, 0), QPointF(cos(this->_angle), -sin(this->_angle)) * 20));
-//    painter->drawLine(QLineF(QPointF(0, 0), (orientation * _Flower).toPointF()));
     painter->drawLine(QLineF(QPointF(0, 0), _FlowerV.toPointF()));
 
 
@@ -290,8 +273,7 @@ void GPlayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->setPen(QPen(Qt::green, 2));
     painter->drawLine(QLineF(QPointF(0, 0), _speedV.toPointF() * 20));
 
-    painter->setBrush(Qt::yellow);
-    painter->drawRect(QRectF(-2, -2, 4, 4));
+//    painter->setBrush(Qt::yellow);
 //    painter->drawRect(QRectF(-this->heigth/2, -this->width/2, this->heigth, this->width));
 //    painter->setPen(Qt::black);
 //    painter->drawText(0, 0, this->_player->getPseudo());
