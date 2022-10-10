@@ -27,9 +27,11 @@ private:
     Player *player ;
     Register *_register;
     Control *_control;
-    QList<Checkpoint *>  path ;
+    QList<Checkpoint *>  path;
     QList<QPair<QString , Checkpoint*>> path2;
+
 signals:
+    void determinePathDone(QList<QPair<QString , Checkpoint*>> resultPath);
 
 };
 
