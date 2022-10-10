@@ -9,10 +9,10 @@ Qt3DCore::QEntity* Widget3D::createScene()
 
     PlaneGraphics3D *planeEntity = new PlaneGraphics3D(rootEntity);
 
-     planeEntity->mesh()->setHeight(5000.0f);
-     planeEntity->mesh()->setWidth(5000.0f);
+     //planeEntity->mesh()->setHeight(5000.0f);
+     //planeEntity->mesh()->setWidth(5000.0f);
 
-     planeEntity->m_transform->setTranslation(QVector3D(0, 0, 0));
+     //planeEntity->m_transform->setTranslation(QVector3D(0, 0, 0));
      //planeEntity->mesh()->setMeshResolution(QSize(20, 20));
 
 
@@ -27,6 +27,8 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
     camerA->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camerA->setPosition(QVector3D(0, 0, 4));
     camerA->setViewCenter(QVector3D(0, 0, 0));
+    camerA->setFarPlane(1000);
+    //camerA->setFieldOfView(50);
 
     // For camera controls
     Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(mScene);

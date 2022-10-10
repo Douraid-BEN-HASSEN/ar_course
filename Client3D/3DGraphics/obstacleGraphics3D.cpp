@@ -19,8 +19,8 @@ ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, Qt3DCore::QEntity *mS
 
     if((int)this->getId() % 2 == 1){
         Qt3DExtras::QCuboidMesh *cuboidMesh = new Qt3DExtras::QCuboidMesh();
-        cuboidMesh->setXExtent(width);
-        cuboidMesh->setYExtent(heigth);
+        cuboidMesh->setXExtent(heigth);
+        cuboidMesh->setYExtent(width);
         cuboidMesh->setZExtent(width);
         Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
         // X Y Z

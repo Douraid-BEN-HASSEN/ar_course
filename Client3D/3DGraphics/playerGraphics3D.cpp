@@ -22,9 +22,12 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     material->setDiffuse(QColor(Qt::yellow));
     this->setParent(mScene);
     Qt3DExtras::QCuboidMesh *cuboid = new Qt3DExtras::QCuboidMesh();
+    qDebug() << "heigth = " << heigth;
+    qDebug() << "width = " << width;
+
     cuboid->setXExtent(heigth);
     cuboid->setYExtent(width);
-    cuboid->setZExtent(heigth);
+    cuboid->setZExtent(width);
     //Qt3DRender::QMesh *dolorean = new Qt3DRender::QMesh();
     //dolorean->setSource(url);
 
@@ -45,9 +48,7 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
     Qt3DCore::QTransform *obstacleTransform = new Qt3DCore::QTransform();
     obstacleTransform->setTranslation(QVector3D(this->getX(), 0.0f, this->getY()));
 
-    //obstacleTransform->setRotationY(qRadiansToDegrees(-player->getAngle()));
-    //obstacleTransform->setRotationX(qRadiansToDegrees(-player->getAngle()));
-    //obstacleTransform->setRotationZ(qRadiansToDegrees(-player->getAngle()));
+    obstacleTransform->setRotationY(qRadiansToDegrees(player->getAngle()));
 
     if(!this->components().empty()){
         this->removeComponent(this->components().at(2));
@@ -57,10 +58,8 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
 
 void PlayerGraphics3D::followCameraPlayer(Player *player, Qt3DRender::QCamera *camerA){
 
-    qDebug() << "qRadiansToDegrees(player->getAngle()) = " << qRadiansToDegrees(player->getAngle());
     int dist = 80;
-
-    float camX = player->getX() - cos(player->getAngle()) * dist;
+    float camX = player->getX() - cos(-player->getAngle()) * dist;
     float camY = player->getY() - sin(-player->getAngle()) * dist;
     camerA->setPosition(QVector3D(camX, 10, camY));
     camerA->setViewCenter(QVector3D(player->getX(), 10, player->getY()));
