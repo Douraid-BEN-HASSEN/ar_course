@@ -197,12 +197,15 @@ void Engine::control_th()
                 this->destoryItem(g_rocket);
 
             } else if (gObject->property("type") == GPlayer::type) {
-                GPlayer* g_player = (GPlayer*)gObject;
+                GPlayer* g_other_player = (GPlayer*)gObject;
+
+                qDebug() << "accident" << g_player->getUuid() << g_other_player->getUuid();
 
 
                 // faire le déplacement
 
-                auto posObst = g_player->getPos();
+                //auto posObst = g_player->getPos();
+                auto posObst = g_other_player->getPos();
 
 
                 auto direction =g_player->getPos() - posObst;
@@ -210,9 +213,13 @@ void Engine::control_th()
                 auto angle = atan2(direction.y(),direction.x());
                 QPointF FRepousse(cos(-angle),-sin(-angle));
 
-                g_player->setPos(g_player->getPos()-FRepousse*10);
+                g_player->setPos(g_player->getPos()+FRepousse*10);
 
-                g_player->setVitesse(QVector2D(FRepousse.x()*10,FRepousse.y()*10));
+                g_player->setVitesse(QVector2D(FRepousse.x(),FRepousse.y()));
+
+                g_other_player->setPos(g_other_player->getPos()-FRepousse*10);
+
+                g_other_player->setVitesse(QVector2D(FRepousse.x(),FRepousse.y()));
 
 
             } else if (gObject->property("type") == GObstacle::type) {
