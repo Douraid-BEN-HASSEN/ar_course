@@ -55,17 +55,17 @@ public:
 
 private:
     Properties* _properties;
-    QString  uuid ;
-    int nbTurn ;
-    int nbTeam ;
-    int power ;
-    float  angle ;
-    int nbBananas ;
-    int nbBomb ;
-    int nbRocket ;
-    QString controllerType ;
+    QString  uuid = 0;
+    int nbTurn = 0;
+    int nbTeam = 0;
+    int power  = 0;
+    float  angle = 0;
+    int nbBananas = 0;
+    int nbBomb = 0;
+    int nbRocket = 0;
+    QString controllerType = "";
     Properties* getProperties();
-    QGamepad *gamepad ;
+    QGamepad *gamepad;
     QMap<QString , Vehicle *>*vehicleOptions ;
 
 signals:

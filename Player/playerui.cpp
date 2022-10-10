@@ -115,6 +115,11 @@ void PlayerUi::updateLabel()
 PlayerUi::PlayerUi(QWidget *parent)
     : QWidget(parent)
 {
+    _controller = new Controller() ;
+
+    props = Properties::getInstance();
+    gameMode = GameMode::getInstance();
+
     //Init parameters
     this->isProperties = false ;
     this->isGame = false ;
@@ -244,11 +249,6 @@ PlayerUi::PlayerUi(QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(stackedWidget);
     this->setLayout(mainLayout);
-
-    _controller = new Controller() ;
-
-    props = Properties::getInstance();
-    gameMode = GameMode::getInstance();
 
     //Connect
     this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
