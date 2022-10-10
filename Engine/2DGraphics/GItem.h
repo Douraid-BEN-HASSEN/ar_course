@@ -27,6 +27,8 @@ public:
     virtual QRectF boundingRect() const = 0;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
 
+    QPainterPath shape() const;
+
 protected:
     QString type = "__item__";
 

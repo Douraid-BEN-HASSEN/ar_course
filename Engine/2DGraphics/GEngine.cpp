@@ -13,6 +13,11 @@ GEngine::GEngine(QWidget *parent): QWidget(parent)
     setLayout(layout);
 
     this->mView->fitInView(mScene->sceneRect(), Qt::KeepAspectRatio);
+
+//    for(int i = 0; i < 11; i++) {
+//        this->mScene->addLine(0,i*100,1000,i*100);
+//        this->mScene->addLine(i*100,0,i*100,1000);
+//   }
 }
 
 GEngine::~GEngine() {}
@@ -40,6 +45,11 @@ void GEngine::addItemGraphics(GItem *gItem)
 void GEngine::removeItem(QGraphicsItem *graphicsItem)
 {
     mScene->removeItem(graphicsItem);
+}
+
+QGraphicsScene *GEngine::getScene()
+{
+    return mScene;
 }
 
 void GEngine::resizeEvent(QResizeEvent *event)

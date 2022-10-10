@@ -8,23 +8,15 @@ Engine::Engine(QObject *parent): QObject{parent}
     connect(this->_mqtt, SIGNAL(message(QJsonObject,QString)), this, SLOT(receivedMessage(QJsonObject,QString)));
     this->_mqtt->subscribe("player/control");
 
-
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
-    this->_properties = new Properties(5);
+    this->_properties = Properties::FromFile();
 
-    GObstacle::radius = this->_properties->getCircleRadius();
-    GObstacle::heigth = this->_properties->getRectangleHeight();
-    GObstacle::width = this->_properties->getRectangleWidth();
-
-    GBanana::radius = this->_properties->getBananaRadius();
-    GBomb::radius = this->_properties->getBombRadius();
-    GRocket::radius = this->_properties->getRocketRadius();
-
-    GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
+    this->initProperties();
 
     connect(RegisterManager::getInstance(), SIGNAL(application(Register*)), this, SLOT(registered(Register*)));
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap()));
+    connect(_properties, SIGNAL(updated()), this, SLOT(initProperties()));
 
     this->_controls = new QMap<QString, Control*>;
     this->g_engine = new GEngine();
@@ -37,6 +29,39 @@ Engine::Engine(QObject *parent): QObject{parent}
 
 Engine::~Engine()
 {
+}
+
+void Engine::initProperties()
+{
+    qDebug() << "initProperties";
+
+    GObstacle::radius = this->_properties->getCircleRadius();
+    GObstacle::heigth = this->_properties->getRectangleHeight();
+    GObstacle::width = this->_properties->getRectangleWidth();
+
+    qDebug() <<  this->_properties->getCircleRadius();
+    qDebug() << GObstacle::radius;
+
+    GBanana::radius = this->_properties->getBananaRadius();
+    GBomb::radius = this->_properties->getBombRadius();
+
+    GRocket::radius = this->_properties->getRocketRadius();
+    GRocket::speed = this->_properties->getRocketSpeed();
+
+    GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
+
+    qDebug() <<  this->_properties->getCheckpointRadius();
+    qDebug() << GCheckpoint::radiusCheckpoint;
+}
+
+void Engine::gameUpdate()
+{
+    emit updated();
+}
+
+QDateTime Engine::getGameStartAt() const
+{
+    return this->gameStartAt;
 }
 
 void Engine::envoiGameProperties()
@@ -55,12 +80,26 @@ QList<QGraphicsItem *> Engine::collision(GPlayer* g_player)
 {
     QList<QGraphicsItem*> g_items;
 
+
     for(GCheckpoint *g_checkpoint: this->checkpointsGraphics.values()) {
         if(g_checkpoint->collidesWithItem(g_player)) g_items.append(g_checkpoint);
+
+//        if(g_checkpoint->shape().intersects(g_player->shape())) {
+
+//            g_items.append(g_checkpoint);
+//        }
     }
 
     for(GObstacle *g_obstacle: this->obstaclesGraphics.values()) {
-        if(g_obstacle->collidesWithItem(g_player)) g_items.append(g_obstacle);
+//        if(g_obstacle->collidesWithItem(g_player)) g_items.append(g_obstacle);
+
+        QPainterPath pp = g_obstacle->shape();
+        pp.translate(g_player->pos());
+        qDebug() << pp;
+
+        if(pp.intersects(g_player->shape().translated(g_player->pos()))) {
+            g_items.append(g_obstacle);
+        }
     }
 
     for(GPlayer *g_player: this->playersGraphics.values()) {
@@ -68,7 +107,8 @@ QList<QGraphicsItem *> Engine::collision(GPlayer* g_player)
     }
 
     for(GItem *g_item: this->itemsGraphics) {
-        if(g_item->collidesWithItem(g_player)) g_items.append(g_item);
+        if(g_item->collidesWithItem(g_player))
+            g_items.append(g_item);
     }
 
     return g_items;
@@ -79,18 +119,22 @@ qreal Engine::intersectionVal(QGraphicsItem *pItem1, QGraphicsItem *pItem2)
     return pItem1->shape().intersected(pItem2->shape()).boundingRect().height() * pItem1->shape().intersected(pItem2->shape()).boundingRect().width();
 }
 
-
 void Engine::control_th()
 {
     QTimer::singleShot(ENGINE_FREQUENCY, this, &Engine::control_th);
+
     // traitement
     for (Player *player: this->_gameMode->_players->values()) {
         GPlayer* g_player = this->playersGraphics.value(player->getUuid());
+        if(g_player->getBananaCooldown() > 0) g_player->setBananaCooldown(g_player->getBananaCooldown() - 1);
+        if(g_player->getBombCooldown() > 0) g_player->setBombCooldown(g_player->getBombCooldown() - 1);
+        if(g_player->getRocketCooldown() > 0) g_player->setRocketCooldown(g_player->getRocketCooldown() - 1);
+
         Control *control = this->_controls->value(player->getUuid());
 
         g_player->update(control);
 
-        QList<QGraphicsItem*> g_items = this->collision(g_player);
+        QList<QGraphicsItem*> g_items = g_player->collidingItems();
 
         for (QGraphicsItem *gItem : g_items ) {
             QGraphicsObject *gObject = static_cast<QGraphicsObject *>(gItem);
@@ -101,14 +145,36 @@ void Engine::control_th()
                 int nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
 
                 if (g_checkpoint->getId() == nextCheckpoint) {
+
+
                     player->setLastCheckpoint(nextCheckpoint);
                     nextCheckpoint = this->getNextCheckpointId(player->getLastCheckpoint());
-                    if (nextCheckpoint == -1) {
-                        qDebug() << "new checkpoint";
-                        player->setCurrentLap(player->getCurrentLap()+1);
-                        player->setLastCheckpoint(0);
-                    }
+
+                     Checkpoint *ch = Map::getInstance()->getCheckpoints()->first();
+
+                     if (ch) {
+
+                         qDebug() << "first is : " << ch->getId();
+
+                         if (g_checkpoint->getCheckpoint()->getId() == ch->getId()) {
+                             player->setCurrentLap(player->getCurrentLap()+1);
+                         }
+
+//                         if (nextCheckpoint == ch->getId()) {
+//                             qDebug() << "new checkpoint";
+//                             player->setCurrentLap(player->getCurrentLap()+1);
+//                             player->setLastCheckpoint(nextCheckpoint);
+//                         }
+                     }
                 }
+
+                if (player->getCurrentLap() == this->_properties->getLaps()) {
+                    qDebug() << player->getPseudo() << " finish!";
+
+                    this->_gameMode->_players->remove(player->getUuid());
+                }
+
+//                qDebug() << player->getPseudo() << " Last checkpoint : " << player->getLastCheckpoint() << " nextCheckpoint : " << nextCheckpoint << " laps " << player->getCurrentLap();
 
             } else if (gObject->property("type") == GBanana::type) {
                 GBanana* g_banana = (GBanana*)gObject;
@@ -131,7 +197,30 @@ void Engine::control_th()
                 this->destoryItem(g_rocket);
 
             } else if (gObject->property("type") == GPlayer::type) {
-                GPlayer* g_player = (GPlayer*)gObject;
+                GPlayer* g_other_player = (GPlayer*)gObject;
+
+                qDebug() << "accident" << g_player->getUuid() << g_other_player->getUuid();
+
+
+                // faire le déplacement
+
+                //auto posObst = g_player->getPos();
+                auto posObst = g_other_player->getPos();
+
+
+                auto direction =g_player->getPos() - posObst;
+
+                auto angle = atan2(direction.y(),direction.x());
+                QPointF FRepousse(cos(-angle),-sin(-angle));
+
+                g_player->setPos(g_player->getPos()+FRepousse*10);
+
+                g_player->setVitesse(QVector2D(FRepousse.x(),FRepousse.y()));
+
+                g_other_player->setPos(g_other_player->getPos()-FRepousse*10);
+
+                g_other_player->setVitesse(QVector2D(FRepousse.x(),FRepousse.y()));
+
 
             } else if (gObject->property("type") == GObstacle::type) {
                 qDebug() << "obstacle";
@@ -139,8 +228,21 @@ void Engine::control_th()
 
 
                 // faire le déplacement
-                g_player->setPos(player->getPosition());
-                g_player->setRotation(player->getAngle());
+
+                auto posObst = QPoint(g_obstacle->getX(),g_obstacle->getY());
+
+
+                auto direction =g_player->getPos() - posObst;
+
+                auto angle = atan2(direction.y(),direction.x());
+                QPointF FRepousse(cos(-angle),-sin(-angle));
+
+                g_player->setPos(g_player->getPos()+FRepousse*10);
+
+                g_player->setVitesse(QVector2D(FRepousse.x()*10,FRepousse.y()*10));
+
+
+
             }
         }
 
@@ -150,42 +252,85 @@ void Engine::control_th()
 
         /* --- spawn item ---*/
         if (control) {
+            //  SI cooldown =< 0 ET nItem > 0
+            //  ALORS:  => placer item
+            //          => cooldown = 5
+            //  FIN SI
             if (control->getButton("banana")) {
-                qDebug() << "drop banana";
-                control->setButton("banana", false);
+                if(g_player->getBananaCooldown() <= 0 && g_player->getnBanana() > 0) {
+                    qDebug() << "drop banana";
+                    control->setButton("banana", false);
 
-                QPoint spanwPoint = (QPoint)(player->getPosition() + (-player->getVector() * (GBanana::radius + 15)).toPoint());
-                GBanana *gBanana = new GBanana(spanwPoint);
-                gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
+                    QPoint spanwPoint = (QPoint)(player->getPosition() + (-player->getVector() * (GBanana::radius + 15)).toPoint());
+                    GBanana *gBanana = new GBanana(spanwPoint);
+                    gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
 
-                this->spawnItem(gBanana);
+                    this->spawnItem(gBanana);
+                    // engine cycle enfoiré alexis
+                    g_player->setBananaCooldown(5*20);
+                    g_player->setnBanana(g_player->getnBanana()-1);
+                }
+            } else if (control->getButton("bomb") && g_player->getnBomb() > 0) {
+                if(g_player->getBombCooldown() <= 0) {
+                    qDebug() << "drop bomb";
+                    control->setButton("bomb", false);
 
-            } else if (control->getButton("bomb")) {
-                qDebug() << "drop bomb";
-                control->setButton("bomb", false);
+                    QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GBomb::radius + 15)).toPoint());
+                    GBomb *gBomb = new GBomb(spanwPoint, player->getAngle());
+                    gBomb->setTtl(_properties->getBombTtl() * ENGINE_CYCLE);
 
-                QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GBomb::radius + 15)).toPoint());
-                GBomb *gBomb = new GBomb(spanwPoint, player->getAngle());
-                gBomb->setTtl(_properties->getBombTtl() * ENGINE_CYCLE);
-
-                this->spawnItem(gBomb);
-
+                    this->spawnItem(gBomb);
+                    // engine cycle enfoiré alexis
+                    g_player->setBombCooldown(5*20);
+                    g_player->setnBomb(g_player->getnBomb()-1);
+                }
             } else if (control->getButton("rocket")) {
-                qDebug() << "drop rocket";
-                control->setButton("rocket", false);
+                if(g_player->getRocketCooldown() <= 0 && g_player->getnRocket() > 0) {
+                    qDebug() << "drop rocket";
+                    control->setButton("rocket", false);
 
-                QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GRocket::radius + 15)).toPoint());
-                GRocket *gRocket = new GRocket(spanwPoint, player->getAngle());
+                    QPoint spanwPoint = (QPoint)(player->getPosition() + (player->getVector() * (GRocket::radius + 15)).toPoint());
+                    GRocket *gRocket = new GRocket(spanwPoint, player->getAngle());
 
-                this->spawnItem(gRocket);
+                    this->spawnItem(gRocket);
+                    // engine cycle enfoiré alexis
+                    g_player->setRocketCooldown(5*20);
+                    g_player->setnRocket(g_player->getnRocket()-1);
+                }
             }
         }
+
+        /*limite map*/
+        if(g_player->getPos().x() < 0){
+
+            g_player->setX(0);
+
+
+        }
+
+        if(g_player->getPos().y() < 0){
+
+            g_player->setY(0);
+
+        }
+
+        if (g_player->getPos().x() > _map->getMapHeight()){
+            g_player->setX(_map->getMapWidth());
+
+        }
+
+        if (g_player->getPos().x() > _map->getMapWidth()){
+
+            g_player->setX(_map->getMapHeight());
+
+
+        }
     }
+
 
     for (GItem *gItem: itemsGraphics) {
         lifeCycleItem(gItem);
     }
-
 }
 
 void Engine::lifeCycleItem(GItem *gItem) {
@@ -245,7 +390,7 @@ int Engine::getNextCheckpointId(int pCurrentCheckpoint)
     for(int iCheckpoint=0; iCheckpoint<ids.count(); iCheckpoint++) {
         if(ids[iCheckpoint] == pCurrentCheckpoint) {
             if(iCheckpoint+1 >= ids.count()) {
-                return -1;
+                return ids[0];
             } else return ids[iCheckpoint+1];
             break;
         }
@@ -295,6 +440,28 @@ void Engine::registered(Register *r) {
 
     if (!playerGraphics) {
         playerGraphics = new GPlayer(p);
+
+        QPoint spawnPoint = QPoint(0, 0);
+
+        if (Map::getInstance()->getCheckpoints()->size() > 0) {
+            Checkpoint *c = Map::getInstance()->getCheckpoints()->first();
+            if (c != nullptr) {
+                spawnPoint = c->getPosition();
+                p->setLastCheckpoint(c->getId());
+            }
+        }
+
+        qDebug() << "spwn point" << spawnPoint;
+
+        p->setPos(spawnPoint);
+
+        playerGraphics->setPos(spawnPoint);
+
+
+        playerGraphics->setnBanana(this->_properties->getBanana());
+        playerGraphics->setnBomb(this->_properties->getBomb());
+        playerGraphics->setnRocket(this->_properties->getRocket());
+
         this->g_engine->addPlayerGraphics(playerGraphics);
         this->playersGraphics.insert(p->getUuid(), playerGraphics);
     }
@@ -315,7 +482,9 @@ void Engine::registered(Register *r) {
 
     playerGraphics->setPos(p->getPosition());
 
-    //delete r;
+    delete r;
+
+    gameUpdate();
 }
 
 void Engine::updateMap() {
@@ -332,6 +501,7 @@ void Engine::updateMap() {
         }
 
         obstacleGraphics->setPos(iterObstacle->getX(),iterObstacle->getY());
+        obstacleGraphics->setRotation(iterObstacle->getAngle());
     }
 
     for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
@@ -363,9 +533,29 @@ void Engine::traitementPlayerRegister(QJsonObject pMessage)
     this->_gameMode->_players->insert(player->getUuid(), player);
 }
 
-void Engine::reset(bool b)
+GameMode *Engine::getGameMode()
+{
+    return _gameMode;
+}
+
+Properties *Engine::getProperties()
+{
+    return _properties;
+}
+
+void Engine::startGame()
+{
+    if (!gameStarted) {
+        this->gameStartAt = QDateTime::currentDateTime();
+        this->gameStarted = true;
+    }
+}
+
+void Engine::reset()
 {
     qDebug() << "reset";
+
+    this->gameStarted = false;
 
     for (QGraphicsItem *item : this->checkpointsGraphics.values()) {
         this->g_engine->removeItem(item);
@@ -389,4 +579,6 @@ void Engine::reset(bool b)
 
     this->_gameMode->reset();
     this->_map->reste();
+
+    this->gameUpdate();
 }

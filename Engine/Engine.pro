@@ -31,6 +31,7 @@ SOURCES += \
     2DGraphics/GPlayer.cpp \
     2DGraphics/GRocket.cpp \
     Engine.cpp \
+    PlayerScoreItem.cpp \
     main.cpp \
     window.cpp
 
@@ -44,6 +45,7 @@ HEADERS += \
     2DGraphics/GPlayer.h \
     2DGraphics/GRocket.h \
     Engine.h \
+    PlayerScoreItem.h \
     window.h
 
 # Default rules for deployment.

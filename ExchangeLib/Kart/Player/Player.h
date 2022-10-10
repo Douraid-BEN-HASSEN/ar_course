@@ -89,9 +89,10 @@ private:
     QPoint _pos;
     QPointF _vitesse;
 
-
 signals:
 
+public: signals:
+    void stateUpdated();
 };
 
 #endif // PLAYER_H

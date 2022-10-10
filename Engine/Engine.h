@@ -31,8 +31,14 @@ public:
     ~Engine();
     GEngine *getGEngine();
 
+    GameMode *getGameMode();
+    Properties *getProperties();
+    void startGame();
+    QDateTime getGameStartAt() const;
+
 public slots:
-    void reset(bool);
+    void reset();
+    void gameUpdate();
 
 private:
     MqttService *_mqtt;
@@ -65,12 +71,18 @@ private:
 
     // graphic
     GEngine *g_engine;
+    QDateTime gameStartAt;
+
+    bool gameStarted = false;
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
     void registered(Register *);
     void updateMap();
+    void initProperties();
 
+public: signals:
+    void updated();
 };
 
 #endif // ENGINE_H

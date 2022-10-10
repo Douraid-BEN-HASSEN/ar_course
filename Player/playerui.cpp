@@ -13,8 +13,10 @@ void PlayerUi::keyPressEvent(QKeyEvent *key){
 
 void PlayerUi::keyReleaseEvent(QKeyEvent *key){
     qDebug() << "PlayerUi::keyReleaseEvent()" ;
-    this->_controller->handleReleaseKeyEvent(key);
-    this->updateLabel();
+    if (this->isGame == true && this->controllerType == "keyboard" ) {
+        this->_controller->handleReleaseKeyEvent(key);
+        this->updateLabel();
+    }
 }
 
 
@@ -44,37 +46,24 @@ void PlayerUi::onRunFind()
 {
     qDebug() << "PlayerUi::onRunFind()" ;
     if ( this->isProperties == false ) {
-
-        this->props = Properties::getInstance();
-
-        if (!this->props) {
-            return;
-        }
-
-        this->nbTurn = props->getLaps() ;
-        this->nbTeam = props->getTeam() ;
-        for (Vehicle *vehicle : this->props->vehicleOptions->values())
-            this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
-        this->stackedWidget->setCurrentIndex(1);
-        this->labelNbLaps->setText("<h4> " + QString::number(this->nbTurn) + " laps </h4>");
-        this->labelNbTeam->setText("<h4> " + QString::number(this->nbTeam) + " teams </h4>");
-        for (int i = 1 ; i < this->nbTeam+1 ; i++)
-            this->comboBoxTeam->addItem(QString::number(i));
-        this->updateLabel();
+        this->labelNbLaps->setText("<h4> " + QString::number(this->_controller->getNbTurn()) + " laps </h4>");
+        this->labelNbTeam->setText("<h4> " + QString::number(this->_controller->getNbTeams()) + " teams </h4>");
+        this->updateLabel() ;
         this->isProperties = true ;
+        this->comboBoxVehicle->clear();
+
+        for (Vehicle *vehicle : this->_controller->getVehicleOptions()->values())
+            this->comboBoxVehicle->addItem(vehicle->getType() + " " +  vehicle->toString());
+
+        for (int i = 1 ; i < this->_controller->getNbTeams()+1 ; i++)
+            this->comboBoxTeam->addItem(QString::number(i));
+
+        this->stackedWidget->setCurrentIndex(1);
     }
 }
 
 void PlayerUi::onGameModeReceived()
 {
-    Player *player = GameMode::getInstance()->_players->value(this->uuid);
-
-    if (!player)
-        return;
-
-    this->nbBanana = player->getItems()->value("banana") ;
-    this->nbBomb = player->getItems()->value("bomb") ;
-    this->nbRocket = player->getItems()->value("rocket");
     updateLabel();
 }
 
@@ -86,6 +75,7 @@ void PlayerUi::onExitRun()
     this->stackedWidget->setCurrentIndex(0);
     this->controllerType = "" ;
     this->_controller->setControllerType("");
+    this->uuid = QUuid::createUuid().toString();
 }
 
 void PlayerUi::onCloseGame()
@@ -103,9 +93,6 @@ void PlayerUi::onGamepadUse()
     }
 }
 
-
-
-
 //On action, make message for mqtt
 void PlayerUi::makeMqttMessage( int keyAction)
 {
@@ -113,30 +100,29 @@ void PlayerUi::makeMqttMessage( int keyAction)
     this->_controller->sendMessageControl( keyAction);
 }
 
-
 //Function to update label when catching keyboard actions
 void PlayerUi::updateLabel()
 {
     qDebug() << "PlayerUi::updateLabel()" ;
-    this->labelAngle->setText("<h4> Angle : " + QString::number(this->angle) + " </h4> ");
-    this->labelPower->setText("<h4> Power : " + QString::number(this->power) + " </h4> ");
-    this->labelBanana->setText(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
-    this->labelBomb->setText(" <h4> " + QString::number(this->nbBomb) + " bomb(s) </h4> ");
-    this->labelRocket->setText(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
+    this->labelAngle->setText("<h4> Angle : " + QString::number(this->_controller->getAngle()) + " </h4> ");
+    this->labelPower->setText("<h4> Power : " + QString::number(this->_controller->getPower()) + " </h4> ");
+    this->labelBanana->setText(" <h4> " + QString::number(this->_controller->getNbBananas()) + " banana(s) </h4> ");
+    this->labelBomb->setText(" <h4> " + QString::number(this->_controller->getNbBombs()) + " bomb(s) </h4> ");
+    this->labelRocket->setText("<h4> " + QString::number(this->_controller->getNbRocket()) + " rocket(s) </h4>");
 }
 
 //Constructor
 PlayerUi::PlayerUi(QWidget *parent)
     : QWidget(parent)
 {
+    _controller = new Controller() ;
+
+    props = Properties::getInstance();
+    gameMode = GameMode::getInstance();
+
     //Init parameters
     this->isProperties = false ;
     this->isGame = false ;
-    this->angle = 0 ;
-    this->power = 0 ;
-    this->nbBanana = 0 ;
-    this->nbBomb = 0 ;
-    this->nbRocket = 0 ;
 
     this->resize(500 , 300);
     this->uuid = QUuid::createUuid().toString();
@@ -151,6 +137,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->labelLoading->setAlignment(Qt::AlignCenter);
     this->loadingLayout->addWidget(labelLoading);
     this->loadingLayout->addWidget(buttonClose);
+
     this->gameLayout = new QVBoxLayout ;
 
     this->horizontalLayout_5 = new QHBoxLayout ;
@@ -166,18 +153,22 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->horizontalLayout_6->addWidget(this->labelSelectionVehicle);
 
     this->horizontalLayout_7 = new QHBoxLayout ;
-    this->labelBanana = new QLabel(" <h4> " + QString::number(this->nbBanana) + " banana(s) </h4> ");
-    this->labelBomb = new QLabel(" <h4> " + QString::number(this->nbBomb) + " bomb(s) </h4> ");
-    this->labelRocket = new QLabel(" <h4> " + QString::number(this->nbRocket) + " rocket(s) </h4>");
+    this->labelBanana = new QLabel(" <h4> " + QString::number(this->_controller->getNbBananas()) + " banana(s) </h4> ");
+    this->labelBomb = new QLabel(" <h4> " + QString::number(this->_controller->getNbBombs()) + " bomb(s) </h4> ");
+    this->labelRocket = new QLabel(" <h4> " + QString::number(this->_controller->getNbRocket()) + " rocket(s) </h4>");
     this->horizontalLayout_7->addWidget(this->labelBanana);
     this->horizontalLayout_7->addWidget(this->labelBomb);
     this->horizontalLayout_7->addWidget(this->labelRocket);
 
     this->horizontalLayout_8 = new QHBoxLayout ;
-    this->labelPower = new QLabel("<h4> Power : " + QString::number(this->power) + " </h4>") ;
-    this->labelAngle = new QLabel("<h4> Angle : " + QString::number(this->angle) + " </h4> ") ;
+    this->labelPower = new QLabel("<h4> Power : " + QString::number(this->_controller->getPower()) + " </h4>") ;
+    //this->progressBarSpeed = new QProgressBar() ;
     this->horizontalLayout_8->addWidget(this->labelPower);
-    this->horizontalLayout_8->addWidget(this->labelAngle);
+    //this->horizontalLayout_8->addWidget(this->progressBarSpeed);
+
+    this->horizontalLayout_11 = new QHBoxLayout ;
+    this->labelAngle = new QLabel("<h4> Angle : " + QString::number(this->_controller->getAngle()) + " </h4> ") ;
+    this->horizontalLayout_11->addWidget(this->labelAngle);
 
     this->horizontalLayout_10 = new QHBoxLayout ;
     this->buttonExit = new QPushButton("EXIT THE GAME");
@@ -187,9 +178,8 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->gameLayout->addLayout(this->horizontalLayout_6);
     this->gameLayout->addLayout(this->horizontalLayout_7);
     this->gameLayout->addLayout(this->horizontalLayout_8);
+    this->gameLayout->addLayout(this->horizontalLayout_11);
     this->gameLayout->addLayout(this->horizontalLayout_10);
-
-
 
     //Graphic content for the register window
     this->registerLayout = new QVBoxLayout ;
@@ -260,17 +250,14 @@ PlayerUi::PlayerUi(QWidget *parent)
     mainLayout->addWidget(stackedWidget);
     this->setLayout(mainLayout);
 
-    _controller = new Controller(&this->uuid , &this->power , &this->angle , &this->nbBanana , &this->nbBomb , &this->nbRocket) ;
-
-    props = Properties::getInstance();
-    gameMode = GameMode::getInstance();
-
     //Connect
     this->connect(this->buttonClose , SIGNAL(clicked()) , this , SLOT(onCloseGame()));
     this->connect(this->registerButton , SIGNAL(clicked()) , this , SLOT(buttonPlayPressed()));
     this->connect(this->buttonExit , SIGNAL(clicked()) , this , SLOT(onExitRun()));
-    connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(onGameModeReceived()));
-    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(onRunFind()));
+
+
+    connect(this->_controller , SIGNAL(runFind()) , this , SLOT(onRunFind()));
+    connect(this->_controller , SIGNAL(gamemodeFind()) , this , SLOT(onGameModeReceived()));
 
     //Connect for the gamepad
     this->connect(this->_controller->getGamepad() , SIGNAL(buttonL1Changed(bool)) , this , SLOT(onGamepadUse()));

@@ -89,6 +89,11 @@ int Obstacle::getY()
     return this->_y;
 }
 
+QPoint Obstacle::getPos()
+{
+    return QPoint(_x, _y);
+}
+
 float Obstacle::getAngle()
 {
     return this->_angle;

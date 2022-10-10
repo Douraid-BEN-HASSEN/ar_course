@@ -12,17 +12,34 @@ class GPlayer: public QGraphicsObject
 {
     Q_OBJECT
 public:
+    // === constructor ===
     GPlayer(Player *, QGraphicsItem *parent = nullptr);
 
     static QString type;
 
+    // === GETTER ===
     QString getUuid();
     QPoint getPos();
     float getAngle();
     qreal getRadius();
+    int getBananaCooldown();
+    int getBombCooldown();
+    int getRocketCooldown();
+    int getnBanana();
+    int getnRocket();
+    int getnBomb();
+
+    // === SETTER ====
     void setHeigth(int);
     void setWidth(int);
     void setAngle(float);
+    void setBananaCooldown(int pBananaCooldown);
+    void setBombCooldown(int pBombCooldown);
+    void setRocketCooldown(int pRockerCooldown);
+    void setnBanana(int pnBanana);
+    void setnBomb(int pnBomb);
+    void setnRocket(int pnRocket);
+    void setVitesse(QVector2D vectorSpeed);
 
     void hit();
 
@@ -48,6 +65,17 @@ private:
     QString _status;
     QString _controller;
     QVector2D _vitesse;
+
+    //
+    int _nBanane;
+    int _nBomb;
+    int _nRocket;
+
+    // items cooldown
+    int _bananaCooldown;
+    int _bombCooldown;
+    int _rocketCooldown;
+
 };
 
 #endif // GPLAYER_H

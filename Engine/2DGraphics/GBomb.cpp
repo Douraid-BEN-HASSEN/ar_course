@@ -38,7 +38,7 @@ void GBomb::update()
 
 QRectF GBomb::boundingRect() const
 {
-    return QRectF(-this->radius, -this->radius,this->radius*2,this->radius*2);
+    return QRectF(-this->radius, -this->radius, this->radius*2, this->radius*2);
 }
 
 void GBomb::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
