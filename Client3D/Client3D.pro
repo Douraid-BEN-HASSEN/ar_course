@@ -21,20 +21,26 @@ win32 {
 
 SOURCES += \
     3DGraphics/Widget3D.cpp \
+    3DGraphics/bananaGraphics3D.cpp \
+    3DGraphics/bombGraphics3D.cpp \
     3DGraphics/checkpointGraphics3D.cpp \
     3DGraphics/obstacleGraphics3D.cpp \
     3DGraphics/planeGraphics3D.cpp \
     3DGraphics/playerGraphics3D.cpp \
     3DGraphics/roadgraphics3d.cpp \
+    3DGraphics/rocketGraphics3D.cpp \
     main.cpp
 
 HEADERS += \
     3DGraphics/Widget3D.h \
+    3DGraphics/bananaGraphics3D.h \
+    3DGraphics/bombGraphics3D.h \
     3DGraphics/checkpointGraphics3D.h \
     3DGraphics/obstacleGraphics3D.h \
     3DGraphics/planeGraphics3D.h \
     3DGraphics/playerGraphics3D.h \
-    3DGraphics/roadgraphics3d.h
+    3DGraphics/roadgraphics3d.h \
+    3DGraphics/rocketGraphics3D.h
 
 FORMS += \
 

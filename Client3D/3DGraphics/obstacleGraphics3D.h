@@ -1,10 +1,6 @@
 #ifndef OBSTACLEGRAPH_H
 #define OBSTACLEGRAPH_H
 
-#include <QGraphicsObject>
-#include <QObject>
-#include <QPainter>
-
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>

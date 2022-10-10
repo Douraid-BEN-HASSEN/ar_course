@@ -9,13 +9,6 @@ Qt3DCore::QEntity* Widget3D::createScene()
 
     PlaneGraphics3D *planeEntity = new PlaneGraphics3D(rootEntity);
 
-     //planeEntity->mesh()->setHeight(5000.0f);
-     //planeEntity->mesh()->setWidth(5000.0f);
-
-     //planeEntity->m_transform->setTranslation(QVector3D(0, 0, 0));
-     //planeEntity->mesh()->setMeshResolution(QSize(20, 20));
-
-
     return rootEntity;
 }
 
@@ -48,6 +41,9 @@ void Widget3D::updateProperties3D(){
     ObstacleGraphics3D::width = Properties::getInstance()->getRectangleWidth();
     ObstacleGraphics3D::radius = Properties::getInstance()->getCircleRadius();
     CheckpointGraphics3D::radiusCheckpoint = Properties::getInstance()->getCheckpointRadius();
+    BananaGraphics3D::bananaRadius = Properties::getInstance()->getBananaRadius();
+    RocketGraphics3D::rocketRadius = Properties::getInstance()->getRocketRadius();
+    BombGraphics3D::bombRadius = Properties::getInstance()->getBombRadius();
 
 }
 
@@ -89,7 +85,6 @@ void Widget3D::updateMap3D() {
                                 checkpointList[it_checkpoint+1],
                                 mScene);
         }
-
     }
 
 }
@@ -105,6 +100,44 @@ void Widget3D::updateGameMode3D() {
         // Modifier la position
         playerGraphics3D->updatePlayer3D(iterPlayer);
         playerGraphics3D->followCameraPlayer(iterPlayer, camerA);
+    }
+
+    for (Item *iterItem : *GameMode::getInstance()->_items) {
+
+        // Convert both the integers to string
+        string xString = to_string(iterItem->getX());
+        string yString = to_string(iterItem->getY());
+        // Concatenate both strings
+        QString xyString = QString::fromStdString(xString + yString);
+
+        BananaGraphics3D* bananaGraphics3D = localBanana3D.value(xyString);
+        RocketGraphics3D* rocketGraphics3D = localRocket3D.value(xyString);
+        BombGraphics3D* bombGraphics3D = localBomb3D.value(xyString);
+        //
+        if(iterItem->getType() == "banane"){
+            if(!bananaGraphics3D){
+            bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
+            localBanana3D.insert(xyString, bananaGraphics3D);
+            }
+            bananaGraphics3D->updateBanana3D(iterItem);
+        }
+
+        if(iterItem->getType() == "rocket"){
+            if(!rocketGraphics3D){
+            rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
+            localRocket3D.insert(xyString, rocketGraphics3D);
+            }
+            rocketGraphics3D->updateRocket3D(iterItem);
+        }
+
+        if(iterItem->getType() == "bomb"){
+            if(!bombGraphics3D){
+            bombGraphics3D = new BombGraphics3D(iterItem, mScene);
+            localBomb3D.insert(xyString, bombGraphics3D);
+            }
+            bombGraphics3D->updateBomb3D(iterItem);
+        }
+
     }
 
 }

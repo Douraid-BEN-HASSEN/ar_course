@@ -1,6 +1,9 @@
 #ifndef WIDGET3D_H
 #define WIDGET3D_H
 
+#include <iostream>
+#include <string>
+
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
@@ -38,6 +41,11 @@
 #include "planeGraphics3D.h"
 #include "playerGraphics3D.h"
 #include "roadgraphics3d.h"
+#include "bananaGraphics3D.h"
+#include "rocketGraphics3D.h"
+#include "bombGraphics3D.h"
+
+using namespace std;
 
 
 class Widget3D: public Qt3DExtras::Qt3DWindow
@@ -54,6 +62,9 @@ private:
     QMap<int, ObstacleGraphics3D*> localObstacles3D;
     QMap<int, CheckpointGraphics3D*> localCheckpoint3D;
     QMap<QString, PlayerGraphics3D*> localPlayers3D;
+    QMap<QString, BananaGraphics3D*> localBanana3D;
+    QMap<QString, RocketGraphics3D*> localRocket3D;
+    QMap<QString, BombGraphics3D*> localBomb3D;
 
 private slots:
     void updateMap3D();

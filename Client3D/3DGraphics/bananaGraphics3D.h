@@ -1,5 +1,5 @@
-#ifndef ROADGRAPHICS3D_H
-#define ROADGRAPHICS3D_H
+#ifndef BANANAGRAPHICS3D_H
+#define BANANAGRAPHICS3D_H
 
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
@@ -22,17 +22,22 @@
 #include <QDiffuseSpecularMaterial>
 #include <QOrbitCameraController>
 
-#include <Kart/Map/Checkpoint.h>
+#include <Kart/Map/Map.h>
+#include <Kart/Player/Item.h>
 
-class RoadGraphics3D: public Qt3DCore::QEntity
+class BananaGraphics3D: public Qt3DCore::QEntity
 {
+    Q_OBJECT
 public:
-    RoadGraphics3D();
-    RoadGraphics3D(Checkpoint *, Checkpoint *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
+    BananaGraphics3D(Item *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
+    void updateBanana3D(Item *);
+    qreal getX();
+    qreal getY();
+    static qreal bananaRadius;
+
 private:
-    qreal id;
     qreal x;
     qreal y;
 };
 
-#endif // ROADGRAPHICS3D_H
+#endif // BANANAGRAPHICS3D_H

@@ -1,10 +1,5 @@
 #ifndef PLAYERGRAPHICS_H
 #define PLAYERGRAPHICS_H
-
-#include <QGraphicsObject>
-#include <QObject>
-#include <QPainter>
-#include <QDebug>
 #include <QtMath>
 
 #include "Qt3DExtras/Qt3DWindow"

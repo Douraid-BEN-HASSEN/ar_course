@@ -2,13 +2,7 @@
 
 
 PlaneGraphics3D::PlaneGraphics3D(Qt3DCore::QEntity *rootEntity, Qt3DCore::QNode *parent): Qt3DCore::QEntity(parent)
-    // , m_mesh(new Qt3DExtras::QPlaneMesh())
-    // , m_transform(new Qt3DCore::QTransform())
-    // , m_material(new Qt3DExtras::QPhongMaterial())
 {
-    //addComponent(m_mesh);
-    //addComponent(m_transform);
-    //addComponent(m_material);
 
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(rootEntity);
     material->setDiffuse(QColor(Qt::gray));
@@ -28,21 +22,9 @@ PlaneGraphics3D::PlaneGraphics3D(Qt3DCore::QEntity *rootEntity, Qt3DCore::QNode 
     Qt3DCore::QTransform *planeTransform = new Qt3DCore::QTransform();
     planeTransform->setTranslation(QVector3D(0.0f, 0.0f ,0.0f));
 
-    //planeEntity->mesh()->setHeight(5000.0f);
-    //planeEntity->mesh()->setWidth(5000.0f);
-    //planeEntity->m_transform->setTranslation(QVector3D(0, 0, 0));
-
     this->addComponent(material);
     this->addComponent(planeMesh);
     this->addComponent(planeTransform);
     this->addComponent(light);
 
 }
-//PlaneGraphics3D::~PlaneGraphics3D()
-//{
-//}
-
-//Qt3DExtras::QPlaneMesh* PlaneGraphics3D::mesh() const
-//{
-//    return m_mesh;
-//}

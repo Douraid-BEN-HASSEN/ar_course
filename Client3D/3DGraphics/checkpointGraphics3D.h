@@ -1,11 +1,6 @@
 #ifndef CHECKPOINTGRAPH_H
 #define CHECKPOINTGRAPH_H
 
-#include <QGraphicsObject>
-#include <QObject>
-#include <QPainter>
-#include <QBrush>
-
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>

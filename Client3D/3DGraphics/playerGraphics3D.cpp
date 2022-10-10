@@ -81,7 +81,7 @@ qreal PlayerGraphics3D::getX()
     return x;
 }
 
-qreal PlayerGraphics3D::getY()        //painter->drawEllipse(0,0,this->heigth, this->width);
+qreal PlayerGraphics3D::getY()
 {
     return y;
 }

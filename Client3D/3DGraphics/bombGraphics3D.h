@@ -1,5 +1,5 @@
-#ifndef ROADGRAPHICS3D_H
-#define ROADGRAPHICS3D_H
+#ifndef BOMBGRAPHICS3D_H
+#define BOMBGRAPHICS3D_H
 
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
@@ -22,17 +22,23 @@
 #include <QDiffuseSpecularMaterial>
 #include <QOrbitCameraController>
 
-#include <Kart/Map/Checkpoint.h>
+#include <Kart/Map/Map.h>
+#include <Kart/Player/Item.h>
 
-class RoadGraphics3D: public Qt3DCore::QEntity
+class BombGraphics3D: public Qt3DCore::QEntity
 {
+    Q_OBJECT
 public:
-    RoadGraphics3D();
-    RoadGraphics3D(Checkpoint *, Checkpoint *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
+    BombGraphics3D(Item *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
+    void updateBomb3D(Item *);
+    qreal getX();
+    qreal getY();
+    static qreal bombRadius;
+
 private:
-    qreal id;
     qreal x;
     qreal y;
 };
 
-#endif // ROADGRAPHICS3D_H
+#endif // BOMBGRAPHICS3D_H
+

@@ -1,5 +1,5 @@
 #include "checkpointGraphics3D.h"
-
+// Valeur par défaut
 qreal CheckpointGraphics3D::radiusCheckpoint = 50;
 
 
@@ -9,11 +9,10 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
     this->x = checkpoint->getX();
     this->y = checkpoint->getY();
 
-    Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
-    material->setDiffuse(QColor(Qt::green));
-
     this->setParent(mScene);
 
+    Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
+    material->setDiffuse(QColor(Qt::green));
 
     //Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
     //sphereMesh->setRadius(radiusCheckpoint);
