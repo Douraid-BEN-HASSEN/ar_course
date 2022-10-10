@@ -16,19 +16,19 @@ class Controller : public QObject
 public:
     explicit Controller(QObject *parent = nullptr );
     Controller(QString *uuid , int *power , float *angle , int *nbBananas , int *nbBomb , int *nbRocket);
-    void sendMessageRegister(QString uuid, QString pseudo, QString controller, QString vehicle, QString team);
-    void sendMessageControl(QString uuid, int angle, int power, int keyAction);
-    Properties* getProperties();
-    QGamepad *gamepad ;
-    void handleKeyEvent(QString uuid , QKeyEvent *key,  int *power , float *angle , int *nbBananas , int *nbBomb , int *nbRocket);
+    void sendMessageRegister(QString pseudo, QString controller, QString vehicle, QString team);
+    void sendMessageControl( int keyAction);
+    void handleKeyEvent( QKeyEvent *key);
     void handleReleaseKeyEvent(QKeyEvent *key) ;
-    void catchKeyUp(int *power);
-    void catchKeyDown(int *power);
-    void catwchKeyLeft(float *angle);
-    void catchKeyRight(float *angle);
-    void catchKeyAction( int idKey , int *nbBanana , int *nbBomb , int *nbRocket);
+    void catchKeyUp();
+    void catchKeyDown();
+    void catchKeyLeft();
+    void catchKeyRight();
+    void catchKeyAction( int idKey );
     void createGamepad() ;
 
+    //Getters and setter
+    QGamepad * getGamepad();
 private:
     Properties* _properties;
     QString * uuid ;
@@ -37,20 +37,24 @@ private:
     int *nbBananas ;
     int *nbBomb ;
     int *nbRocket ;
+    QString controllerType ;
+    Properties* getProperties();
+    QGamepad *gamepad ;
 
 public slots:
     //Callbacks for gamepad
     void handlePressTurnLeft(bool isPushed) ;
     void handlePressTurnRight(bool isPushed);
-    void handlePressBrak(double value) ;
+    void handlePressBreake(double value) ;
     void handlePressAccelerate (double value);
     void handlePressAction1 (bool isPushed) ;
     void handlePressAction2 (bool isPushed) ;
     void handlePressAction3 (bool isPushed) ;
     void handlePressAction4 (bool isPushed) ;
+    void handleTurnLeftJoystick (double value);
+    //void handleChangeJoystickLeft();
 
-
-signals:
+    void setControllerType(QString controllerType);
 
 };
 
