@@ -10,12 +10,11 @@ class BombGraphics : public ItemGraphics
 public:
     BombGraphics(Item *item, QGraphicsItem *parent = nullptr);
 
+    static qreal radius;
+
 protected:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
-    const float heigth = 10;
-    const float width = 10;
 };
 
 #endif // BOMBGRAPHICS_H

@@ -39,6 +39,7 @@ public:
     void setnBanana(int pnBanana);
     void setnBomb(int pnBomb);
     void setnRocket(int pnRocket);
+    void setVitesse(QVector2D vectorSpeed);
 
     void hit();
 

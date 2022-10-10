@@ -9,6 +9,7 @@ class GRocket: public GItem
 public:
     static QString type;
     static float radius;
+    static float speed;
 
     GRocket(QPoint, float angle, QGraphicsItem *parent = nullptr);
     GRocket(int x, int y, float angle, QGraphicsItem *parent = nullptr);
