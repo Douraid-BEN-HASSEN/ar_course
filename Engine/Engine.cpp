@@ -494,6 +494,7 @@ void Engine::updateMap() {
         }
 
         obstacleGraphics->setPos(iterObstacle->getX(),iterObstacle->getY());
+        obstacleGraphics->setRotation(iterObstacle->getAngle());
     }
 
     for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
