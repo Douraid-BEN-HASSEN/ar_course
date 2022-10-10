@@ -29,7 +29,7 @@ void Window::startIA()
 
     if ( this->ui->lineEdit_Player->text() != "" && this->ui->lineEdit_Speed->text() != " " ) {
         QString pseudo = this->ui->lineEdit_Player->text();
-        Register *r = new Register(pseudo, "ia", "car", 0, this);p
+        Register *r = new Register(pseudo, "ia", "car", 0, this);
         IA *ia = new IA(r , (int)this->ui->lineEdit_Speed->text().toInt());
         connect(ia, SIGNAL(determinePathDone(QList<QPair<QString , Checkpoint*>>)), this, SLOT(getPath(QList<QPair<QString, Checkpoint *>>)));
 

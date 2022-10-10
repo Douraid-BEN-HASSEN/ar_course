@@ -224,6 +224,6 @@ void IA::determinePath()
         qDebug() << this->path.at(i).second->getX() << this->path.at(i).second->getY() ;
 
     //Launch the function to do the path
-   emit this->determinePathDone(this->path2);
+    emit this->determinePathDone(this->path);
     QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 }
