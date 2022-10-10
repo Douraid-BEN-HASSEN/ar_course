@@ -7,7 +7,7 @@
 
 #include <QSizePolicy>
 
-#include "2DGraphics/GPlayer.h";
+#include "2DGraphics/GPlayer.h"
 
 class PlayerScoreItem : public QFrame
 {
@@ -24,6 +24,8 @@ private:
     QLabel *label_lastCheckpoint;
     QLabel *label_currentLap;
     QLabel *label_controller;
+    QLabel *label_time;
+    QLabel *label_state;
 
     GPlayer *g_player;
 

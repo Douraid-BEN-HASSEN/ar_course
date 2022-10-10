@@ -41,6 +41,12 @@ public:
     void setnRocket(int pnRocket);
     void setVitesse(QVector2D vectorSpeed);
 
+    QString getState();
+    void setState(QString);
+
+    QTime getTime();
+    void setTime(QTime);
+
     void hit();
 
     QString className();
@@ -65,6 +71,8 @@ private:
     QString _status;
     QString _controller;
     QVector2D _vitesse;
+    QTime timeLaps = QTime(0, 0, 0, 0);
+    QString state = "wait";
 
     //
     int _nBanane;
@@ -75,6 +83,9 @@ private:
     int _bananaCooldown;
     int _bombCooldown;
     int _rocketCooldown;
+
+public: signals:
+    void stateUpdated();
 
 };
 

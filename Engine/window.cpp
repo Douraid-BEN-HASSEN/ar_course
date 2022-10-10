@@ -23,6 +23,9 @@ Window::Window(QWidget *parent) :
     widget->layout()->addWidget(new QLabel("player"));
     widget->layout()->addWidget(new QLabel("checkpoint"));
     widget->layout()->addWidget(new QLabel("tour"));
+    widget->layout()->addWidget(new QLabel("time"));
+    widget->layout()->addWidget(new QLabel("state"));
+    widget->layout()->addWidget(new QLabel("controller"));
 
     main_scorebordLayout->addWidget(widget);
     main_scorebordLayout->addLayout(scorebordLayout);
@@ -127,8 +130,6 @@ void Window::chronoTimer()
     double time = QDateTime::currentDateTime().toMSecsSinceEpoch() - engine->getGameStartAt().toMSecsSinceEpoch();
 
     QString timeText = QTime::fromMSecsSinceStartOfDay(time).toString("m:ss:zzz");
-
-    qDebug() << timeText;
 
     ui->label_timer->setText(timeText);
 }

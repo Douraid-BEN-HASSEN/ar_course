@@ -132,6 +132,10 @@ void Engine::control_th()
 
         Control *control = this->_controls->value(player->getUuid());
 
+        if (gameStarted) {
+            g_player->setState("playing");
+        }
+
         g_player->update(control);
 
         QList<QGraphicsItem*> g_items = g_player->collidingItems();
@@ -154,10 +158,17 @@ void Engine::control_th()
 
                      if (ch) {
 
-                         qDebug() << "first is : " << ch->getId();
-
                          if (g_checkpoint->getCheckpoint()->getId() == ch->getId()) {
                              player->setCurrentLap(player->getCurrentLap()+1);
+
+                             double time = QDateTime::currentDateTime().toMSecsSinceEpoch() - gameStartAt.toMSecsSinceEpoch();
+
+                             qDebug() << time;
+                             QTime a = QTime::fromMSecsSinceStartOfDay(time);
+                             qDebug() << a;
+
+                             g_player->setTime(a);
+
                          }
 
 //                         if (nextCheckpoint == ch->getId()) {
@@ -171,6 +182,7 @@ void Engine::control_th()
                 if (player->getCurrentLap() == this->_properties->getLaps()) {
                     qDebug() << player->getPseudo() << " finish!";
 
+                    g_player->setState("finish");
                     this->_gameMode->_players->remove(player->getUuid());
                 }
 
