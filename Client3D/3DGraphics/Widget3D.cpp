@@ -9,11 +9,21 @@ Qt3DCore::QEntity* Widget3D::createScene()
 
     PlaneGraphics3D *planeEntity = new PlaneGraphics3D(rootEntity);
 
-     planeEntity->mesh()->setHeight(5000.0f);
-     planeEntity->mesh()->setWidth(5000.0f);
+     planeEntity->mesh()->setHeight(100.0f);
+     planeEntity->mesh()->setWidth(100.0f);
 
      planeEntity->m_transform->setTranslation(QVector3D(0, 0, 0));
      //planeEntity->mesh()->setMeshResolution(QSize(20, 20));
+       planeEntity->m_material->setDiffuse(QColor(Qt::red));
+
+
+
+
+
+
+
+
+
 
 
     return rootEntity;
@@ -82,10 +92,14 @@ void Widget3D::updateMap3D() {
             RoadGraphics3D rg3d(checkpointList[it_checkpoint],
                                 checkpointList[0],
                                 mScene);
+                qDebug() << "je suis passé par  = " << checkpointList[it_checkpoint] ;
+                //  qDebug() << "je suis le suivant = " << checkpointList[it_checkpoint+1] ;
         } else {
             RoadGraphics3D rg3d(checkpointList[it_checkpoint],
                                 checkpointList[it_checkpoint+1],
                                 mScene);
+
+
         }
 
     }

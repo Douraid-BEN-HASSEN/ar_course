@@ -7,7 +7,7 @@ RoadGraphics3D::RoadGraphics3D( Checkpoint *checkpoint1, Checkpoint *checkpoint2
         this->y = checkpoint1->getY();
 
         Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
-        material->setDiffuse(QColor(Qt::green));
+        material->setDiffuse(QColor(Qt::blue));
 
         this->setParent(mScene);
 
@@ -18,7 +18,7 @@ RoadGraphics3D::RoadGraphics3D( Checkpoint *checkpoint1, Checkpoint *checkpoint2
         cuboidMesh->setXExtent(width);
         cuboidMesh->setYExtent(height);
 
-        //cuboidMesh->setXYMeshResolution(QSize((this->y)-(this->x)));
+
 
         Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
         cuboidTransform->setTranslation(QVector3D(this->x, this->y, 0.0f));
