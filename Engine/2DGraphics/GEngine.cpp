@@ -52,7 +52,12 @@ QGraphicsScene *GEngine::getScene()
     return mScene;
 }
 
+void GEngine::fitInView()
+{
+    mView->fitInView(mScene->sceneRect(), Qt::KeepAspectRatio);
+}
+
 void GEngine::resizeEvent(QResizeEvent *event)
 {
-    mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);
+    mView->fitInView(mScene->sceneRect(), Qt::KeepAspectRatio);
 }

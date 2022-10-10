@@ -4,6 +4,7 @@
 #include <QGraphicsObject>
 #include <QObject>
 #include <QPainter>
+#include <QLine>
 
 #include <Kart/Player/Player.h>
 #include <Kart/Game/Properties.h>
@@ -53,6 +54,7 @@ public:
     void update(Control *control);
     Player* getPlayer();
 
+    QPainterPath shape() const;
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -70,9 +72,15 @@ private:
     int _currentLap = 0;
     QString _status;
     QString _controller;
-    QVector2D _vitesse;
+
     QTime timeLaps = QTime(0, 0, 0, 0);
     QString state = "wait";
+
+    QVector2D _accelerationV;
+    QVector2D _speedV;
+
+    float _Flower = 0;
+    QVector2D _FlowerV;
 
     //
     int _nBanane;

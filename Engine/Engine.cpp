@@ -76,44 +76,6 @@ void Engine::envoiGameInfo()
     this->_gameMode->publish();
 }
 
-QList<QGraphicsItem *> Engine::collision(GPlayer* g_player)
-{
-    QList<QGraphicsItem*> g_items;
-
-
-    for(GCheckpoint *g_checkpoint: this->checkpointsGraphics.values()) {
-        if(g_checkpoint->collidesWithItem(g_player)) g_items.append(g_checkpoint);
-
-//        if(g_checkpoint->shape().intersects(g_player->shape())) {
-
-//            g_items.append(g_checkpoint);
-//        }
-    }
-
-    for(GObstacle *g_obstacle: this->obstaclesGraphics.values()) {
-//        if(g_obstacle->collidesWithItem(g_player)) g_items.append(g_obstacle);
-
-        QPainterPath pp = g_obstacle->shape();
-        pp.translate(g_player->pos());
-        qDebug() << pp;
-
-        if(pp.intersects(g_player->shape().translated(g_player->pos()))) {
-            g_items.append(g_obstacle);
-        }
-    }
-
-    for(GPlayer *g_player: this->playersGraphics.values()) {
-        if(g_player->getUuid() != g_player->getUuid() && g_player->collidesWithItem(g_player)) g_items.append(g_player);
-    }
-
-    for(GItem *g_item: this->itemsGraphics) {
-        if(g_item->collidesWithItem(g_player))
-            g_items.append(g_item);
-    }
-
-    return g_items;
-}
-
 qreal Engine::intersectionVal(QGraphicsItem *pItem1, QGraphicsItem *pItem2)
 {
     return pItem1->shape().intersected(pItem2->shape()).boundingRect().height() * pItem1->shape().intersected(pItem2->shape()).boundingRect().width();
@@ -253,8 +215,6 @@ void Engine::control_th()
 
                 g_player->setVitesse(QVector2D(FRepousse.x()*10,FRepousse.y()*10));
 
-
-
             }
         }
 
@@ -313,30 +273,17 @@ void Engine::control_th()
         }
 
         /*limite map*/
-        if(g_player->getPos().x() < 0){
-
+        if(g_player->getPos().x() < 0)
             g_player->setX(0);
 
-
-        }
-
-        if(g_player->getPos().y() < 0){
-
+        if(g_player->getPos().y() < 0)
             g_player->setY(0);
 
-        }
-
-        if (g_player->getPos().x() > _map->getMapHeight()){
+        if (g_player->getPos().x() > _map->getMapHeight())
             g_player->setX(_map->getMapWidth());
 
-        }
-
-        if (g_player->getPos().x() > _map->getMapWidth()){
-
-            g_player->setX(_map->getMapHeight());
-
-
-        }
+        if (g_player->getPos().y() > _map->getMapWidth())
+            g_player->setY(_map->getMapHeight());
     }
 
 
@@ -529,7 +476,7 @@ void Engine::updateMap() {
         checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
 
-
+    this->getGEngine()->fitInView();
 }
 
 GEngine * Engine::getGEngine()
