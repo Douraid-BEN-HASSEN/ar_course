@@ -82,13 +82,17 @@ void Window::startGame()
 
 void Window::reset()
 {
-    ui->pushButton_start->setDisabled(false);
-
     this->timer->stop();
-    engine->reset();
-    ui->label_timer->setText("0:00:000");
 
+    ui->pushButton_start->setDisabled(false);
+    ui->tabWidget_scoreboard->clear();
+
+    scorebordItem->clear();
+
+    ui->label_timer->setText("0:00:000");
     ui->spinBox_teamNumber->setDisabled(false);
+
+    engine->reset();
 }
 
 void Window::reload()

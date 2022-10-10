@@ -5,9 +5,11 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+#include <QSizePolicy>
+
 #include <Kart/Player/Player.h>
 
-class PlayerScoreItem : public QWidget
+class PlayerScoreItem : public QFrame
 {
     Q_OBJECT
 public:
