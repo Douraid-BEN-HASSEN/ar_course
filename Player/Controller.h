@@ -8,16 +8,17 @@
 #include <QGamepad>
 #include <Mqtt/MqttService.h>
 #include <Kart/Game/Properties.h>
+#include "Kart/Player/GameMode.h"
 
 
 class Controller : public QObject
 {
     Q_OBJECT
 public:
+    //Constructor
     explicit Controller(QObject *parent = nullptr );
-    Controller(QString *uuid , int *power , float *angle , int *nbBananas , int *nbBomb , int *nbRocket);
-    void sendMessageRegister(QString pseudo, QString controller, QString vehicle, QString team);
-    void sendMessageControl( int keyAction);
+
+    //For the keyboard
     void handleKeyEvent( QKeyEvent *key);
     void handleReleaseKeyEvent(QKeyEvent *key) ;
     void catchKeyUp();
@@ -25,21 +26,51 @@ public:
     void catchKeyLeft();
     void catchKeyRight();
     void catchKeyAction( int idKey );
+
+    //For the gamepad
     void createGamepad() ;
 
-    //Getters and setter
+    //For the mqtt
+    void sendMessageRegister(QString pseudo, QString controller, QString vehicle, QString team);
+    void sendMessageControl( int keyAction);
+
+    //Getters
+    QString getUuid() ;
+    int getNbBananas() ;
+    int getNbBombs() ;
+    int getNbRocket();
+    float getAngle() ;
+    int getNbTurn() ;
+    int getNbTeams() ;
+    int getPower() ;
     QGamepad * getGamepad();
+
+    //Setters
+    void setUuid(QString uuid);
+    void setNbBananas(int n);
+    void setNbBombs(int n);
+    void setNbRocket(int n);
+
+    QMap<QString, Vehicle *> *getVehicleOptions() const;
+
 private:
     Properties* _properties;
-    QString * uuid ;
-    int *power ;
-    float * angle ;
-    int *nbBananas ;
-    int *nbBomb ;
-    int *nbRocket ;
+    QString  uuid ;
+    int nbTurn ;
+    int nbTeam ;
+    int power ;
+    float  angle ;
+    int nbBananas ;
+    int nbBomb ;
+    int nbRocket ;
     QString controllerType ;
     Properties* getProperties();
     QGamepad *gamepad ;
+    QMap<QString , Vehicle *>*vehicleOptions ;
+
+signals:
+    void runFind() ;
+    void gamemodeFind() ;
 
 public slots:
     //Callbacks for gamepad
@@ -52,10 +83,11 @@ public slots:
     void handlePressAction3 (bool isPushed) ;
     void handlePressAction4 (bool isPushed) ;
     void handleTurnLeftJoystick (double value);
-    //void handleChangeJoystickLeft();
 
+    //Callback for the player ui
     void setControllerType(QString controllerType);
-
+    void onRunFind() ;
+    void onGamemodeFind();
 };
 
 #endif // CONTROLLER_H

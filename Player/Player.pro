@@ -1,4 +1,4 @@
-QT       += core gui gamepad
+QT       += core gui gamepad widgets
 QT += mqtt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
