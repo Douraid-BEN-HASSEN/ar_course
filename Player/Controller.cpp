@@ -38,8 +38,6 @@ void Controller::createGamepad(){
     connect(gamepad,SIGNAL(buttonBChanged(bool)), this, SLOT(handlePressAction2(bool)));
     connect(gamepad,SIGNAL(buttonXChanged(bool)), this, SLOT(handlePressAction3(bool)));
     connect(gamepad,SIGNAL(buttonYChanged(bool)), this, SLOT(handlePressAction4(bool)));
-
-
 }
 
 Properties* Controller::getProperties()
@@ -107,7 +105,7 @@ void Controller::handleReleaseKeyEvent(QKeyEvent *key)
 void Controller::catchKeyUp(int *power)
 {
     if (*this->power != 100) {
-        *this->angle = 0 ;
+       //*this->angle = 0 ;
         *this->power += 1;
     }
 }
@@ -115,10 +113,8 @@ void Controller::catchKeyUp(int *power)
 void Controller::catchKeyDown(int *power)
 {
     if(*this->power != -100) {
-        *this->power = 0 ;
         *this->power -= 1;
     }
-
 }
 
 void Controller::catchKeyRight(float *angle)

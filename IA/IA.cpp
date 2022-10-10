@@ -64,10 +64,7 @@ void IA::mooveToCheckpoint()
     //qDebug() << "Ia::mooveToCheckpoint()" ;
     QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 
-
-
     //while (this->currentCheckpointId < this->path.size() ){
-
     while (this->currentCheckpointId < this->path2.size() ){
         //Checkpoint *target = path.at(this->currentCheckpointId);
         Checkpoint *target = path2.at(this->currentCheckpointId).second;
@@ -82,7 +79,7 @@ void IA::mooveToCheckpoint()
         float playerAngle = qRadiansToDegrees(player->getAngle());
         float relativeDirection = WorldDirection.angle() - playerAngle;
         _control->setAngle(qDegreesToRadians(normalizeAngleD(relativeDirection)));
-        _control->setPower(10);
+        _control->setPower(20);
         _control->publish();
 
         QEventLoop loop;
@@ -98,6 +95,7 @@ void IA::mooveToCheckpoint()
             this->currentCheckpointId ++ ;
         }
     }
+    this->currentCheckpointId = 0 ;
 
     //End game
     _control->setPower(0);
@@ -132,10 +130,11 @@ void IA::determinePath()
         //qDebug() << "trajectory : " << trajectory ;
         QPointF *collisionPoint = new QPointF(-1,-1);
         QLineF obstacleLine ;
+
+        /*
         for (Obstacle *obstacle : obstacles->values()){
             collisionPoint->setX(-1) ;
             collisionPoint->setY(-1);
-            //qDebug() << " test : " << *test ;
 
             if (obstacle->getId() % 2 == 0) {
                 qDebug() << "ROND" ;
@@ -168,6 +167,8 @@ void IA::determinePath()
             }
         }
 
+        */
+
         qDebug() << "add checkpoint" ;
         if (isObstacle == false) {
             QPair<QString, Checkpoint*> p("obstacle" , currentChoice);
@@ -181,17 +182,17 @@ void IA::determinePath()
     if (player == nullptr)
         return;
 
+    //path2.append(path2.at(0));
+    path2.append(path2.at(0));
     this->path = path ;
     this->path2 = path2 ;
 
     qDebug() << "Nombre de checkpoints " << this->path.size() ;
 
-    for (int i = 0 ; i < this->path.size() ; i++ ) {
-        qDebug() << this->path.at(i)->getX() << this->path.at(i)->getY() ;
+    for (int i = 0 ; i < this->path2.size() ; i++ ) {
+        qDebug() << this->path2.at(i).second->getX() << this->path2.at(i).second->getY() ;
     }
 
     QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 }
-
-
 
