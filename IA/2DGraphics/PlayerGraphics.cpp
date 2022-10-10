@@ -13,7 +13,7 @@ PlayerGraphics::PlayerGraphics(Player *player, QGraphicsItem *parent): QGraphics
 
 void PlayerGraphics::updatePlayer(Player *player) {
     this->_player = player;
-    this->setPos(player->getX(), player->getY());
+    // this->setPos(player->getX(), player->getY());
     this->setRotation(qRadiansToDegrees(-player->getAngle()));
 }
 

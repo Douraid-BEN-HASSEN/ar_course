@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QPoint>
 
 /**
  * @brief The Obstacle class
@@ -40,6 +41,9 @@ public:
     int getId();
     int getX();
     int getY();
+
+    QPoint getPos();
+
     float getAngle();
     int getTimeout();
 

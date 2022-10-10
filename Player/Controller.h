@@ -8,50 +8,86 @@
 #include <QGamepad>
 #include <Mqtt/MqttService.h>
 #include <Kart/Game/Properties.h>
+#include "Kart/Player/GameMode.h"
 
 
 class Controller : public QObject
 {
     Q_OBJECT
 public:
+    //Constructor
     explicit Controller(QObject *parent = nullptr );
-    Controller(QString *uuid , int *power , float *angle , int *nbBananas , int *nbBomb , int *nbRocket);
-    void sendMessageRegister(QString uuid, QString pseudo, QString controller, QString vehicle, QString team);
-    void sendMessageControl(QString uuid, int angle, int power, int keyAction);
-    Properties* getProperties();
-    QGamepad *gamepad ;
-    void handleKeyEvent(QString uuid , QKeyEvent *key,  int *power , float *angle , int *nbBananas , int *nbBomb , int *nbRocket);
+
+    //For the keyboard
+    void handleKeyEvent( QKeyEvent *key);
     void handleReleaseKeyEvent(QKeyEvent *key) ;
-    void catchKeyUp(int *power);
-    void catchKeyDown(int *power);
-    void catwchKeyLeft(float *angle);
-    void catchKeyRight(float *angle);
-    void catchKeyAction( int idKey , int *nbBanana , int *nbBomb , int *nbRocket);
+    void catchKeyUp();
+    void catchKeyDown();
+    void catchKeyLeft();
+    void catchKeyRight();
+    void catchKeyAction( int idKey );
+
+    //For the gamepad
     void createGamepad() ;
+
+    //For the mqtt
+    void sendMessageRegister(QString pseudo, QString controller, QString vehicle, QString team);
+    void sendMessageControl( int keyAction);
+
+    //Getters
+    QString getUuid() ;
+    int getNbBananas() ;
+    int getNbBombs() ;
+    int getNbRocket();
+    float getAngle() ;
+    int getNbTurn() ;
+    int getNbTeams() ;
+    int getPower() ;
+    QGamepad * getGamepad();
+
+    //Setters
+    void setUuid(QString uuid);
+    void setNbBananas(int n);
+    void setNbBombs(int n);
+    void setNbRocket(int n);
+
+    QMap<QString, Vehicle *> *getVehicleOptions() const;
 
 private:
     Properties* _properties;
-    QString * uuid ;
-    int *power ;
-    float * angle ;
-    int *nbBananas ;
-    int *nbBomb ;
-    int *nbRocket ;
+    QString  uuid = 0;
+    int nbTurn = 0;
+    int nbTeam = 0;
+    int power  = 0;
+    float  angle = 0;
+    int nbBananas = 0;
+    int nbBomb = 0;
+    int nbRocket = 0;
+    QString controllerType = "";
+    Properties* getProperties();
+    QGamepad *gamepad;
+    QMap<QString , Vehicle *>*vehicleOptions ;
+
+signals:
+    void runFind() ;
+    void gamemodeFind() ;
 
 public slots:
     //Callbacks for gamepad
     void handlePressTurnLeft(bool isPushed) ;
     void handlePressTurnRight(bool isPushed);
-    void handlePressBrak(double value) ;
+    void handlePressBreake(double value) ;
     void handlePressAccelerate (double value);
     void handlePressAction1 (bool isPushed) ;
     void handlePressAction2 (bool isPushed) ;
     void handlePressAction3 (bool isPushed) ;
     void handlePressAction4 (bool isPushed) ;
+    void handleTurnLeftJoystick (double value);
 
-
-signals:
-
+    //Callback for the player ui
+    void setControllerType(QString controllerType);
+    void onRunFind() ;
+    void onGamemodeFind();
 };
 
 #endif // CONTROLLER_H

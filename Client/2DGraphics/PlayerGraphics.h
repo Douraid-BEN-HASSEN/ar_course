@@ -13,11 +13,13 @@ class PlayerGraphics : public QGraphicsObject
 {
     Q_OBJECT
 public:
+    void updatePlayer(Player *);
     PlayerGraphics(Player *, QGraphicsItem *parent = nullptr);
     QString getUuid();
     qreal getX();
     qreal getY();
-    qreal getRadius();
+    qreal getHeigth();
+    qreal getWidth();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     Player* getPlayer();

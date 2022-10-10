@@ -1,10 +1,13 @@
 #include "GCheckpoint.h"
 
 
+QString GCheckpoint::type = "GCheckpoint";
 qreal GCheckpoint::radiusCheckpoint = 50;
 
 GCheckpoint::GCheckpoint(Checkpoint *checkpoint, QGraphicsItem *parent):QGraphicsObject(parent)
 {
+    this->setProperty("type", this->type);
+
     this->checkpoint = checkpoint;
     this->id = checkpoint->getId();
     this->x = checkpoint->getX();
@@ -36,10 +39,20 @@ qreal GCheckpoint::getRadius()
     return radiusCheckpoint;
 }
 
+QPainterPath GCheckpoint::shape() const
+{
+    QPainterPath path;
+    if (this->boundingRect().isNull())
+        return path;
+
+    path.addEllipse(this->boundingRect());
+
+    return path;
+}
+
 QRectF GCheckpoint::boundingRect() const
 {
-    return QRectF(-this->radiusCheckpoint, -this->radiusCheckpoint,this->radiusCheckpoint*2,this->radiusCheckpoint*2);
-
+    return QRectF(-this->radiusCheckpoint, -this->radiusCheckpoint, this->radiusCheckpoint*2, this->radiusCheckpoint*2);
 }
 
 void GCheckpoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -49,6 +62,6 @@ void GCheckpoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     painter->drawEllipse(boundingRect());
 
     painter->setPen(Qt::black);
-    painter->drawText(0,0,QString::number(this->getId()));
+    painter->drawText(0, 0, QString::number(this->getId()));
 
 }

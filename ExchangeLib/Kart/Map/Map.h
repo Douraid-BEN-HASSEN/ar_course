@@ -62,7 +62,7 @@ public:
     QMap<int, Checkpoint *>* getCheckpoints();
     QMap<int, Obstacle*>* getObstacles();
 
-
+    void reste();
 private:
 
     float _mapWidth;
