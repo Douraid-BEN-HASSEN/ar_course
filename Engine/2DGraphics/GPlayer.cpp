@@ -160,7 +160,8 @@ void GPlayer::update(Control *control)
     QVector2D angleV(cos(this->_angle), -sin(this->_angle));
 
 
-    qDebug() << "Speed :" << _speed;
+    qDebug() << "SpeedV :" << _speedV.length() * 1 / engineCycle;
+
     //Force drag
     if(_speed>0){
         FDrag = -CDRAG * _speedV.length() * abs(_speedV.length());
@@ -193,15 +194,26 @@ void GPlayer::update(Control *control)
     _Flower = FDrag + FGravity + Fgr;
     _FlowerV = FDragV + FgrV + FGravityV;
 
+
+
     float F = FTraction + FDrag + FGravity + Fgr;
     QVector2D FV = FTractionV + FDragV + FgrV + FGravityV;
 
-
+    qDebug() << "vmax" << vehiculePlayer->getMaxSpeed() << "vmax/engine" << vehiculePlayer->getMaxSpeed() * engineCycle;
+    if (_speedV.length() >= vehiculePlayer->getMaxSpeed() * engineCycle){
+        qDebug() << "limitateur";
+        FV = QVector2D(0, 0);
+    }
 
     float Acceleration = F / vehiculeWeight;
-    QVector2D AccelerationV = FV / vehiculeWeight;
+
+
 
     _speed += Acceleration * engineCycle;
+
+
+    QVector2D AccelerationV = FV / vehiculeWeight;
+
 
     this->_angle = (_angle + control->getAngle() * engineCycle); // pensser a la vitesse
     _accelerationV = AccelerationV;
@@ -209,7 +221,7 @@ void GPlayer::update(Control *control)
     _speedV += _accelerationV * engineCycle;
 
 
-    if (_speed >=0){
+    if (_speed >= 0){
         _speedV = angleV * _speedV.length();
     }else{
         _speedV = -(angleV * _speedV.length());
@@ -233,8 +245,6 @@ void GPlayer::update(Control *control)
 
     this->setPos(this->pos() + (this->_speedV).toPointF());
 //    this->setRotation(qRadiansToDegrees(-this->_angle));
-
-//    qDebug() << "Speed :" << _speedV.length() * 1 / engineCycle;
 //    qDebug() << "Acceleration :" << _accelerationV.length();
 }
 
