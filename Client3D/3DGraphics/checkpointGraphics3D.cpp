@@ -5,6 +5,7 @@ qreal CheckpointGraphics3D::radiusCheckpoint = 50;
 
 CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
+    qDebug() << "CheckpointGraphics3D " << mScene;
     this->id = checkpoint->getId();
     this->x = checkpoint->getX();
     this->y = checkpoint->getY();
@@ -13,7 +14,6 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
     material->setDiffuse(QColor(Qt::green));
 
     this->setParent(mScene);
-
 
     //Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
     //sphereMesh->setRadius(radiusCheckpoint);

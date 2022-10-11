@@ -6,6 +6,10 @@ RoadGraphics3D::RoadGraphics3D( Checkpoint *checkpoint1, Checkpoint *checkpoint2
                    { (const float)checkpoint2->getX(), 0, (const float)checkpoint2->getY() },
                    Qt::blue,
                    mScene);
+    this->drawLine3D(checkpoint1, checkpoint2, mScene);
+
+
+
 }
 
 void RoadGraphics3D::drawLine(const QVector3D& start, const QVector3D& end, const QColor& color, Qt3DCore::QEntity *_rootEntity)
@@ -60,4 +64,34 @@ void RoadGraphics3D::drawLine(const QVector3D& start, const QVector3D& end, cons
     auto *lineEntity = new Qt3DCore::QEntity(_rootEntity);
     lineEntity->addComponent(line);
     lineEntity->addComponent(material);
+}
+
+void RoadGraphics3D::drawLine3D(Checkpoint *checkpoint1, Checkpoint *checkpoint2, Qt3DCore::QEntity *mScene)
+{
+    float angle = 0;
+
+
+    if(checkpoint1->getId() == 1) {
+        angle = QLineF(QPointF(checkpoint1->getX(), checkpoint1->getY()),
+                                             QPointF(checkpoint2->getX(), checkpoint2->getY())).angle();
+
+        qDebug() << "ANGLE ===> " << angle;
+    }
+
+
+    int a = checkpoint1->getX() - checkpoint2->getX();
+    int b = checkpoint1->getY() - checkpoint2->getY();
+
+    float distance = std::sqrt(a*a+b*b);
+
+    PlaneGraphics3D *planeEntity = new PlaneGraphics3D(mScene);
+
+   planeEntity->mesh()->setHeight(distance);
+   planeEntity->mesh()->setWidth(100.0f);
+
+   planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()));
+   planeEntity->m_transform->setRotationY(angle);
+
+   planeEntity->m_material->setDiffuse(QColor(Qt::red));
+
 }
