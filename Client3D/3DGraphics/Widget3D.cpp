@@ -102,42 +102,41 @@ void Widget3D::updateGameMode3D() {
         playerGraphics3D->followCameraPlayer(iterPlayer, camerA);
     }
 
+
+    for (BananaGraphics3D *iterLocalBanana : localBanana3D){
+        iterLocalBanana->setEnabled(false);
+        delete(iterLocalBanana);
+    }
+    for (RocketGraphics3D *iterLocalRocket : localRocket3D){
+        iterLocalRocket->setEnabled(false);
+        delete(iterLocalRocket);
+    }
+    for (BombGraphics3D *iterLocalBomb : localBomb3D){
+        iterLocalBomb->setEnabled(false);
+        delete(iterLocalBomb);
+    }
+
+    localBanana3D.clear();
+    localRocket3D.clear();
+    localBomb3D.clear();
+
     for (Item *iterItem : *GameMode::getInstance()->_items) {
-
-        // Convert both the integers to string
-        string xString = to_string(iterItem->getX());
-        string yString = to_string(iterItem->getY());
-        // Concatenate both strings
-        QString xyString = QString::fromStdString(xString + yString);
-
-        BananaGraphics3D* bananaGraphics3D = localBanana3D.value(xyString);
-        RocketGraphics3D* rocketGraphics3D = localRocket3D.value(xyString);
-        BombGraphics3D* bombGraphics3D = localBomb3D.value(xyString);
-        //
-        if(iterItem->getType() == "banane"){
-            if(!bananaGraphics3D){
-            bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
-            localBanana3D.insert(xyString, bananaGraphics3D);
-            }
-            bananaGraphics3D->updateBanana3D(iterItem);
+        if(iterItem->getType() == "banana"){
+            BananaGraphics3D *bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
+            localBanana3D.append(bananaGraphics3D);
         }
 
         if(iterItem->getType() == "rocket"){
-            if(!rocketGraphics3D){
-            rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
-            localRocket3D.insert(xyString, rocketGraphics3D);
-            }
-            rocketGraphics3D->updateRocket3D(iterItem);
+            RocketGraphics3D *rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
+            localRocket3D.append(rocketGraphics3D);
         }
 
         if(iterItem->getType() == "bomb"){
-            if(!bombGraphics3D){
-            bombGraphics3D = new BombGraphics3D(iterItem, mScene);
-            localBomb3D.insert(xyString, bombGraphics3D);
-            }
-            bombGraphics3D->updateBomb3D(iterItem);
+            BombGraphics3D *bombGraphics3D = new BombGraphics3D(iterItem, mScene);
+            localBomb3D.append(bombGraphics3D);
         }
-
     }
+
+
 
 }

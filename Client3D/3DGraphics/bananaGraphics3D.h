@@ -30,7 +30,6 @@ class BananaGraphics3D: public Qt3DCore::QEntity
     Q_OBJECT
 public:
     BananaGraphics3D(Item *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
-    void updateBanana3D(Item *);
     qreal getX();
     qreal getY();
     static qreal bananaRadius;

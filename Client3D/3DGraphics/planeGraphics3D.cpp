@@ -11,7 +11,7 @@ PlaneGraphics3D::PlaneGraphics3D(Qt3DCore::QEntity *rootEntity, Qt3DCore::QNode 
 
     Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(rootEntity);
     light->setColor("white");
-    light->setIntensity(50);
+    light->setIntensity(30);
 
     this->setParent(rootEntity);
 
