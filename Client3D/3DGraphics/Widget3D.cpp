@@ -1,5 +1,7 @@
 ﻿#include "Widget3D.h"
 
+static int iterKey = 0;
+
 Qt3DCore::QEntity* Widget3D::createScene()
 {
     // Configuration de la scène + spécification de l'entity racine
@@ -35,6 +37,29 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
     connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode3D()));
     this->setRootEntity(mScene);
 }
+
+
+void Widget3D::keyPressEvent(QKeyEvent *e)
+{
+
+
+    qDebug() << "Appui touche !";
+    if (e->key() == Qt::Key_P) {
+      qDebug() << " droite pressed " ;
+      if(iterKey + 1 < GameMode::getInstance()->_players->size()){
+      iterKey ++;
+      }
+    }
+    if (e->key() == Qt::Key_O) {
+      qDebug() << " gauche pressed " ;
+      if(iterKey - 1 >= 0){
+      iterKey -- ;
+      }
+    }
+    qDebug() << "iterKey = " << iterKey;
+}
+
+
 
 void Widget3D::updateProperties3D(){
     ObstacleGraphics3D::heigth = Properties::getInstance()->getRectangleHeight();
@@ -96,7 +121,7 @@ void Widget3D::updateMap3D() {
             RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
                                 checkpointListSorted[0],
                                 mScene);
-                qDebug() << "je suis passé par  = " << checkpointListSorted[it_checkpoint] ;
+          //qDebug() << "je suis passé par  = " << checkpointListSorted[it_checkpoint] ;
 
         } else {
             RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
@@ -111,6 +136,7 @@ void Widget3D::updateMap3D() {
 
 void Widget3D::updateGameMode3D() {
 
+    int iter = 0;
     for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
         PlayerGraphics3D* playerGraphics3D = localPlayers3D.value(iterPlayer->getUuid());
         if(!playerGraphics3D){
@@ -119,7 +145,12 @@ void Widget3D::updateGameMode3D() {
         }
         // Modifier la position
         playerGraphics3D->updatePlayer3D(iterPlayer);
-        playerGraphics3D->followCameraPlayer(iterPlayer, camerA);
+        if(iter == iterKey){
+            qDebug() << "iter " << iter << " iterKey = " << iterKey;
+            qDebug() << "iterPlayer " << iterPlayer->getUuid();
+            playerGraphics3D->followCameraPlayer(iterPlayer, camerA);
+        }
+        iter++;
     }
 
 
@@ -131,6 +162,7 @@ void Widget3D::updateGameMode3D() {
         iterLocalRocket->setEnabled(false);
         delete(iterLocalRocket);
     }
+
     for (BombGraphics3D *iterLocalBomb : localBomb3D){
         iterLocalBomb->setEnabled(false);
         delete(iterLocalBomb);
@@ -141,17 +173,17 @@ void Widget3D::updateGameMode3D() {
     localBomb3D.clear();
 
     for (Item *iterItem : *GameMode::getInstance()->_items) {
-        if(iterItem->getType() == "banana"){
+        if(iterItem->getType() == "banana" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
             BananaGraphics3D *bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
             localBanana3D.append(bananaGraphics3D);
         }
 
-        if(iterItem->getType() == "rocket"){
+        if(iterItem->getType() == "rocket" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
             RocketGraphics3D *rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
             localRocket3D.append(rocketGraphics3D);
         }
 
-        if(iterItem->getType() == "bomb"){
+        if(iterItem->getType() == "bomb" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
             BombGraphics3D *bombGraphics3D = new BombGraphics3D(iterItem, mScene);
             localBomb3D.append(bombGraphics3D);
         }

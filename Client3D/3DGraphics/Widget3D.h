@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "qevent.h"
 
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
@@ -59,6 +60,9 @@ public:
     Qt3DCore::QEntity* mScene;
     Qt3DRender::QCamera *camerA;
 
+protected:
+    void keyPressEvent(QKeyEvent *e);
+
 private:
     QMap<int, ObstacleGraphics3D*> localObstacles3D;
     QMap<int, CheckpointGraphics3D*> localCheckpoint3D;
@@ -66,6 +70,7 @@ private:
     QList<BananaGraphics3D*> localBanana3D;
     QList<RocketGraphics3D*> localRocket3D;
     QList<BombGraphics3D*> localBomb3D;
+    Player *playerCamFocus;
 
 private slots:
     void updateMap3D();

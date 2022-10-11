@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>DeLorean.obj</file>
+        <file>Car.obj</file>
+    </qresource>
+</RCC>
