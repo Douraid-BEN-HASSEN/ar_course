@@ -29,10 +29,10 @@ void Window::startIA()
 
     qDebug() << "Window::startIa()";
 
-    if ( this->ui->lineEdit_Player->text() != "" && this->ui->lineEdit_Speed->text() != " " ) {
-        QString pseudo = this->ui->lineEdit_Player->text();
+    if ( this->ui->lineEdit_pseudo->text() != "" && this->ui->lineEdit_Speed->text() != "" && this->ui->lineEdit_Offset->text() != "" ) {
+        QString pseudo = this->ui->lineEdit_pseudo->text();
         Register *r = new Register(pseudo, "ia", "car", 0, this);
-        IA *ia = new IA(r , (int)this->ui->lineEdit_Speed->text().toInt());
+        IA *ia = new IA(r , (int)this->ui->lineEdit_Speed->text().toInt() , (int)this->ui->lineEdit_Offset->text().toInt());
         connect(ia, SIGNAL(determinePathDone(QList<QPair<QString , Checkpoint*>>)), this, SLOT(getPath(QList<QPair<QString, Checkpoint *>>)));
         connect(ia , SIGNAL(changeTarget(QPoint)) , this , SLOT(changeLabelTarget(QPoint)));
 

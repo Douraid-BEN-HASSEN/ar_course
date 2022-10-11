@@ -11,7 +11,7 @@ class IA : public QObject
     Q_OBJECT
 public:;
     explicit IA(QObject *parent = nullptr);
-    IA(Register*, int ,  QObject *parent = nullptr);
+    IA(Register*, int , int ,  QObject *parent = nullptr);
     void determinePath();
     void initIA() ;
     void mooveToCheckpoint();
@@ -26,6 +26,7 @@ private:
     int obstacleHeight ;
     int obstacleRadius ;
     int speedSelected ;
+    int offsetSelected ;
     Player *player ;
     Register *_register;
     Control *_control;
