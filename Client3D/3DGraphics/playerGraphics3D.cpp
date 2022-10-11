@@ -15,8 +15,8 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
 
     Vehicle *veh = Properties::getInstance()->vehicleOptions->value(player->getVehicule());
     if (veh != nullptr){
-    this->heigth = veh->getHeight();
-    this->width = veh->getWidth();
+        this->heigth = veh->getHeight();
+        this->width = veh->getWidth();
     }
 
     this->setParent(mScene);
@@ -24,7 +24,7 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::yellow));
     material->setAmbient(QColorConstants::Yellow);
-    material->setSpecular(QColorConstants::Yellow);
+    //material->setSpecular(QColorConstants::Yellow);
     material->setShininess(10.0f);
 
     //Qt3DExtras::QCuboidMesh *cuboid = new Qt3DExtras::QCuboidMesh();
@@ -61,16 +61,13 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
     }
 }
 
-void PlayerGraphics3D::followCameraPlayer(Player *player, Qt3DRender::QCamera *camerA){
+void PlayerGraphics3D::followCameraPlayer(Player *playerCamFocus, Qt3DRender::QCamera *camerA){
 
     int dist = 80;
-    qDebug() << "player->getX() = " << player->getX();
-    qDebug() << "player->getY() = " << player->getY();
-    float camX = player->getX() - cos(-player->getAngle()) * dist;
-    float camY = player->getY() - sin(-player->getAngle()) * dist;
+    float camX = playerCamFocus->getX() - cos(-playerCamFocus->getAngle()) * dist;
+    float camY = playerCamFocus->getY() - sin(-playerCamFocus->getAngle()) * dist;
     camerA->setPosition(QVector3D(camX, 10, camY));
-    camerA->setViewCenter(QVector3D(player->getX(), 10, player->getY()));
-
+    camerA->setViewCenter(QVector3D(playerCamFocus->getX(), 10, playerCamFocus->getY()));
 }
 
 Player* PlayerGraphics3D::getPlayer()

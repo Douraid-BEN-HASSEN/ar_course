@@ -1,6 +1,8 @@
 #ifndef OBSTACLEGRAPH_H
 #define OBSTACLEGRAPH_H
 
+#include <QtMath>
+
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
@@ -39,11 +41,13 @@ public:
     qreal getHeigth();
     qreal getWidth();
     qreal getRadius();
+    qreal getAngle();
 
 private:
     qreal id;
     qreal x;
     qreal y;
+    qreal angle;
     // Récupérer depuis /game/properties
 };
 

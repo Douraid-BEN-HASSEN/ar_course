@@ -41,8 +41,6 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
 
 void Widget3D::keyPressEvent(QKeyEvent *e)
 {
-
-
     qDebug() << "Appui touche !";
     if (e->key() == Qt::Key_P) {
       qDebug() << " droite pressed " ;
@@ -146,9 +144,8 @@ void Widget3D::updateGameMode3D() {
         // Modifier la position
         playerGraphics3D->updatePlayer3D(iterPlayer);
         if(iter == iterKey){
-            qDebug() << "iter " << iter << " iterKey = " << iterKey;
-            qDebug() << "iterPlayer " << iterPlayer->getUuid();
-            playerGraphics3D->followCameraPlayer(iterPlayer, camerA);
+            playerCamFocus = iterPlayer;
+            playerGraphics3D->followCameraPlayer(playerCamFocus, camerA);
         }
         iter++;
     }
