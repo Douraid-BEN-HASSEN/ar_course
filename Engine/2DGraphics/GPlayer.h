@@ -78,6 +78,8 @@ private:
 
     QVector2D _accelerationV;
     QVector2D _speedV;
+    float _speed;
+
 
     float _Flower = 0;
     QVector2D _FlowerV;

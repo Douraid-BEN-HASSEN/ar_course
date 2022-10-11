@@ -139,28 +139,43 @@ void GPlayer::update(Control *control)
         return;
     }
 
-    //valeur
+    //Constantes et valeurs
     float engineCycle = 1./20; // 1 seconde / nombre de sycle
     float CDRAG = 500; // constante
     float CRR = 10;
     float GRAVITY = 9.81; // constante
 
+    //recupere le nom du vehicule
     _vehicle = getPlayer()->getVehicule(); // recupere le string
 
+    //recupere l'objet
     Vehicle *vehiculePlayer = Properties::getInstance()->vehicleOptions->value(_vehicle); // recupere l'objet du vehicule vehicule
 
     if (vehiculePlayer == nullptr) {
         return;
     }
 
-    float vehiculeWeight = vehiculePlayer->getWeight();
-
+    float vehiculeWeight = vehiculePlayer->getWeight(); // poid du véhicule
+    float FDrag=0.0;
     QVector2D angleV(cos(this->_angle), -sin(this->_angle));
 
-    float FDrag = -CDRAG * _speedV.length() * abs(_speedV.length());
+
+    qDebug() << "Speed :" << _speed;
+    //Force drag
+    if(_speed>0){
+        FDrag = -CDRAG * _speedV.length() * abs(_speedV.length());
+    }else{
+        FDrag = CDRAG * _speedV.length() * abs(_speedV.length());
+    }
     QVector2D FDragV = angleV * FDrag;
 
-    float Fgr = -CRR * _speedV.length() * 0;
+    // force gravité
+    float Fgr;
+    if(_speed>0){
+        Fgr = -CRR * _speedV.length() * 0;
+    }else{
+        Fgr = -(-CRR * _speedV.length() * 0);
+    }
     QVector2D FgrV = angleV * Fgr;
 
     float FGravity = vehiculeWeight * GRAVITY * sin(0);
@@ -168,12 +183,12 @@ void GPlayer::update(Control *control)
 
     float power = ((float)control->getPower() / 100);
 
-//    qDebug() << "Power : " << power;
+
 
     float FTraction = power * vehiculePlayer->getAcceleration() * 1000; // traction
     QVector2D FTractionV = angleV * FTraction;
 
-//    qDebug() << "Ftraction : " << FTraction << " " << FTractionV;
+
 
     _Flower = FDrag + FGravity + Fgr;
     _FlowerV = FDragV + FgrV + FGravityV;
@@ -181,10 +196,12 @@ void GPlayer::update(Control *control)
     float F = FTraction + FDrag + FGravity + Fgr;
     QVector2D FV = FTractionV + FDragV + FgrV + FGravityV;
 
-//    qDebug() << "F : " << F << " " << FV;
+
 
     float Acceleration = F / vehiculeWeight;
     QVector2D AccelerationV = FV / vehiculeWeight;
+
+    _speed += Acceleration * engineCycle;
 
     this->_angle = (_angle + control->getAngle() * engineCycle); // pensser a la vitesse
     _accelerationV = AccelerationV;
@@ -192,21 +209,27 @@ void GPlayer::update(Control *control)
     _speedV += _accelerationV * engineCycle;
 
 
+    if (_speed >=0){
+        _speedV = angleV * _speedV.length();
+    }else{
+        _speedV = -(angleV * _speedV.length());
+    }
+
+
+
     float a = QLineF(QPointF(0, 0), _speedV.toPointF()).angle();
 
 //    qDebug() << a;
 //    qDebug() << qRadiansToDegrees(_angle);
-
-    if (power >= 0) {
-        _speedV = angleV * _speedV.length();
-    } else {
-        _speedV = angleV * -_speedV.length();
-    }
+    // a modifier
 
 
     if (_speedV.length() <= 2 && _accelerationV.length() < 0.2 && _accelerationV.length() > -0.2) {
         _speedV *= 0;
     }
+//    if (_speed <= 2 && Acceleration < 0.2 && Acceleration > -0.2) {
+//        _speed *= 0;
+//    }
 
     this->setPos(this->pos() + (this->_speedV).toPointF());
 //    this->setRotation(qRadiansToDegrees(-this->_angle));
