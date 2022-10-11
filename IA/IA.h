@@ -33,7 +33,8 @@ private:
 
 signals:
     void determinePathDone(QList<QPair<QString , Checkpoint*>> resultPath);
-
+    void changeTarget(QPoint newTarget) ;
 };
 
 #endif // IA_H
+

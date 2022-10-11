@@ -69,11 +69,14 @@ void IA::mooveToCheckpoint()
     while (this->currentCheckpointId < this->path.size() ){
         //Get the current checkpoint
         Checkpoint *target = path.at(this->currentCheckpointId).second;
+        emit this->changeTarget(target->getPosition());
+        qDebug() << "EMIT" ;
         //qDebug() << "TARGET : " << target->getId() << target->getPosition() ;
-        qDebug() << this->currentCheckpointId ;
+        //qDebug() << this->currentCheckpointId ;
         //If no checkpoint, return
         if (target == nullptr)
             return;
+
 
         //Get the player
         this->player = this->getActivePlayer() ;
@@ -191,7 +194,7 @@ void IA::determinePath()
                     )
             {
                 isObstacle = true ;
-                int offset = 200 ;
+                int offset = 100 ;
                 Checkpoint *newCheck  = new Checkpoint ;
                 newCheck->setX(collisionPoint->x() + obstacle->getId() % 2 == 0 ? obstacleRadius + offset : obstacleWidth / 2 + offset  < 1000 ? collisionPoint->x()+obstacle->getId() % 2 == 0 ? collisionPoint->x() + obstacleRadius + offset : collisionPoint->x() + obstacleWidth / 2 + offset  : obstacle->getId() % 2 == 0 ? collisionPoint->x() - obstacleRadius + offset : collisionPoint->x() - obstacleWidth / 2 + offset  ) ;
                 newCheck->setY(collisionPoint->y() + obstacle->getId() % 2 == 0 ? obstacleRadius + offset : obstacleWidth / 2 + offset  < 1000 ? collisionPoint->y()+obstacle->getId() % 2 == 0 ? collisionPoint->y() + obstacleRadius + offset : collisionPoint->y() + obstacleWidth / 2 + offset  : obstacle->getId() % 2 == 0 ? collisionPoint->y() - obstacleRadius + offset : collisionPoint->y() - obstacleWidth / 2 + offset  );
@@ -216,6 +219,7 @@ void IA::determinePath()
     if (player == nullptr)
         return;
 
+    path.append(path.at(0));
     //Save the path
     this->path = path ;
 

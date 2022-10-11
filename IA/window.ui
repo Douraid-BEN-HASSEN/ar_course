@@ -50,7 +50,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_currentCheckpoint">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -59,6 +59,19 @@
         </property>
         <property name="text">
          <string>Current checkpoint id:  </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_targetPosition">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Target position : </string>
         </property>
        </widget>
       </item>
