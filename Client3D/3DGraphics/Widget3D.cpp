@@ -41,20 +41,16 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
 
 void Widget3D::keyPressEvent(QKeyEvent *e)
 {
-    qDebug() << "Appui touche !";
     if (e->key() == Qt::Key_P) {
-      qDebug() << " droite pressed " ;
       if(iterKey + 1 < GameMode::getInstance()->_players->size()){
       iterKey ++;
       }
     }
     if (e->key() == Qt::Key_O) {
-      qDebug() << " gauche pressed " ;
       if(iterKey - 1 >= 0){
       iterKey -- ;
       }
     }
-    qDebug() << "iterKey = " << iterKey;
 }
 
 

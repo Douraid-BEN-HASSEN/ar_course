@@ -41,7 +41,6 @@ ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, Qt3DCore::QEntity *mS
         this->addComponent(cylindreMesh);
         this->addComponent(cylindreTransform);
     }
-
 }
 
 void ObstacleGraphics3D::updateObstacle3D(Obstacle *obstacle){

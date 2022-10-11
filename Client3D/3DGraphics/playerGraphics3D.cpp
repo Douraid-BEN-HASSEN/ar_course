@@ -38,7 +38,8 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
 
     Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
     cuboidTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
-    cuboidTransform->setScale3D(QVector3D(heigth, width, width));
+    cuboidTransform->setScale3D(QVector3D(width, heigth, heigth));
+    cuboidTransform->setRotationY(qRadiansToDegrees(player->getAngle()) + 90);
     this->addComponent(material);
     this->addComponent(cuboid);
     this->addComponent(cuboidTransform);
@@ -51,9 +52,10 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
 
     Qt3DCore::QTransform *palyerTransform = new Qt3DCore::QTransform();
     palyerTransform->setTranslation(QVector3D(this->getX(), 0.0f, this->getY()));
-    palyerTransform->setScale3D(QVector3D(heigth, width, width));
+    palyerTransform->setScale3D(QVector3D(width, heigth, heigth));
 
-    palyerTransform->setRotationY(qRadiansToDegrees(player->getAngle()));
+    qDebug() << "qRadiansToDegrees(player->getAngle()) = " << qRadiansToDegrees(player->getAngle());
+    palyerTransform->setRotationY(qRadiansToDegrees(player->getAngle()) + 90);
 
     if(!this->components().empty()){
         this->removeComponent(this->components().at(2));
