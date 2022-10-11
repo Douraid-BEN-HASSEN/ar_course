@@ -68,7 +68,8 @@ void Properties::loadFile(QString fileName)
          dir.mkpath(folder);
     }
 
-    QFile file(folder + fileName);
+    path = folder + fileName;
+    QFile file(path);
 
     if (file.exists()) {
         file.open(QIODevice::ReadWrite);
@@ -342,4 +343,9 @@ int Properties::getCheckpointRadius() const {
 
 void Properties::setCheckpointRadius(int checkpointRadius) {
     this->checkpointRadius = checkpointRadius;
+}
+
+QString Properties::getPath()
+{
+    return path;
 }

@@ -38,6 +38,7 @@ Window::Window(QWidget *parent) :
     connect(ui->pushButton_start, SIGNAL(clicked()), this, SLOT(startGame()));
     connect(ui->pushButton_reset, SIGNAL(clicked()), this, SLOT(reset()));
     connect(ui->pushButton_reload, SIGNAL(clicked()), this, SLOT(reload()));
+    connect(ui->action_openConfig, SIGNAL(triggered()), this, SLOT(openPropertiesFileConf()));
 
     connect(ui->spinBox_teamNumber, SIGNAL(valueChanged(int)), this, SLOT(teamNumberUpdated(int)));
 
@@ -132,4 +133,9 @@ void Window::chronoTimer()
     QString timeText = QTime::fromMSecsSinceStartOfDay(time).toString("m:ss:zzz");
 
     ui->label_timer->setText(timeText);
+}
+void Window::openPropertiesFileConf()
+{
+    QString filePath = QFileInfo(engine->getProperties()->getPath()).canonicalFilePath();
+    QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
 }

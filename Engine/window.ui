@@ -249,6 +249,7 @@
     </property>
     <addaction name="action_reload"/>
     <addaction name="action_resetConf"/>
+    <addaction name="action_openConfig"/>
    </widget>
    <addaction name="menuFichier"/>
   </widget>
@@ -261,6 +262,14 @@
   <action name="action_resetConf">
    <property name="text">
     <string>Réécrire la Config</string>
+   </property>
+  </action>
+  <action name="action_openConfig">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Open Config</string>
    </property>
   </action>
  </widget>

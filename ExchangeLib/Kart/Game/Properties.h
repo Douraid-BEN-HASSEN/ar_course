@@ -64,6 +64,8 @@ private:
     int rectangleHeight = 0;
     int checkpointRadius = 0;
 
+    QString path = "Config/Properties.json";
+
 public:
     int getLaps() const;
     void setLaps(int laps);
@@ -121,6 +123,8 @@ public:
 
     int getCheckpointRadius() const;
     void setCheckpointRadius(int checkpointRadius);
+
+    QString getPath();
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
