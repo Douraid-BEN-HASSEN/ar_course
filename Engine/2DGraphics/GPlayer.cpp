@@ -139,6 +139,10 @@ void GPlayer::update(Control *control)
         return;
     }
 
+    if(_speed==0){
+        control->setAngle(0.0);
+    }
+
     //Constantes et valeurs
     float engineCycle = 1./20; // 1 seconde / nombre de sycle
     float CDRAG = 500; // constante
@@ -214,7 +218,26 @@ void GPlayer::update(Control *control)
     _accelerationV = AccelerationV;
     _speedV += _accelerationV * engineCycle;
 
-    this->_angle = (_angle + control->getAngle() * engineCycle); // pensser a la vitesse
+    //rajout du steering
+    float angleControl = control->getAngle();
+
+    if (vehiculePlayer->getSteeringAngle() == -1) {
+        qDebug() << "steering -1";
+
+    } else if (angleControl > vehiculePlayer->getSteeringAngle()){
+         angleControl = vehiculePlayer->getSteeringAngle();
+         qDebug() << "angleControl > vehiculePlayer->getSteeringAngle()";
+
+    } else if (abs(angleControl) > vehiculePlayer->getSteeringAngle())  {
+        angleControl = -vehiculePlayer->getSteeringAngle();
+        qDebug() << "abs (angleControl) > vehiculePlayer->getSteeringAngle()";
+    }
+
+    //qDebug() << "angleControl" << angleControl;
+    //qDebug() << "angleVehicule" <<vehiculePlayer->getSteeringAngle();
+    //this->_angle = (_angle + angleControl * engineCycle); // pensser a la vitesse
+
+    this->_angle = (_angle + angleControl * engineCycle); // pensser a la vitesse
 
 
 
@@ -245,10 +268,10 @@ void GPlayer::update(Control *control)
     this->setPos(this->pos() + (this->_speedV).toPointF());
     this->setRotation(qRadiansToDegrees(-this->_angle));
 
-    qDebug() << "All Drag:" << _FlowerV.length();
-    qDebug() << "Speed :" << _speedV.length();
-    qDebug() << "Speed m/s:" << _speedV.length() * 1 / engineCycle ;
-    qDebug() << "Acceleration :" << _accelerationV.length();
+//    qDebug() << "All Drag:" << _FlowerV.length();
+//    qDebug() << "Speed :" << _speedV.length();
+//    qDebug() << "Speed m/s:" << _speedV.length() * 1 / engineCycle ;
+//    qDebug() << "Acceleration :" << _accelerationV.length();
 }
 
 void GPlayer::hit()
