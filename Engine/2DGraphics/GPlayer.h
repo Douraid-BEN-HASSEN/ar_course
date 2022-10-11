@@ -8,6 +8,7 @@
 
 #include <Kart/Player/Player.h>
 #include <Kart/Game/Properties.h>
+#include <Kart/Game/Vehicle.h>
 
 class GPlayer: public QGraphicsObject
 {
@@ -83,6 +84,8 @@ private:
 
     float _Flower = 0;
     QVector2D _FlowerV;
+
+    float _vehiculeWeight = 1;
 
     //
     int _nBanane;
