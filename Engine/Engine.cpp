@@ -188,11 +188,8 @@ void Engine::control_th()
                 QPointF FRepousse(cos(-angle),-sin(-angle));
 
                 g_player->setPos(g_player->getPos()+FRepousse*10);
-
                 g_player->setVitesse(QVector2D(FRepousse.x(),FRepousse.y()));
-
                 g_other_player->setPos(g_other_player->getPos()-FRepousse*10);
-
                 g_other_player->setVitesse(QVector2D(FRepousse.x(),FRepousse.y()));
 
 

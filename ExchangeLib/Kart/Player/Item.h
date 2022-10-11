@@ -28,19 +28,25 @@ public:
     void setPos(const QPoint &pos);
     inline void setPos(int x, int y);
 
+    QString getUuid();
+
+    int getX();
     void setX(int pX);
+
     void setY(int pY);
+    int getY();
+
     void setAngle(float pAngle);
+    float getAngle();
+
     void setStatus(QString pStatut);
+    QString getStatus();
 
     // === GETTER ===
-    int getX();
-    int getY();
-    float getAngle();
-    QString getStatus();
     QString getType();
 
 private:
+    QString _uuid;
     int _x;
     int _y;
     float _angle;
