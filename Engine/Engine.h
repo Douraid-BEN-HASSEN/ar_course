@@ -22,6 +22,7 @@
 #include "2DGraphics/GBanana.h"
 #include "2DGraphics/GBomb.h"
 #include "2DGraphics/GRocket.h"
+#include "Config/ConfigManager.h"
 
 class Engine : public QObject
 {

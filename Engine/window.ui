@@ -204,13 +204,6 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_reload">
-          <property name="text">
-           <string>Reload</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
@@ -247,21 +240,27 @@
     <property name="title">
      <string>Fichier</string>
     </property>
+    <addaction name="action_openConfig"/>
     <addaction name="action_reload"/>
     <addaction name="action_resetConf"/>
-    <addaction name="action_openConfig"/>
    </widget>
    <addaction name="menuFichier"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_reload">
    <property name="text">
-    <string>Recharger la Config</string>
+    <string>Reload Config</string>
    </property>
   </action>
   <action name="action_resetConf">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
-    <string>Réécrire la Config</string>
+    <string>Reinit Config</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
   <action name="action_openConfig">

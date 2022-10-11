@@ -12,6 +12,8 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_gameMode = new GameMode();
     this->_properties = Properties::FromFile();
 
+    ConfigManager::watchProperties(this->_properties);
+
     this->initProperties();
 
     connect(RegisterManager::getInstance(), SIGNAL(application(Register*)), this, SLOT(registered(Register*)));
@@ -39,9 +41,6 @@ void Engine::initProperties()
     GObstacle::heigth = this->_properties->getRectangleHeight();
     GObstacle::width = this->_properties->getRectangleWidth();
 
-    qDebug() <<  this->_properties->getCircleRadius();
-    qDebug() << GObstacle::radius;
-
     GBanana::radius = this->_properties->getBananaRadius();
     GBomb::radius = this->_properties->getBombRadius();
 
@@ -49,9 +48,6 @@ void Engine::initProperties()
     GRocket::speed = this->_properties->getRocketSpeed();
 
     GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
-
-    qDebug() <<  this->_properties->getCheckpointRadius();
-    qDebug() << GCheckpoint::radiusCheckpoint;
 }
 
 void Engine::gameUpdate()

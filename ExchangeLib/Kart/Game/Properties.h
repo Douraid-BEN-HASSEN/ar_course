@@ -26,7 +26,6 @@ public:
     explicit Properties(int laps, QObject *parent = nullptr);
 
     static Properties *FromFile(QString fileName = nullptr);
-    void loadFile(QString fileName = nullptr);
 
     const QString topic = "game/properties";
 
@@ -65,6 +64,8 @@ private:
     int checkpointRadius = 0;
 
     QString path = "Config/Properties.json";
+
+    void initFile(QString fileName = nullptr);
 
 public:
     int getLaps() const;
@@ -126,6 +127,8 @@ public:
 
     QString getPath();
 
+public slots:
+    void loadFile(QString path = nullptr);
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
 
