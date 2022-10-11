@@ -86,11 +86,15 @@ void GPlayer::setAngle(float angle) {
 
     while (angle > 0) {
         angle -= 2 * M_PI;
+        //qDegreesToRadians(angle);
     }
 
     while (angle < -M_PI) {
         angle += 2 * M_PI;
+        //qDegreesToRadians(angle);
     }
+
+    _angle = angle;
 }
 
 void GPlayer::setBananaCooldown(int pBananaCooldown)
@@ -237,8 +241,7 @@ void GPlayer::update(Control *control)
     //qDebug() << "angleVehicule" <<vehiculePlayer->getSteeringAngle();
     //this->_angle = (_angle + angleControl * engineCycle); // pensser a la vitesse
 
-    this->_angle = (_angle + angleControl * engineCycle); // pensser a la vitesse
-
+    this->setAngle(_angle + angleControl * engineCycle); // pensser a la vitesse
 
 
     qDebug() << "Abstract speed " << _speed;
@@ -272,6 +275,7 @@ void GPlayer::update(Control *control)
 //    qDebug() << "Speed :" << _speedV.length();
 //    qDebug() << "Speed m/s:" << _speedV.length() * 1 / engineCycle ;
 //    qDebug() << "Acceleration :" << _accelerationV.length();
+    qDebug() << "angle" << _angle;
 }
 
 void GPlayer::hit()
