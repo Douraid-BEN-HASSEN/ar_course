@@ -14,8 +14,8 @@ public:
     static QString type;
     static float radius;
 
-    GBanana(QPoint, QGraphicsItem *parent = nullptr);
-    GBanana(int x, int y, QGraphicsItem *parent = nullptr);
+    GBanana(QPoint, float angle, QGraphicsItem *parent = nullptr);
+    GBanana(int x, int y, float angle, QGraphicsItem *parent = nullptr);
 
     void update() override;
 protected:

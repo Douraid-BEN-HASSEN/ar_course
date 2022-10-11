@@ -3,23 +3,24 @@
 QString GBomb::type = "bomb";
 float GBomb::radius = 10;
 
-GBomb::GBomb(QPoint pos, float angle, QGraphicsItem *parent): GItem(pos, this->type, parent)
+GBomb::GBomb(QPoint pos, float angle, QGraphicsItem *parent): GItem(pos, angle, this->type, parent)
 {
-    this->type = type;
-
     this->_angle = angle;
     this->setProperty("type", this->type);
+    this->item->setStatus("flying");
 }
 
-GBomb::GBomb(int x, int y, float angle, QGraphicsItem *parent): GItem(QPoint(x, y), this->type, parent)
+GBomb::GBomb(int x, int y, float angle, QGraphicsItem *parent): GItem(QPoint(x, y), angle, this->type, parent)
 {
     this->_angle = angle;
     this->setProperty("type", this->type);
+    this->item->setStatus("flying");
 }
 
 void GBomb::update()
 {
     if (_distanceDrop <= 0) {
+        this->item->setStatus("waiting");
         return;
     }
 

@@ -231,7 +231,7 @@ void Engine::control_th()
                     control->setButton("banana", false);
 
                     QPoint spanwPoint = (QPoint)(player->getPosition() + (-player->getVector() * (GBanana::radius + 15)).toPoint());
-                    GBanana *gBanana = new GBanana(spanwPoint);
+                    GBanana *gBanana = new GBanana(spanwPoint, player->getAngle());
                     gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
 
                     this->spawnItem(gBanana);

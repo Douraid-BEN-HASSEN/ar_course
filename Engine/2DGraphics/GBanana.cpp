@@ -3,14 +3,16 @@
 QString GBanana::type = "banana";
 float GBanana::radius = 10;
 
-GBanana::GBanana(QPoint pos, QGraphicsItem *parent): GItem(pos, this->type, parent)
+GBanana::GBanana(QPoint pos, float angle, QGraphicsItem *parent): GItem(pos, angle, this->type, parent)
 {
     this->setProperty("type", this->type);
+    this->item->setStatus("placed");
 }
 
-GBanana::GBanana(int x, int y, QGraphicsItem *parent): GItem(QPoint(x, y), this->type, parent)
+GBanana::GBanana(int x, int y, float angle, QGraphicsItem *parent): GItem(QPoint(x, y), angle, this->type, parent)
 {
     this->setProperty("type", this->type);
+    this->item->setStatus("placed");
 }
 
 

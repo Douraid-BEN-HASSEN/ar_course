@@ -6,7 +6,7 @@ Item::Item(QObject *parent): QObject{parent}
 
 }
 
-Item::Item(QPoint point, QString type, QObject *parent): QObject{parent}
+Item::Item(QPoint point, float angle, QString type, QObject *parent): QObject{parent}
 {
     this->_uuid = QUuid::createUuid().toString();
     this->_x = point.x();
@@ -14,9 +14,10 @@ Item::Item(QPoint point, QString type, QObject *parent): QObject{parent}
     this->_type = type;
 }
 
-Item::Item(int x, int y, QString type, QObject *parent): QObject{parent}
+Item::Item(int x, int y, float angle, QString type, QObject *parent): QObject{parent}
 {
     this->_uuid = QUuid::createUuid().toString();
+    this->_angle = angle;
     this->_x = x;
     this->_y = y;
     this->_type = type;
