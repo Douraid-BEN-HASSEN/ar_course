@@ -40,7 +40,7 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
 
     // For camera controls
     Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(mScene);
-    camController->setLinearSpeed( 50.0f );
+    camController->setLinearSpeed( 500.0f );
     camController->setLookSpeed( 180.0f );
     camController->setCamera(camerA);
 
@@ -62,6 +62,7 @@ void Widget3D::updateProperties3D(){
 void Widget3D::updateMap3D() {
 
     QList<Checkpoint*> checkpointList;
+    QList<int> checkpointIds;
 
     for (Obstacle *iterObstacle : Map::getInstance()->getObstacles()->values()) {
         ObstacleGraphics3D* obstacleGraphics3D = localObstacles3D.value(iterObstacle->getId());
@@ -82,6 +83,21 @@ void Widget3D::updateMap3D() {
         // Modifier la position
         checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint);
         checkpointList.append(iterCheckpoint);
+        checkpointIds.append(iterCheckpoint->getId());
+    }
+
+    // trier les checkpoints
+    std::sort(checkpointIds.begin(), checkpointIds.end()); // sort id
+    QList<Checkpoint*> checkpointListSorted;
+    int iId = 0;
+
+    while((iId+1) < checkpointList.count()) {
+        for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+            if(checkpointIds[iId] == iterCheckpoint->getId()){
+                checkpointListSorted.append(iterCheckpoint);
+                iId++;
+            }
+        }
     }
 
     //tracer des lignes entre les checkpoint
@@ -89,14 +105,14 @@ void Widget3D::updateMap3D() {
 
     for(int it_checkpoint = 0; it_checkpoint < nCheckpoint; it_checkpoint++) {
         if((it_checkpoint+1) >= nCheckpoint) {
-            RoadGraphics3D rg3d(checkpointList[it_checkpoint],
-                                checkpointList[0],
+            RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
+                                checkpointListSorted[0],
                                 mScene);
-                qDebug() << "je suis passé par  = " << checkpointList[it_checkpoint] ;
-                //  qDebug() << "je suis le suivant = " << checkpointList[it_checkpoint+1] ;
+                qDebug() << "je suis passé par  = " << checkpointListSorted[it_checkpoint] ;
+
         } else {
-            RoadGraphics3D rg3d(checkpointList[it_checkpoint],
-                                checkpointList[it_checkpoint+1],
+            RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
+                                checkpointListSorted[it_checkpoint+1],
                                 mScene);
 
 

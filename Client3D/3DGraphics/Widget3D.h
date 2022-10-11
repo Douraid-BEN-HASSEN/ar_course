@@ -32,6 +32,7 @@
 #include <Mqtt/MqttService.h>
 
 #include <QDebug>
+#include <algorithm>
 
 #include "obstacleGraphics3D.h"
 #include "checkpointGraphics3D.h"
