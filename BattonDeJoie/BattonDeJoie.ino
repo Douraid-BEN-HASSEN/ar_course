@@ -69,6 +69,7 @@ int catchButton();
 bool gameStarted = false;
 
 void setup() {
+
     /** i2c init */
     Heltec.begin(true, false, true);
     Wire.begin(SDA_OLED, SCL_OLED);
@@ -135,9 +136,17 @@ void loop() {
         register_doc["uuid"] = uuid;
         register_doc["angle"] = PitchRollYaw[1] * DEG_TO_RAD;
         register_doc["power"] = PitchRollYaw[2];
-        register_doc["buttons"]["banana"] = button == BLUE_BUTTON;
+        register_doc["buttons"]["banana"] = button == GREEN_BUTTON;
         register_doc["buttons"]["bomb"] = button == WHITE_BUTTON;
         register_doc["buttons"]["rocket"] = button == YELLOW_BUTTON;
+
+        if (get_key(analogRead(GPIO_BUTTONS)) == RED_BUTTON) {
+            register_doc["power"] = 100;
+        }
+
+        if (get_key(analogRead(GPIO_BUTTONS)) == BLUE_BUTTON) {
+            register_doc["power"] = -100;
+        }
 
         String data;
         serializeJson(register_doc, data);
