@@ -145,10 +145,7 @@ void Widget3D::updateGameMode3D() {
         iter++;
     }
 
-    for (Item *iterItem : *GameMode::getInstance()->_items) {
-
-
-
+    for (Item *iterItem : *GameMode::getInstance()->_items){
             qDebug() << "iterItem->getUuid() = " << iterItem->getUuid();
             BananaGraphics3D* bananaGraphics3D = localBanana3D.value(iterItem->getUuid());
             RocketGraphics3D* rocketGraphics3D = localRocket3D.value(iterItem->getUuid());
