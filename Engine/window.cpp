@@ -1,5 +1,6 @@
 #include "window.h"
 #include "ui_window.h"
+#include "EndGame.h"
 
 Window::Window(QWidget *parent) :
     QMainWindow(parent),
@@ -48,6 +49,7 @@ Window::Window(QWidget *parent) :
     connect(ui->doubleSpinBox_Gravite, SIGNAL(valueChanged(double)), this, SLOT(GravityUpdated(double)));
 
     connect(engine, SIGNAL(updated()), this, SLOT(gameInfoUpdated()));
+    connect(engine, SIGNAL(gameEnded()),this, SLOT(openGameEndModel()));
 
     init();
 }
@@ -168,3 +170,12 @@ void Window::GravityUpdated(double Gravity)
     Engine::GRAVITY = float(Gravity);
     qDebug() << "gravité change" <<  Gravity;
 }
+
+void Window::openGameEndModel()
+{
+        EndGame *popUpEnd = new EndGame(this);
+        popUpEnd->setScoreboard(ui->tabWidget_scoreboard);
+        popUpEnd->setModal(true);
+        popUpEnd->show();
+}
+

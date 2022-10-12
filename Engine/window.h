@@ -45,6 +45,7 @@ private slots:
     void CDragUpdated(double);
     void CRRUpdated(double);
     void GravityUpdated(double);
+    void openGameEndModel();
 
 };
 
