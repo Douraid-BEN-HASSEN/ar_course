@@ -1,5 +1,7 @@
 #include "GPlayer.h"
 
+#include "Engine.h"
+
 QString GPlayer::type = "GPlayer";
 
 GPlayer::GPlayer(Player *player, QGraphicsItem *parent): QGraphicsObject{parent}
@@ -147,11 +149,14 @@ void GPlayer::update(Control *control)
         control->setAngle(0.0);
     }
 
+
     //Constantes et valeurs
     float engineCycle = 1./20; // 1 seconde / nombre de sycle
-    float CDRAG = 500; // constante
-    float CRR = 10;
-    float GRAVITY = 9.81; // constante
+    float CDRAG = Engine::CDRAG; // constante
+    float CRR = Engine::CRR;
+    float GRAVITY = Engine::GRAVITY; // constante
+    float FDrag = 0.;
+    qDebug() << "CDRAG : "<< CDRAG << "CRR :" << CRR << "GRAVITY" << GRAVITY;
 
     //recupere le nom du vehicule
     _vehicle = getPlayer()->getVehicule(); // recupere le string
@@ -164,7 +169,7 @@ void GPlayer::update(Control *control)
     }
 
     _vehiculeWeight = vehiculePlayer->getWeight(); // poid du véhicule
-    float FDrag = 0.0;
+
     QVector2D angleV(cos(this->_angle), -sin(this->_angle));
 
 
@@ -324,6 +329,9 @@ QRectF GPlayer::boundingRect() const
 
 void GPlayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     QVector2D orientation = QVector2D(cos(this->_angle), -sin(this->_angle));
 
     painter->drawLine(QLineF(0, 0, 20, 0));

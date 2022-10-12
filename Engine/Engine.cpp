@@ -1,5 +1,10 @@
 #include "Engine.h"
 
+float Engine::CDRAG = 500;//500
+float Engine::CRR = 10; //10
+float Engine::GRAVITY = 9.81;//9.81
+
+
 // diviser les angles par 10 (à voir)
 // gestion graphique
 Engine::Engine(QObject *parent): QObject{parent}

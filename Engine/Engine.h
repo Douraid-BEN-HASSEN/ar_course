@@ -31,6 +31,11 @@ public:
     explicit Engine(QObject *parent = nullptr);
     ~Engine();
 
+    static float CDRAG;
+    static float CRR;
+    static float GRAVITY;
+
+
     QMap<QString, GPlayer*> getPlayersGraphics();
 
     GEngine *getGEngine();
