@@ -1,5 +1,10 @@
 #include "Engine.h"
 
+float Engine::CDRAG = 500;//500
+float Engine::CRR = 10; //10
+float Engine::GRAVITY = 9.81;//9.81
+
+
 // diviser les angles par 10 (à voir)
 // gestion graphique
 Engine::Engine(QObject *parent): QObject{parent}
@@ -497,6 +502,17 @@ void Engine::startGame()
     if (!gameStarted) {
         this->gameStartAt = QDateTime::currentDateTime();
         this->gameStarted = true;
+        //recupere les players
+        for(GPlayer *g_player : this->playersGraphics.values()){
+            if (this->checkpointsGraphics.size() > 0) {
+
+                GCheckpoint *checkpoint = this->checkpointsGraphics.first();
+                g_player->setPos(checkpoint->pos());  //les placés sur le check point 1
+            }
+
+        }
+
+
     }
 }
 

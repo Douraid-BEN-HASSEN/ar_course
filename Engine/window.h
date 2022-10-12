@@ -42,6 +42,9 @@ private slots:
     void gameInfoUpdated();
     void teamNumberUpdated(int);
     void openPropertiesFileConf();
+    void CDragUpdated(double);
+    void CRRUpdated(double);
+    void GravityUpdated(double);
 
 };
 

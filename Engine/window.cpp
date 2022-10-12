@@ -42,6 +42,11 @@ Window::Window(QWidget *parent) :
 
     connect(ui->spinBox_teamNumber, SIGNAL(valueChanged(int)), this, SLOT(teamNumberUpdated(int)));
 
+    // force
+    connect(ui->doubleSpinBox_CDrag, SIGNAL(valueChanged(double)), this, SLOT(CDragUpdated(double)));
+    connect(ui->doubleSpinBox_CRR, SIGNAL(valueChanged(double)), this, SLOT(CRRUpdated(double)));
+    connect(ui->doubleSpinBox_Gravite, SIGNAL(valueChanged(double)), this, SLOT(GravityUpdated(double)));
+
     connect(engine, SIGNAL(updated()), this, SLOT(gameInfoUpdated()));
 
     init();
@@ -55,6 +60,13 @@ Window::~Window()
 void Window::init()
 {
     ui->spinBox_teamNumber->setValue(engine->getProperties()->getTeam());
+
+
+    ui->doubleSpinBox_CDrag->setValue(engine->CDRAG);
+    ui->doubleSpinBox_CRR->setValue(engine->CRR);
+    ui->doubleSpinBox_Gravite->setValue(engine->GRAVITY);
+
+
 }
 
 void Window::gameInfoUpdated()
@@ -138,4 +150,21 @@ void Window::openPropertiesFileConf()
 {
     QString filePath = QFileInfo(engine->getProperties()->getPath()).canonicalFilePath();
     QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
+}
+
+void Window::CDragUpdated(double cdrag)
+{
+    Engine::CDRAG = float(cdrag);
+}
+
+void Window::CRRUpdated(double crr)
+{
+    Engine::CRR = float(crr);
+}
+
+
+void Window::GravityUpdated(double Gravity)
+{
+    Engine::GRAVITY = float(Gravity);
+    qDebug() << "gravité change" <<  Gravity;
 }
