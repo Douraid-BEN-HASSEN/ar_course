@@ -31,7 +31,7 @@ SOURCES += \
     2DGraphics/GPlayer.cpp \
     2DGraphics/GRocket.cpp \
     Config/ConfigManager.cpp \
-    EndGame.cpp \
+    EndGameDialog.cpp \
     Engine.cpp \
     PlayerScoreItem.cpp \
     main.cpp \
@@ -47,7 +47,7 @@ HEADERS += \
     2DGraphics/GPlayer.h \
     2DGraphics/GRocket.h \
     Config/ConfigManager.h \
-    EndGame.h \
+    EndGameDialog.h \
     Engine.h \
     PlayerScoreItem.h \
     window.h
@@ -58,6 +58,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
-    EndGame.ui \
+    EndGameDialog.ui \
     window.ui
 

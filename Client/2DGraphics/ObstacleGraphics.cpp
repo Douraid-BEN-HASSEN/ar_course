@@ -54,6 +54,9 @@ QRectF ObstacleGraphics::boundingRect() const
 
 void ObstacleGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->setBrush(Qt::blue);
 
     if((int)this->getId() % 2 == 1){

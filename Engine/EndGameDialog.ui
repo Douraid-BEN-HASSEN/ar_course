@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EndGame</class>
- <widget class="QDialog" name="EndGame">
+ <class>EndGameDialog</class>
+ <widget class="QDialog" name="EndGameDialog">
   <property name="geometry">
    <rect>
     <x>0</x>

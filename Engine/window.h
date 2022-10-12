@@ -9,7 +9,7 @@
 #include "Engine.h"
 #include "PlayerScoreItem.h"
 #include "2DGraphics/GEngine.h"
-#include "EndGame.h"
+#include "EndGameDialog.h"
 
 namespace Ui {
 class Window;
@@ -26,30 +26,35 @@ public:
 private:
     Ui::Window *ui;
 
-    QMap<QString, PlayerScoreItem*> *scorebordItem;
+    void clearLayout(QLayout *layout);
 
     QVBoxLayout *scorebordLayout;
-    void clearLayout(QLayout *layout);
+    EndGameDialog *endGameDialog;
+    QTabWidget *scorebordTabWidget;
+
+    QMap<QString, PlayerScoreItem*> *scorebordItem;
 
     Engine *engine;
     QTimer *timer;
-    EndGame *popUpEnd;
 
 
     void chronoTimer();
     void init();
+    void initScoreboard();
 
 private slots:
     void startGame();
     void reset();
     void reload();
+    void endGameDialogClosed();
+
     void gameInfoUpdated();
     void teamNumberUpdated(int);
     void openPropertiesFileConf();
     void CDragUpdated(double);
     void CRRUpdated(double);
     void GravityUpdated(double);
-    void openGameEndModel();
+    void gameEnded();
 
 };
 

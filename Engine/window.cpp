@@ -1,6 +1,6 @@
 #include "window.h"
 #include "ui_window.h"
-#include "EndGame.h"
+#include "EndGameDialog.h"
 
 Window::Window(QWidget *parent) :
     QMainWindow(parent),
@@ -10,30 +10,15 @@ Window::Window(QWidget *parent) :
     connect(timer, &QTimer::timeout, this, &Window::chronoTimer);
 
     engine = new Engine(this);
-    popUpEnd = new EndGame(this);
+    endGameDialog = new EndGameDialog(this);
 
     ui->setupUi(this);
     ui->verticalLayout_main->addWidget(engine->getGEngine());
 
     scorebordLayout = new QVBoxLayout();
+    scorebordTabWidget = ui->tabWidget_scoreboard;
 
-    QVBoxLayout *main_scorebordLayout = new QVBoxLayout();
-
-    QWidget *widget = new QWidget();
-    widget->setLayout(new QHBoxLayout());
-
-    widget->layout()->addWidget(new QLabel("player"));
-    widget->layout()->addWidget(new QLabel("checkpoint"));
-    widget->layout()->addWidget(new QLabel("tour"));
-    widget->layout()->addWidget(new QLabel("time"));
-    widget->layout()->addWidget(new QLabel("state"));
-    widget->layout()->addWidget(new QLabel("controller"));
-
-    main_scorebordLayout->addWidget(widget);
-    main_scorebordLayout->addLayout(scorebordLayout);
-    main_scorebordLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
-
-    ui->tabWidget_scoreboard->widget(0)->setLayout(main_scorebordLayout);
+    this->initScoreboard();
 
     scorebordItem = new QMap<QString, PlayerScoreItem*>;
 
@@ -52,9 +37,9 @@ Window::Window(QWidget *parent) :
     connect(engine, SIGNAL(updated()), this, SLOT(gameInfoUpdated()));
     connect(engine, SIGNAL(gameEnded()),this, SLOT(openGameEndModel()));
 
-    connect(popUpEnd, SIGNAL(closeEndScore()),this,SLOT(reset()));
+    connect(endGameDialog, SIGNAL(closed()), this, SLOT(endGameDialogClosed()));
 
-    init();
+    this->init();
 }
 
 Window::~Window()
@@ -72,6 +57,27 @@ void Window::init()
     ui->doubleSpinBox_Gravite->setValue(engine->GRAVITY);
 
 
+}
+
+void Window::initScoreboard()
+{
+    QVBoxLayout *main_scorebordLayout = new QVBoxLayout();
+
+    QWidget *widget = new QWidget();
+    widget->setLayout(new QHBoxLayout());
+
+    widget->layout()->addWidget(new QLabel("player"));
+    widget->layout()->addWidget(new QLabel("checkpoint"));
+    widget->layout()->addWidget(new QLabel("tour"));
+    widget->layout()->addWidget(new QLabel("time"));
+    widget->layout()->addWidget(new QLabel("state"));
+    widget->layout()->addWidget(new QLabel("controller"));
+
+    main_scorebordLayout->addWidget(widget);
+    main_scorebordLayout->addLayout(scorebordLayout);
+    main_scorebordLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
+
+    ui->tabWidget_scoreboard->widget(0)->setLayout(main_scorebordLayout);
 }
 
 void Window::gameInfoUpdated()
@@ -151,6 +157,7 @@ void Window::chronoTimer()
 
     ui->label_timer->setText(timeText);
 }
+
 void Window::openPropertiesFileConf()
 {
     QString filePath = QFileInfo(engine->getProperties()->getPath()).canonicalFilePath();
@@ -167,18 +174,32 @@ void Window::CRRUpdated(double crr)
     Engine::CRR = float(crr);
 }
 
-
 void Window::GravityUpdated(double Gravity)
 {
     Engine::GRAVITY = float(Gravity);
     qDebug() << "gravité change" <<  Gravity;
 }
 
-void Window::openGameEndModel()
+void Window::gameEnded()
 {
+    this->endGameDialog->setScoreboard(scorebordTabWidget);
+    this->endGameDialog->setModal(true);
+    this->endGameDialog->show();
 
-        this->popUpEnd->setScoreboard(ui->tabWidget_scoreboard);
-        popUpEnd->setModal(true);
-        popUpEnd->show();
+    this->timer->stop();
+
+    ui->pushButton_start->setDisabled(false);
+    clearLayout(scorebordLayout);
+
+    scorebordItem->clear();
+
+    ui->label_timer->setText("0:00:000");
+    ui->spinBox_teamNumber->setDisabled(false);
+}
+
+void Window::endGameDialogClosed()
+{
+    ui->verticalLayout_scoreboarMain->addWidget(scorebordTabWidget);
+    reset();
 }
 
