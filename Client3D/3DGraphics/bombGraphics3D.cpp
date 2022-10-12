@@ -8,6 +8,7 @@ BombGraphics3D::BombGraphics3D(Item *bomb, Qt3DCore::QEntity *mScene, QNode *par
 {
     this->x = bomb->getX();
     this->y = bomb->getY();
+    this->uuid = bomb->getUuid();
 
     this->setParent(mScene);
 
