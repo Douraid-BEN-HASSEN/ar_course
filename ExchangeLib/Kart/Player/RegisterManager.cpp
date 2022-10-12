@@ -4,7 +4,7 @@ RegisterManager *RegisterManager::getInstance() {
     static RegisterManager *instance;
 
     if (instance == nullptr) {
-        qDebug() << "new instance Map";
+        qDebug() << "new instance RegisterManager";
         instance = new RegisterManager();
 
         MqttService::instance()->subscribe(instance->topic);

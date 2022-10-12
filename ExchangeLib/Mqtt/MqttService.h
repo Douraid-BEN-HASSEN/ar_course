@@ -18,6 +18,7 @@ struct {
     const unsigned short port = 1883;
     const QString username = "";
     const QString password = "";
+
 } Config;
 
 /**

@@ -16,6 +16,9 @@ QRectF RocketGraphics::boundingRect() const
 
 void RocketGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->setBrush(Qt::white);
 
     painter->drawEllipse(boundingRect());

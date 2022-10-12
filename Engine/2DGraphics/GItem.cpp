@@ -1,8 +1,8 @@
 #include "GItem.h"
 
-GItem::GItem(QPoint pos, QString type, QGraphicsItem *parent): QGraphicsObject(parent)
+GItem::GItem(QPoint pos, float angle, QString type, QGraphicsItem *parent): QGraphicsObject(parent)
 {
-    this->item = new Item(pos, type);
+    this->item = new Item(pos, angle, type);
     QGraphicsObject::setPos(pos);
 }
 

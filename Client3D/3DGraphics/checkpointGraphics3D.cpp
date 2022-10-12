@@ -1,5 +1,5 @@
 #include "checkpointGraphics3D.h"
-
+// Valeur par défaut
 qreal CheckpointGraphics3D::radiusCheckpoint = 50;
 
 
@@ -9,19 +9,23 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
     this->x = checkpoint->getX();
     this->y = checkpoint->getY();
 
+    this->setParent(mScene);
+
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::green));
 
-    this->setParent(mScene);
+    //Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
+    //sphereMesh->setRadius(radiusCheckpoint);
+    Qt3DExtras::QCylinderMesh *cylindreMesh = new Qt3DExtras::QCylinderMesh;
+    cylindreMesh->setRadius(radiusCheckpoint);
+    cylindreMesh->setLength(1);
 
-    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
-    sphereMesh->setRadius(3);
-    Qt3DCore::QTransform *shpereTransform = new Qt3DCore::QTransform();
-    shpereTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+    Qt3DCore::QTransform *cylindreTransform = new Qt3DCore::QTransform();
+    cylindreTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
 
     this->addComponent(material);
-    this->addComponent(sphereMesh);
-    this->addComponent(shpereTransform);
+    this->addComponent(cylindreMesh);
+    this->addComponent(cylindreTransform);
 
 }
 
@@ -30,7 +34,7 @@ void CheckpointGraphics3D::updateCheckpoint3D(Checkpoint *checkpoint){
    this->y = checkpoint->getY();
 
    Qt3DCore::QTransform *checkpointTransform = new Qt3DCore::QTransform();
-   checkpointTransform->setTranslation(QVector3D(this->x/10, 0.0f ,this->y/10));
+   checkpointTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
 
     if(!this->components().empty()){
         this->removeComponent(this->components().at(2));

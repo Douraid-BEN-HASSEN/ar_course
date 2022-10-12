@@ -27,21 +27,21 @@ Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
         this->weight = 200;
         this->height = 15;
         this->width = 5;
-        this->steeringAngle = -1;
+        this->steeringAngle = 1,0472; //60°
     } else if(this->type == "car") {
         this->maxSpeed = 75;
         this->acceleration = 10;
         this->weight = 1500;
         this->height = 20;
         this->width = 10;
-        this->steeringAngle = -1;
+        this->steeringAngle = 0,785398; // 45°
     } else if(this->type == "truck") {
         this->maxSpeed = 60;
         this->acceleration = 10;
         this->weight = 3500;
         this->height = 25;
         this->width = 12;
-        this->steeringAngle = -1;
+        this->steeringAngle = 0,523599; //30°
     }
 }
 

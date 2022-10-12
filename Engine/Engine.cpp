@@ -1,5 +1,10 @@
 #include "Engine.h"
 
+float Engine::CDRAG = 500;//500
+float Engine::CRR = 10; //10
+float Engine::GRAVITY = 9.81;//9.81
+
+
 // diviser les angles par 10 (à voir)
 // gestion graphique
 Engine::Engine(QObject *parent): QObject{parent}
@@ -11,6 +16,8 @@ Engine::Engine(QObject *parent): QObject{parent}
     this->_map = Map::getInstance();
     this->_gameMode = new GameMode();
     this->_properties = Properties::FromFile();
+
+    ConfigManager::watchProperties(this->_properties);
 
     this->initProperties();
 
@@ -39,9 +46,6 @@ void Engine::initProperties()
     GObstacle::heigth = this->_properties->getRectangleHeight();
     GObstacle::width = this->_properties->getRectangleWidth();
 
-    qDebug() <<  this->_properties->getCircleRadius();
-    qDebug() << GObstacle::radius;
-
     GBanana::radius = this->_properties->getBananaRadius();
     GBomb::radius = this->_properties->getBombRadius();
 
@@ -49,9 +53,6 @@ void Engine::initProperties()
     GRocket::speed = this->_properties->getRocketSpeed();
 
     GCheckpoint::radiusCheckpoint = this->_properties->getCheckpointRadius();
-
-    qDebug() <<  this->_properties->getCheckpointRadius();
-    qDebug() << GCheckpoint::radiusCheckpoint;
 }
 
 void Engine::gameUpdate()
@@ -188,11 +189,8 @@ void Engine::control_th()
                 QPointF FRepousse(cos(-angle),-sin(-angle));
 
                 g_player->setPos(g_player->getPos()+FRepousse*10);
-
                 g_player->setVitesse(QVector2D(FRepousse.x(),FRepousse.y()));
-
                 g_other_player->setPos(g_other_player->getPos()-FRepousse*10);
-
                 g_other_player->setVitesse(QVector2D(FRepousse.x(),FRepousse.y()));
 
 
@@ -234,7 +232,7 @@ void Engine::control_th()
                     control->setButton("banana", false);
 
                     QPoint spanwPoint = (QPoint)(player->getPosition() + (-player->getVector() * (GBanana::radius + 15)).toPoint());
-                    GBanana *gBanana = new GBanana(spanwPoint);
+                    GBanana *gBanana = new GBanana(spanwPoint, player->getAngle());
                     gBanana->setTtl(_properties->getBananaTtl() * ENGINE_CYCLE);
 
                     this->spawnItem(gBanana);
@@ -320,14 +318,14 @@ void Engine::spawnItem(GItem *gItem)
 {
     this->itemsGraphics.append(gItem);
     this->g_engine->addItemGraphics(gItem);
-    this->_gameMode->_items->append(gItem->getItem());
+    this->_gameMode->_items->insert(gItem->getItem()->getUuid(), gItem->getItem());
 }
 
 void Engine::destoryItem(GItem *gItem)
 {
     this->itemsGraphics.removeAll(gItem);
     this->g_engine->removeItem(gItem);
-    this->_gameMode->_items->removeAll(gItem->getItem());
+    this->_gameMode->_items->remove(gItem->getItem()->getUuid());
 
     delete gItem;
 }
@@ -509,6 +507,17 @@ void Engine::startGame()
     if (!gameStarted) {
         this->gameStartAt = QDateTime::currentDateTime();
         this->gameStarted = true;
+        //recupere les players
+        for(GPlayer *g_player : this->playersGraphics.values()){
+            if (this->checkpointsGraphics.size() > 0) {
+
+                GCheckpoint *checkpoint = this->checkpointsGraphics.first();
+                g_player->setPos(checkpoint->pos());  //les placés sur le check point 1
+            }
+
+        }
+
+
     }
 }
 

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMap>
 #include <QVBoxLayout>
+#include <QDesktopServices>
 
 #include "Engine.h"
 #include "PlayerScoreItem.h"
@@ -40,6 +41,10 @@ private slots:
     void reload();
     void gameInfoUpdated();
     void teamNumberUpdated(int);
+    void openPropertiesFileConf();
+    void CDragUpdated(double);
+    void CRRUpdated(double);
+    void GravityUpdated(double);
 
 };
 

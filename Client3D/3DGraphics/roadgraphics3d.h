@@ -1,5 +1,5 @@
-#ifndef CHECKPOINTGRAPH_H
-#define CHECKPOINTGRAPH_H
+#ifndef ROADGRAPHICS3D_H
+#define ROADGRAPHICS3D_H
 
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
@@ -17,30 +17,23 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DExtras/QTorusMesh>
 #include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QPlaneMesh>
 #include <QPropertyAnimation>
 
 #include <QDiffuseSpecularMaterial>
 #include <QOrbitCameraController>
 
 #include <Kart/Map/Checkpoint.h>
+#include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QGeometry>
+#include <Qt3DRender/QAttribute>
 
-class CheckpointGraphics3D: public Qt3DCore::QEntity
+class RoadGraphics3D: public Qt3DCore::QEntity
 {
-     Q_OBJECT
 public:
-    static qreal radiusCheckpoint;
-    CheckpointGraphics3D(Checkpoint *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
-    void updateCheckpoint3D(Checkpoint *);
-    qreal getId() ;
-    qreal getX();
-    qreal getY();
-    qreal getRadius();
-
-private:
-    qreal id;
-    qreal x;
-    qreal y;
+    RoadGraphics3D(Checkpoint *, Checkpoint *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
+    void drawLine(const QVector3D& start, const QVector3D& end, const QColor& color, Qt3DCore::QEntity *_rootEntity);
 
 };
 
-#endif // CHECKPOINTGRAPH_H
+#endif // ROADGRAPHICS3D_H

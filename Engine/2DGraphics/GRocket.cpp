@@ -4,16 +4,18 @@ QString GRocket::type = "rocket";
 float GRocket::radius = 10;
 float GRocket::speed = 150;
 
-GRocket::GRocket(QPoint pos, float angle, QGraphicsItem *parent): GItem(pos, this->type, parent)
+GRocket::GRocket(QPoint pos, float angle, QGraphicsItem *parent): GItem(pos, angle, this->type, parent)
 {
     this->setProperty("type", this->type);
     this->_angle = angle;
+    this->item->setStatus("flying");
 }
 
-GRocket::GRocket(int x, int y, float angle, QGraphicsItem *parent): GItem(QPoint(x, y), this->type, parent)
+GRocket::GRocket(int x, int y, float angle, QGraphicsItem *parent): GItem(QPoint(x, y), angle, this->type, parent)
 {
     this->setProperty("type", this->type);
     this->_angle = angle;
+    this->item->setStatus("flying");
 }
 
 void GRocket::update()
@@ -21,6 +23,10 @@ void GRocket::update()
     float engineCycle = 1./20; // 1 seconde / nombre de sycle
 
     QVector2D vector = QVector2D(cos(this->_angle), -sin(this->_angle)) * this->speed * engineCycle;
+
+    if (QVector2D(this->pos()).length() > 1000 && QVector2D(this->pos()).length() < 0) {
+        delete this;
+    }
 
     this->setPos(this->pos().toPoint() + vector.toPoint());
     this->setRotation(qRadiansToDegrees(-this->_angle));

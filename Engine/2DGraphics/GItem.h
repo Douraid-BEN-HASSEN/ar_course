@@ -14,7 +14,7 @@ class GItem: public QGraphicsObject
 {
     Q_OBJECT
 public:
-    GItem(QPoint pos, QString type, QGraphicsItem *parent = nullptr);
+    GItem(QPoint pos, float angle, QString type, QGraphicsItem *parent = nullptr);
 
     void setPos(const QPoint &pos);
     inline void setPos(int x, int y);

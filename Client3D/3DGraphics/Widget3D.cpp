@@ -1,5 +1,7 @@
 ﻿#include "Widget3D.h"
 
+static int iterKey = 0;
+
 Qt3DCore::QEntity* Widget3D::createScene()
 {
     // Configuration de la scène + spécification de l'entity racine
@@ -9,11 +11,6 @@ Qt3DCore::QEntity* Widget3D::createScene()
 
     PlaneGraphics3D *planeEntity = new PlaneGraphics3D(rootEntity);
 
-     planeEntity->mesh()->setHeight(10.0f);
-     planeEntity->mesh()->setWidth(10.0f);
-     planeEntity->mesh()->setMeshResolution(QSize(20, 20));
-
-
     return rootEntity;
 }
 
@@ -21,26 +18,57 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
 {
     mScene = this->createScene();
     // Camera
-    Qt3DRender::QCamera *camera = this->camera();
-    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    camera->setPosition(QVector3D(0, 0, 4.0f));
-    camera->setViewCenter(QVector3D(0, 0, 0));
+    camerA = this->camera();
+    camerA->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    camerA->setPosition(QVector3D(0, 0, 4));
+    camerA->setViewCenter(QVector3D(0, 0, 0));
+    camerA->setFarPlane(1000);
+    //camerA->setFieldOfView(50);
 
     // For camera controls
     Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(mScene);
-    camController->setLinearSpeed( 50.0f );
+    camController->setLinearSpeed( 500.0f );
     camController->setLookSpeed( 180.0f );
-    camController->setCamera(camera);
+    camController->setCamera(camerA);
 
 
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap3D()));
-    //connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties()));
+    connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties3D()));
     connect(GameMode::getInstance(), SIGNAL(updated()), this, SLOT(updateGameMode3D()));
     this->setRootEntity(mScene);
 }
 
+
+void Widget3D::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_P) {
+      if(iterKey + 1 < GameMode::getInstance()->_players->size()){
+      iterKey ++;
+      }
+    }
+    if (e->key() == Qt::Key_O) {
+      if(iterKey - 1 >= 0){
+      iterKey -- ;
+      }
+    }
+}
+
+
+
+void Widget3D::updateProperties3D(){
+    ObstacleGraphics3D::heigth = Properties::getInstance()->getRectangleHeight();
+    ObstacleGraphics3D::width = Properties::getInstance()->getRectangleWidth();
+    ObstacleGraphics3D::radius = Properties::getInstance()->getCircleRadius();
+    CheckpointGraphics3D::radiusCheckpoint = Properties::getInstance()->getCheckpointRadius();
+    BananaGraphics3D::bananaRadius = Properties::getInstance()->getBananaRadius();
+    RocketGraphics3D::rocketRadius = Properties::getInstance()->getRocketRadius();
+    BombGraphics3D::bombRadius = Properties::getInstance()->getBombRadius();
+}
+
 void Widget3D::updateMap3D() {
 
+    QList<Checkpoint*> checkpointList;
+    QList<int> checkpointIds;
 
     for (Obstacle *iterObstacle : Map::getInstance()->getObstacles()->values()) {
         ObstacleGraphics3D* obstacleGraphics3D = localObstacles3D.value(iterObstacle->getId());
@@ -60,11 +88,48 @@ void Widget3D::updateMap3D() {
         }
         // Modifier la position
         checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint);
+        checkpointList.append(iterCheckpoint);
+        checkpointIds.append(iterCheckpoint->getId());
     }
+
+    // trier les checkpoints
+    std::sort(checkpointIds.begin(), checkpointIds.end()); // sort id
+    QList<Checkpoint*> checkpointListSorted;
+    int iId = 0;
+
+    while((iId+1) < checkpointList.count()) {
+        for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+            if(checkpointIds[iId] == iterCheckpoint->getId()){
+                checkpointListSorted.append(iterCheckpoint);
+                iId++;
+            }
+        }
+    }
+
+    //tracer des lignes entre les checkpoint
+    int nCheckpoint = Map::getInstance()->getCheckpoints()->count();
+
+    for(int it_checkpoint = 0; it_checkpoint < nCheckpoint; it_checkpoint++) {
+        if((it_checkpoint+1) >= nCheckpoint) {
+            RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
+                                checkpointListSorted[0],
+                                mScene);
+          //qDebug() << "je suis passé par  = " << checkpointListSorted[it_checkpoint] ;
+
+        } else {
+            RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
+                                checkpointListSorted[it_checkpoint+1],
+                                mScene);
+
+
+        }
+    }
+
 }
 
 void Widget3D::updateGameMode3D() {
 
+    int iter = 0;
     for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
         PlayerGraphics3D* playerGraphics3D = localPlayers3D.value(iterPlayer->getUuid());
         if(!playerGraphics3D){
@@ -73,6 +138,88 @@ void Widget3D::updateGameMode3D() {
         }
         // Modifier la position
         playerGraphics3D->updatePlayer3D(iterPlayer);
+        if(iter == iterKey){
+            playerCamFocus = iterPlayer;
+            playerGraphics3D->followCameraPlayer(playerCamFocus, camerA);
+        }
+        iter++;
     }
+
+    for (Item *iterItem : *GameMode::getInstance()->_items) {
+
+
+
+            qDebug() << "iterItem->getUuid() = " << iterItem->getUuid();
+            BananaGraphics3D* bananaGraphics3D = localBanana3D.value(iterItem->getUuid());
+            RocketGraphics3D* rocketGraphics3D = localRocket3D.value(iterItem->getUuid());
+            BombGraphics3D* bombGraphics3D = localBomb3D.value(iterItem->getUuid());
+
+            if(iterItem->getType() == "banana"){
+                if(!bananaGraphics3D){
+                    bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
+                    localBanana3D.insert(iterItem->getUuid(), bananaGraphics3D);
+                } else {
+
+                }
+                bananaGraphics3D->updateBanana3D(iterItem);
+
+            }
+
+            if(iterItem->getType() == "rocket"){
+                if(!rocketGraphics3D){
+                rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
+                localRocket3D.insert(rocketGraphics3D->getUuid(), rocketGraphics3D);
+                }
+                rocketGraphics3D->updateRocket3D(iterItem);
+            }
+
+            if(iterItem->getType() == "bomb"){
+                if(!bombGraphics3D){
+                    bombGraphics3D = new BombGraphics3D(iterItem, mScene);
+                    localBomb3D.insert(rocketGraphics3D->getUuid(), bombGraphics3D);
+                }
+                bombGraphics3D->updateBomb3D(iterItem);
+            }
+        }
+
+    /*
+    for (BananaGraphics3D *iterLocalBanana : localBanana3D){
+        //iterLocalBanana->setEnabled(false);
+        delete(iterLocalBanana);
+    }
+    for (RocketGraphics3D *iterLocalRocket : localRocket3D){
+        //iterLocalRocket->setEnabled(false);
+        delete(iterLocalRocket);
+    }
+
+    for (BombGraphics3D *iterLocalBomb : localBomb3D){
+        //iterLocalBomb->setEnabled(false);
+        delete(iterLocalBomb);
+    }
+
+    localBanana3D.clear();
+    localRocket3D.clear();
+    localBomb3D.clear();
+
+    for (Item *iterItem : *GameMode::getInstance()->_items) {
+        if(iterItem->getType() == "banana" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
+            BananaGraphics3D *bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
+            localBanana3D.append(bananaGraphics3D);
+        }
+
+        if(iterItem->getType() == "rocket" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
+            RocketGraphics3D *rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
+            localRocket3D.append(rocketGraphics3D);
+        }
+
+        if(iterItem->getType() == "bomb" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
+            BombGraphics3D *bombGraphics3D = new BombGraphics3D(iterItem, mScene);
+            localBomb3D.append(bombGraphics3D);
+        }
+    }
+
+    */
+
+
 
 }

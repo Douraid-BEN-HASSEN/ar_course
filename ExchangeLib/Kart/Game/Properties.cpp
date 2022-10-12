@@ -19,6 +19,7 @@ Properties *Properties::getInstance() {
 }
 
 Properties::Properties(QObject *parent) : QObject{parent} {
+
     this->laps = 3;
     this->team = 2;
 
@@ -51,24 +52,49 @@ Properties::Properties(QObject *parent) : QObject{parent} {
 Properties *Properties::FromFile(QString fileName) {
 
     Properties *properties = new Properties();
-    properties->loadFile(fileName);
+    properties->initFile(fileName);
+    properties->loadFile(properties->path);
 
     return properties;
 }
 
-void Properties::loadFile(QString fileName)
+void Properties::initFile(QString fileName)
 {
     if (fileName == nullptr) {
         fileName = "Properties.json";
     }
 
     QString folder = QString("Config/");
+    QString path = folder + fileName;
+
     QDir dir;
     if(!dir.exists(folder)) {
          dir.mkpath(folder);
     }
 
-    QFile file(folder + fileName);
+    QFile file(path);
+
+    if (!file.exists()) {
+        file.open(QIODevice::ReadWrite);
+        QJsonDocument doc(this->toJson());
+
+        file.resize(0);
+        file.write(doc.toJson(QJsonDocument::Indented));
+    }
+
+    file.close();
+
+    QFileInfo fileInfo(path);
+    path = fileInfo.absoluteFilePath();
+}
+
+void Properties::loadFile(QString path)
+{
+    if (path == nullptr) {
+        initFile();
+    }
+
+    QFile file(this->path);
 
     if (file.exists()) {
         file.open(QIODevice::ReadWrite);
@@ -80,10 +106,6 @@ void Properties::loadFile(QString fileName)
         file.open(QIODevice::ReadWrite);
     }
 
-    QJsonDocument doc(this->toJson());
-
-    file.resize(0);
-    file.write(doc.toJson(QJsonDocument::Indented));
     file.close();
 }
 
@@ -123,7 +145,9 @@ void Properties::deserialize(const QJsonObject &jsonObject) {
     rocketCooldown = jsonObject["rocketCd"].toInt();
     rocketSpeed = jsonObject["rocketSpeed"].toDouble();
     rocketRadius = jsonObject["rocketRadius"].toInt();
+
     QJsonObject vehicleOptionsJO = jsonObject["vehicleOptions"].toObject();
+
     for (const QString &key: vehicleOptionsJO.keys()) {
         QJsonObject userJsonObject = vehicleOptionsJO.value(key).toObject();
         Vehicle *vehicle = vehicleOptions->value(key);
@@ -186,6 +210,13 @@ QString Properties::serialize() {
     return QString(doc.toJson(QJsonDocument::Compact));
 }
 
+
+void handleFileChanged(const QString& path)
+{
+    Q_UNUSED(path);
+
+
+}
 
 /**
  * |-------------------|
@@ -342,4 +373,9 @@ int Properties::getCheckpointRadius() const {
 
 void Properties::setCheckpointRadius(int checkpointRadius) {
     this->checkpointRadius = checkpointRadius;
+}
+
+QString Properties::getPath()
+{
+    return path;
 }

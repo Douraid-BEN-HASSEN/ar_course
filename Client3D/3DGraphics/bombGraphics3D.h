@@ -1,7 +1,5 @@
-#ifndef OBSTACLEGRAPH_H
-#define OBSTACLEGRAPH_H
-
-#include <QtMath>
+#ifndef BOMBGRAPHICS3D_H
+#define BOMBGRAPHICS3D_H
 
 #include "Qt3DExtras/Qt3DWindow"
 #include <Qt3DCore/QEntity>
@@ -14,6 +12,7 @@
 
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DExtras/QTorusMesh>
@@ -23,32 +22,25 @@
 #include <QDiffuseSpecularMaterial>
 #include <QOrbitCameraController>
 
-#include <Kart/Map/Obstacle.h>
+#include <Kart/Map/Map.h>
+#include <Kart/Player/Item.h>
 
-class ObstacleGraphics3D : public Qt3DCore::QEntity
+class BombGraphics3D: public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
-    ObstacleGraphics3D(Obstacle *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
-    void updateObstacle3D(Obstacle *);
-    static qreal heigth;
-    static qreal width;
-    static qreal radius;
-
-    qreal getId() ;
+    BombGraphics3D(Item *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
+    void updateBomb3D(Item *);
+    QString getUuid();
     qreal getX();
     qreal getY();
-    qreal getHeigth();
-    qreal getWidth();
-    qreal getRadius();
-    qreal getAngle();
+    static qreal bombRadius;
 
 private:
-    qreal id;
+    QString uuid;
     qreal x;
     qreal y;
-    qreal angle;
-    // Récupérer depuis /game/properties
 };
 
-#endif // OBSTACLEGRAPH_H
+#endif // BOMBGRAPHICS3D_H
+

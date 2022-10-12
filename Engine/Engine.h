@@ -22,6 +22,7 @@
 #include "2DGraphics/GBanana.h"
 #include "2DGraphics/GBomb.h"
 #include "2DGraphics/GRocket.h"
+#include "Config/ConfigManager.h"
 
 class Engine : public QObject
 {
@@ -29,6 +30,11 @@ class Engine : public QObject
 public:
     explicit Engine(QObject *parent = nullptr);
     ~Engine();
+
+    static float CDRAG;
+    static float CRR;
+    static float GRAVITY;
+
 
     QMap<QString, GPlayer*> getPlayersGraphics();
 
