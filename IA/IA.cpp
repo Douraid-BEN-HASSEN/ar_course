@@ -96,11 +96,11 @@ void IA::mooveToCheckpoint()
         loop.exec();
 
         //If checkpoint atteigned
-        if (  player->getX() > ( target->getX() -  Properties::getInstance()->getCheckpointRadius())
-              && player->getX() < ( target->getX() +  Properties::getInstance()->getCheckpointRadius())
-              && player->getY() > ( target->getY() -  Properties::getInstance()->getCheckpointRadius())
-              && player->getY() < (target->getY() +  Properties::getInstance()->getCheckpointRadius())
-              ) {
+        if (player->getX() > ( target->getX() -  Properties::getInstance()->getCheckpointRadius())
+                && player->getX() < ( target->getX() +  Properties::getInstance()->getCheckpointRadius())
+                && player->getY() > ( target->getY() -  Properties::getInstance()->getCheckpointRadius())
+                && player->getY() < (target->getY() +  Properties::getInstance()->getCheckpointRadius())
+                ) {
             qDebug() << "CHECKPOINT ATTEIGNED ";
             this->currentCheckpointId ++ ;
         }
@@ -136,8 +136,10 @@ void IA::determinePath()
     Checkpoint *currentChoice = new Checkpoint  ;
 
     //Iterate the checkpoints
+    //for(int i = 0 ; i < checkpoints->size() ; i ++){
     for (int i = 0 ; i < checkpoints->size() + obstacleCheckpointLenght + 1   ; i++) {
-
+        //for (int i = 0 ; i < checkpoints->size() ; i++){
+        qDebug() << path.size() ;
         /* Get the next checkpoint or get the current checkpoint if the previous checkpoint
         was a checkpoint created to avoid an obstacle */
         int bestChoice = -1;
@@ -162,6 +164,7 @@ void IA::determinePath()
         QPointF *collisionPoint = new QPointF(-1,-1);
         QLineF obstacleLine ;
 
+
         //Iterate the obstacle list to see if there is an obstacle
         for (Obstacle *obstacle : obstacles->values()){
             collisionPoint->setX(-1) ;
@@ -169,11 +172,12 @@ void IA::determinePath()
 
             //Determine is the obstacle is a circle of a rectangle
             if (obstacle->getId() % 2 == 0) {
-                obstacleLine.setP1(QPointF(obstacle->getX() - obstacleRadius - 50 , obstacle->getY()));
-                obstacleLine.setP2(QPointF(obstacle->getX() + obstacleRadius + 50, obstacle->getY() ));
+
+                obstacleLine.setP1(QPointF(obstacle->getX() - obstacleRadius - ( obstacle->getX() - obstacleRadius - 50 < 0 ? 0 : 50 ) , obstacle->getY()));
+                obstacleLine.setP2(QPointF(obstacle->getX() + obstacleRadius + ( obstacle->getX() + obstacleRadius + 50 > 1000 ? 0 : 50 ), obstacle->getY() ));
             } else {
-                obstacleLine.setP1(QPointF(obstacle->getX() - (obstacleWidth/2) - 50 , obstacle->getY()  ));
-                obstacleLine.setP2(QPointF(obstacle->getX() - (obstacleWidth/2) + 50, obstacle->getY()));
+                obstacleLine.setP1(QPointF(obstacle->getX() - (obstacleWidth/2) - ( obstacle->getX() - ( obstacleWidth / 2 ) -  50 < 0 ? 0 : 50) , obstacle->getY()  ));
+                obstacleLine.setP2(QPointF(obstacle->getX() - (obstacleWidth/2) + ( obstacle->getX() + ( obstacleWidth / 2 ) +  50 > 1000 ? 0 : 50), obstacle->getY()));
             }
 
             //Determine if is a collision between the trajectory and a obstacle
@@ -197,11 +201,73 @@ void IA::determinePath()
                         )
                     )
             {
+
+
                 isObstacle = true ;
                 Checkpoint *newCheck  = new Checkpoint ;
-                newCheck->setX(collisionPoint->x() + obstacle->getId() % 2 == 0 ? obstacleRadius + this->offsetSelected : obstacleWidth / 2 + this->offsetSelected  < 1000 ? collisionPoint->x()+obstacle->getId() % 2 == 0 ? collisionPoint->x() + obstacleRadius + this->offsetSelected : collisionPoint->x() + obstacleWidth / 2 + this->offsetSelected  : obstacle->getId() % 2 == 0 ? collisionPoint->x() - obstacleRadius + this->offsetSelected : collisionPoint->x() - obstacleWidth / 2 + this->offsetSelected  ) ;
-                newCheck->setY(collisionPoint->y() + obstacle->getId() % 2 == 0 ? obstacleRadius + this->offsetSelected : obstacleWidth / 2 + this->offsetSelected  < 1000 ? collisionPoint->y()+obstacle->getId() % 2 == 0 ? collisionPoint->y() + obstacleRadius + this->offsetSelected : collisionPoint->y() + obstacleWidth / 2 + this->offsetSelected  : obstacle->getId() % 2 == 0 ? collisionPoint->y() - obstacleRadius + this->offsetSelected : collisionPoint->y() - obstacleWidth / 2 + this->offsetSelected  );
 
+                int offsetX = 0 ;
+                int offsetY = 0 ;
+
+
+                //Position de l'obstacle
+
+                //En haut
+                if (currentCheckpoint.y() > obstacle->getY()) {
+                    //En haut à gauche
+                    if (currentCheckpoint.x() > obstacle->getX()) {
+                        offsetX = 0 ;
+                        offsetY = this->offsetSelected ;
+                    } else { //En haut à droite
+                        offsetX = 0 ;
+                        offsetY = -this->offsetSelected ;
+                    }
+                }
+
+                //En bas
+                else if (currentCheckpoint.y() < obstacle->getY()) {
+                    //En bas à gauche
+                    if (currentCheckpoint.x() < obstacle->getX()) {
+                        offsetX = -this->offsetSelected ;
+                        offsetY =  0;
+                    } else { //En haut à droite
+                        offsetX = this->offsetSelected ;
+                        offsetY = 0 ;
+                    }
+                }
+
+                //A gauche
+                if (currentCheckpoint.x() < obstacle->getX()) {
+                    //En haut à gauche
+                    if (currentCheckpoint.y() < obstacle->getY()) {
+                        offsetX = 0 ;
+                        offsetY = -this->offsetSelected ;
+                    } else { //En haut à droite
+                        offsetX = 0 ;
+                        offsetY = +this->offsetSelected ;
+                    }
+                }
+
+                //A droite
+                if (currentCheckpoint.x() > obstacle->getX()) {
+                    //En haut à gauche
+                    if (currentCheckpoint.x() < obstacle->getX()) {
+                        offsetX = 0 ;
+                        offsetY = this->offsetSelected ;
+                    } else { //En haut à droite
+                        offsetX = 0 ;
+                        offsetY = this->offsetSelected ;
+                    }
+                }
+
+                qDebug() << " currentCheckpoint.x() " << currentCheckpoint.x() << " currentCheckpoint.y() " << currentCheckpoint.y() <<  " collisionPoint.x() " << collisionPoint->x() << "collisionPoint.y() " << collisionPoint->y() ;
+                qDebug() << "offset x : " << offsetX << " | offset y : " << offsetY ;
+
+
+                newCheck->setX(obstacle->getId() % 2 == 0 ? collisionPoint->x() +  obstacleRadius + offsetX : collisionPoint->x() + obstacleWidth/2  + offsetX );
+                newCheck->setY(obstacle->getId() % 2 == 0 ? collisionPoint->y() +  obstacleRadius + offsetY : collisionPoint->y() +  obstacleWidth/2  + offsetY );
+
+                qDebug() << newCheck->getPosition() ;
                 //Create a new checkpoint
                 QPair<QString, Checkpoint*> p("obstacle" , newCheck);
                 path.append(p);
@@ -209,6 +275,8 @@ void IA::determinePath()
                 takeNextCheckpoint = false ;
             }
         }
+
+
 
         if (isObstacle == false  ) {
             //If not obstacle , add to the path the checkpoint
@@ -231,7 +299,6 @@ void IA::determinePath()
 
     //Launch the function to do the path
     emit this->determinePathDone(this->path);
-    QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
 }
 
 

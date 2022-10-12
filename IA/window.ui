@@ -123,9 +123,16 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_start">
+       <widget class="QPushButton" name="pushButton_calculPath">
         <property name="text">
-         <string>Start !</string>
+         <string>Calcul PATH</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_startIa">
+        <property name="text">
+         <string>START IA !</string>
         </property>
        </widget>
       </item>

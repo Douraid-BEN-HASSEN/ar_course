@@ -15,7 +15,10 @@ Window::Window(QWidget *parent): QMainWindow(parent), ui(new Ui::Window)
     ui->verticalLayout_map->addWidget(mapWidget);
 
     //Connect
-    connect(ui->pushButton_start, SIGNAL(clicked()), this, SLOT(startIA()));
+    connect(ui->pushButton_calculPath, SIGNAL(clicked()), this, SLOT(calculPath()));
+    connect(ui->pushButton_startIa, SIGNAL(clicked()) , this , SLOT(startIA()));
+    ui->pushButton_startIa->setDisabled(true);
+
 }
 
 
@@ -24,10 +27,13 @@ Window::~Window()
     delete ui;
 }
 
-void Window::startIA()
-{
+void Window::calculPath(){
 
-    qDebug() << "Window::startIa()";
+    qDebug() << "Window::calculPath()";
+
+    QList<QPair<QString , Checkpoint*>> emptyList ;
+
+    emit this->drawPath(emptyList);
 
     if ( this->ui->lineEdit_pseudo->text() != "" && this->ui->lineEdit_Speed->text() != "" && this->ui->lineEdit_Offset->text() != "" ) {
         QString pseudo = this->ui->lineEdit_pseudo->text();
@@ -39,17 +45,17 @@ void Window::startIA()
         ia->setRegister(r);
         r->publish();
 
-
         this->ui->label_size->setText("height : " + QString::number(r->getVehicle().size()) );
         qDebug() << r->getVehicle() ;
         this->ia = ia;
-
-        ui->pushButton_start->setDisabled(true);
-
-
-        //
+        this->ui->pushButton_startIa->setDisabled(false);
     }
+}
 
+void Window::startIA()
+{
+    ui->pushButton_startIa->setDisabled(true);
+    this->ia->mooveToCheckpoint();
 }
 
 void Window::changeLabelTarget(QPoint newTarget){

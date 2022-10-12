@@ -28,6 +28,7 @@ private slots:
     void startIA();
     void getPath(QList<QPair<QString, Checkpoint *>> path);
     void changeLabelTarget(QPoint newTarget);
+    void calculPath() ;
 
 signals:
     void drawPath(QList<QPair<QString, Checkpoint *>> path);
