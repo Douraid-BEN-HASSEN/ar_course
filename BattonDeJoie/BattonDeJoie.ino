@@ -6,6 +6,8 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <PubSubClient.h>
+#include "UUID.h"
+#include <ArduinoJson.h>
 
 #define DATA_BUFFER_SIZE 7
 #define MPU 0x68
@@ -13,16 +15,29 @@
 #define SCL 15
 #define SDA 4
 
-#define BUTTONS 36
+#define GPIO_BUTTONS 36
 
+#define YELLOW_BUTTON 0
+#define GREEN_BUTTON 1
+#define BLUE_BUTTON 2
+#define RED_BUTTON 3
+#define WHITE_BUTTON 4
+
+UUID uuid;
+
+/** credantial setup */
 const char *WIFI_SSID = "IMERIR_IoT";
 const char *WIFI_PASSWORD = "kohWoong5oox";
 
-const char *MQTT_ENDPOINT = "omniumcorp.fr";  // Adresse IP du Broker Mqtt
-const char *MQTT_PUB_TOPIC = "game/properties";   // Topic
-const int MQTT_PORT = 1883;                       // Port utilisé par le Broker
+const char *MQTT_ENDPOINT = "omniumcorp.fr";     // Adresse IP du Broker Mqtt
+const char *MQTT_PUB_TOPIC = "game/properties";  // Topic
+const int MQTT_PORT = 1883;                      // Port utilisé par le Broker
 long tps = 0;
 
+StaticJsonDocument<1024> register_doc;
+StaticJsonDocument<1024> control_doc;
+
+/** wifi and mqtt setup */
 void callback(char *topic, byte *message, unsigned int length);
 
 WiFiClient wiFiClient;
@@ -31,23 +46,30 @@ PubSubClient pubSubClient(MQTT_ENDPOINT, MQTT_PORT, callback, wiFiClient);
 bool connectToWIFI(int tryConnect, bool debug);
 bool connectToMqtt();
 
-/* gyroscope value */
+
+/** gyroscope value setup */
 void ReadGY521(int *GyAccTempp, int *GATCorrr);
 void ComputeAngle(int *GyAccTempp, double *PitchRol);
-int getKey(unsigned int input);
 
 int16_t gyRaw[DATA_BUFFER_SIZE];
 double PitchRollYaw[3];
 
-/* button value */
-int adc_key_val[5] = { 2950, 3100, 3260, 3600, 3930 };
+/** button setup */
+int adc_key_val[5] = { 3000, 3200, 3350, 3600, 3900 };
 int NUM_KEYS = 5;
 int adc_key_in;
 int key = -1;
 int oldkey = -1;
 
-void setup() {
+int get_key(unsigned int input);
 
+int catchButton();
+
+/** gameStatus */
+bool gameStarted = false;
+
+void setup() {
+    /** i2c init */
     Heltec.begin(true, false, true);
     Wire.begin(SDA_OLED, SCL_OLED);
     Wire.beginTransmission(MPU);
@@ -58,94 +80,114 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Started!");
 
-    while (!connectToWIFI(20, true)) {}    
+    /* wifi connexion */
+    while (!connectToWIFI(20, true)) {}
 
     Serial.println("\nConnected to the WiFi network");
     Serial.print("IP: ");
     Serial.println(WiFi.localIP());
 
-    // mqttClient.setServer(mqtt_server, mqtt_port);
-    // mqttClient.setCallback(callback);
-    // mqttClient.subscribe("suce/pute");
-    // mqttClient.publish("suce/pute", "aaaa");
-    
-
-
-
-    Serial.println("end setup!");    
+    Serial.println("end setup!");
 }
 
 void loop() {
 
-    if (WiFi.status() == WL_CONNECTED){
-            connectToMqtt();
+    /* mqtt connexion */
+    if (WiFi.status() != WL_CONNECTED) {
+        while (!connectToWIFI(20, true)) {}
     }
 
-    ReadGY521(gyRaw);
-    ComputeAngle(gyRaw, PitchRollYaw);
+    connectToMqtt();
 
-    // Serial.print("Pitch : ");
-    // Serial.println(PitchRollYaw[0]);
-    // Serial.print(" Pitch Raw : ");
-    // Serial.println(gyRaw[0]);
+    if (!gameStarted) {
 
-    // Serial.print("Rotate : ");
-    // Serial.println(PitchRollYaw[1]);
-    // Serial.print("Rotate Raw : ");
-    // Serial.println(gyRaw[1]);
+        if (catchButton() == RED_BUTTON) {
 
-    // Serial.print("Power : ");
-    // Serial.println(PitchRollYaw[2]);
-    // Serial.print(" Power Raw : ");
-    // Serial.println(gyRaw[2]);
+            Serial.println("register player");
 
-    delay(100);
+            register_doc["uuid"] = uuid;
+            register_doc["pseudo"] = "ladg";
+            register_doc["controller"] = "controller";
+            register_doc["vehicle"] = 1;
+            register_doc["team"] = 1;
 
-    adc_key_in = analogRead(BUTTONS);
+            String data;
+            serializeJson(register_doc, data);
 
-    key = getKey(adc_key_in);
-
-    if (key != oldkey)  // if keypress is detected
-    {
-        delay(50);
-        // wait for debounce time
-        adc_key_in = analogRead(BUTTONS);  // read the value from the sensor
-        key = getKey(adc_key_in);          // convert into key press
-        if (key != oldkey) {
-            oldkey = key;
-            if (key >= 0) {
-                switch (key) {
-                    case 0:
-                        Serial.println("S1 OK");
-                        break;
-                    case 1:
-                        Serial.println("S2 OK");
-                        break;
-                    case 2:
-                        Serial.println("S3 OK");
-                        break;
-                    case 3:
-                        Serial.println("S4 OK");
-                        break;
-                    case 4:
-                        Serial.println("S5 OK");
-                        break;
-                }
+            if (!pubSubClient.publish("player/register", data.c_str(), false)) {  // send json data to dynamoDbB topic
+                Serial.println("ERROR??? :");
+                Serial.println(pubSubClient.state());  //Connected '0'
+            } else {
+                Serial.println("player register upload");
+                gameStarted = true;
             }
+
+            register_doc.clear();
         }
+
+    } else {
+
+        ReadGY521(gyRaw);
+        ComputeAngle(gyRaw, PitchRollYaw);
+
+        uint8_t button = catchButton();        
+
+        register_doc["uuid"] = uuid;
+        register_doc["angle"] = PitchRollYaw[1] * DEG_TO_RAD;
+        register_doc["power"] = PitchRollYaw[2];
+        register_doc["buttons"]["banana"] = button == BLUE_BUTTON;
+        register_doc["buttons"]["bomb"] = button == WHITE_BUTTON;
+        register_doc["buttons"]["rocket"] = button == YELLOW_BUTTON;
+
+        String data;
+        serializeJson(register_doc, data);
+
+        if (!pubSubClient.publish("player/control", data.c_str(), false)) {  // send json data to dynamoDbB topic
+            Serial.println("ERROR??? :");
+            Serial.println(pubSubClient.state());  //Connected '0'
+        } else {
+            Serial.println("player control");
+        }
+
+
+        // mqttClient.setServer(mqtt_server, mqtt_port);
+        // mqttClient.setCallback(callback);
+        // mqttClient.subscribe("suce/pute");
+        // mqttClient.publish("suce/pute", "aaaa");
+
+
+        // Serial.print("Pitch : ");
+        // Serial.println(PitchRollYaw[0]);
+        // Serial.print(" Pitch Raw : ");
+        // Serial.println(gyRaw[0]);
+
+        // Serial.print("Rotate : ");
+        // Serial.println(PitchRollYaw[1]);
+        // Serial.print("Rotate Raw : ");
+        // Serial.println(gyRaw[1]);
+
+        // Serial.print("Power : ");
+        // Serial.println(PitchRollYaw[2]);
+        // Serial.print(" Power Raw : ");
+        // Serial.println(gyRaw[2]);
+
+        Serial.println(catchButton());
+
+        delay(100);
     }
 }
 
 bool connectToWIFI(int tryConnect, bool debug) {
 
-    Serial.print("Waiting for connection to WiFi to : "); Serial.print(WIFI_SSID);
+    Serial.print("Waiting for connection to WiFi to : ");
+    Serial.print(WIFI_SSID);
 
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);   //WiFi connection
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);  //WiFi connection
 
-    if (debug){
+    if (debug) {
         int i = 0;
         while (WiFi.status() != WL_CONNECTED) {
-        
+
             if (i <= tryConnect) {
                 delay(500);
                 Serial.print('.');
@@ -156,7 +198,6 @@ bool connectToWIFI(int tryConnect, bool debug) {
             }
         }
         Serial.println("Connected");
-
     }
 
     return true;
@@ -164,8 +205,9 @@ bool connectToWIFI(int tryConnect, bool debug) {
 
 bool connectToMqtt() {
     if (!pubSubClient.connected()) {
-        Serial.print("PubSubClient connecting to : "); Serial.println(MQTT_ENDPOINT);
-        
+        Serial.print("PubSubClient connecting to : ");
+        Serial.println(MQTT_ENDPOINT);
+
         while (!pubSubClient.connected()) {
             Serial.print(pubSubClient.state());
             delay(100);
@@ -179,6 +221,31 @@ bool connectToMqtt() {
 
     pubSubClient.loop();
     return true;
+}
+
+void initGame() {
+    if (WiFi.status() == WL_CONNECTED) {}
+}
+
+int catchButton() {
+
+    adc_key_in = analogRead(GPIO_BUTTONS);  // read the value from the sensor
+
+    key = get_key(adc_key_in);  // convert into key press
+
+    if (key != oldkey)  // if keypress is detected
+    {
+        delay(50);                              // wait for debounce time
+        adc_key_in = analogRead(GPIO_BUTTONS);  // read the value from the sensor
+        key = get_key(adc_key_in);              // convert into key press
+        if (key != oldkey) {
+            oldkey = key;
+            if (key >= 0) {
+                return key;
+            }
+        }
+    }
+    return -1;
 }
 
 void ReadGY521(int16_t *gyRaw) {
@@ -204,16 +271,13 @@ void ComputeAngle(int16_t *gyRaw, double *PitchRollYaw) {
     PitchRollYaw[2] = constrain(PitchRollYaw[2], -100, 100);
 }
 
-int getKey(unsigned int input) {
-
+int get_key(unsigned int input) {
     int k;
-
     for (k = 0; k < NUM_KEYS; k++) {
         if (input < adc_key_val[k]) {
             return k;
         }
     }
-
     if (k >= NUM_KEYS) k = -1;  // No valid key pressed
     return k;
 }
@@ -236,6 +300,5 @@ void callback(char *topic, byte *message, unsigned int length) {
     // Changes the output state according to the message
     if (String(topic) == "esp32/output") {
         Serial.print("Changing output to ");
-
     }
 }
