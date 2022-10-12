@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
+    Client3DPlayer \
     ExchangeLib \
     Engine \
     Player \
