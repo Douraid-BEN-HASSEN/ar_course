@@ -63,7 +63,6 @@ void Widget3D::updateProperties3D(){
     BananaGraphics3D::bananaRadius = Properties::getInstance()->getBananaRadius();
     RocketGraphics3D::rocketRadius = Properties::getInstance()->getRocketRadius();
     BombGraphics3D::bombRadius = Properties::getInstance()->getBombRadius();
-
 }
 
 void Widget3D::updateMap3D() {
@@ -148,16 +147,16 @@ void Widget3D::updateGameMode3D() {
 
 
     for (BananaGraphics3D *iterLocalBanana : localBanana3D){
-        iterLocalBanana->setEnabled(false);
+        //iterLocalBanana->setEnabled(false);
         delete(iterLocalBanana);
     }
     for (RocketGraphics3D *iterLocalRocket : localRocket3D){
-        iterLocalRocket->setEnabled(false);
+        //iterLocalRocket->setEnabled(false);
         delete(iterLocalRocket);
     }
 
     for (BombGraphics3D *iterLocalBomb : localBomb3D){
-        iterLocalBomb->setEnabled(false);
+        //iterLocalBomb->setEnabled(false);
         delete(iterLocalBomb);
     }
 

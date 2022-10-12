@@ -24,21 +24,15 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::yellow));
     material->setAmbient(QColorConstants::Yellow);
-    //material->setSpecular(QColorConstants::Yellow);
+    material->setSpecular(QColorConstants::Yellow);
     material->setShininess(10.0f);
 
-    //Qt3DExtras::QCuboidMesh *cuboid = new Qt3DExtras::QCuboidMesh();
     Qt3DRender::QMesh *cuboid = new Qt3DRender::QMesh();
     cuboid->setSource(QStringLiteral("qrc:/Car.obj"));
 
-    //cuboid->setXExtent(heigth);
-    //cuboid->setYExtent(width);
-    //cuboid->setZExtent(width);
-
-
     Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
     cuboidTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
-    cuboidTransform->setScale3D(QVector3D(width, heigth, heigth));
+    cuboidTransform->setScale3D(QVector3D(width, width, heigth));
     cuboidTransform->setRotationY(qRadiansToDegrees(player->getAngle()) + 90);
     this->addComponent(material);
     this->addComponent(cuboid);
@@ -52,9 +46,9 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
 
     Qt3DCore::QTransform *palyerTransform = new Qt3DCore::QTransform();
     palyerTransform->setTranslation(QVector3D(this->getX(), 0.0f, this->getY()));
-    palyerTransform->setScale3D(QVector3D(width, heigth, heigth));
 
-    qDebug() << "qRadiansToDegrees(player->getAngle()) = " << qRadiansToDegrees(player->getAngle());
+    //palyerTransform->setScale3D(QVector3D(width, width, heigth));
+
     palyerTransform->setRotationY(qRadiansToDegrees(player->getAngle()) + 90);
 
     if(!this->components().empty()){
