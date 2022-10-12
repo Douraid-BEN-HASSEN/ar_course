@@ -114,3 +114,7 @@ QString Item::getType()
 {
     return this->_type;
 }
+QString Item::getUuid()
+{
+    return this->_uuid;
+}

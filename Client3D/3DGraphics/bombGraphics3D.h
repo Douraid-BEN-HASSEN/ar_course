@@ -31,11 +31,13 @@ class BombGraphics3D: public Qt3DCore::QEntity
 public:
     BombGraphics3D(Item *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
     void updateBomb3D(Item *);
+    QString getUuid();
     qreal getX();
     qreal getY();
     static qreal bombRadius;
 
 private:
+    QString uuid;
     qreal x;
     qreal y;
 };

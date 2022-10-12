@@ -67,9 +67,9 @@ private:
     QMap<int, ObstacleGraphics3D*> localObstacles3D;
     QMap<int, CheckpointGraphics3D*> localCheckpoint3D;
     QMap<QString, PlayerGraphics3D*> localPlayers3D;
-    QList<BananaGraphics3D*> localBanana3D;
-    QList<RocketGraphics3D*> localRocket3D;
-    QList<BombGraphics3D*> localBomb3D;
+    QMap<QString, BananaGraphics3D*> localBanana3D;
+    QMap<QString, RocketGraphics3D*> localRocket3D;
+    QMap<QString, BombGraphics3D*> localBomb3D;
     Player *playerCamFocus;
 
 private slots:

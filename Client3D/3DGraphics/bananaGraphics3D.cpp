@@ -22,3 +22,32 @@ BananaGraphics3D::BananaGraphics3D(Item *banana, Qt3DCore::QEntity *mScene, QNod
     this->addComponent(sphereMesh);
     this->addComponent(cylindreTransform);
 }
+
+
+void BananaGraphics3D::updateBanana3D(Item *banana){
+    this->x =  banana->getX();
+    this->y = banana->getY();
+
+    Qt3DCore::QTransform *bananeTransform = new Qt3DCore::QTransform();
+    bananeTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
+
+     if(!this->components().empty()){
+         this->removeComponent(this->components().at(2));
+         this->addComponent(bananeTransform);
+     }
+}
+
+QString BananaGraphics3D::getUuid()
+{
+    return uuid;
+}
+
+qreal BananaGraphics3D::getX()
+{
+    return x;
+}
+
+qreal BananaGraphics3D::getY()
+{
+    return y;
+}

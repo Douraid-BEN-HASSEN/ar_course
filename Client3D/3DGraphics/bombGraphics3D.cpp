@@ -24,3 +24,31 @@ BombGraphics3D::BombGraphics3D(Item *bomb, Qt3DCore::QEntity *mScene, QNode *par
     this->addComponent(sphereMesh);
     this->addComponent(cylindreTransform);
 }
+
+void BombGraphics3D::updateBomb3D(Item *bomb){
+    this->x = bomb->getX();
+    this->y = bomb->getY();
+
+    Qt3DCore::QTransform *bombTransform = new Qt3DCore::QTransform();
+    bombTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
+
+     if(!this->components().empty()){
+         this->removeComponent(this->components().at(2));
+         this->addComponent(bombTransform);
+     }
+}
+
+QString BombGraphics3D::getUuid()
+{
+    return uuid;
+}
+
+qreal BombGraphics3D::getX()
+{
+    return x;
+}
+
+qreal BombGraphics3D::getY()
+{
+    return y;
+}

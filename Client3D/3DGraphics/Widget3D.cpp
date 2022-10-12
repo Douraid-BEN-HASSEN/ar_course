@@ -145,7 +145,44 @@ void Widget3D::updateGameMode3D() {
         iter++;
     }
 
+    for (Item *iterItem : *GameMode::getInstance()->_items) {
 
+
+
+            qDebug() << "iterItem->getUuid() = " << iterItem->getUuid();
+            BananaGraphics3D* bananaGraphics3D = localBanana3D.value(iterItem->getUuid());
+            RocketGraphics3D* rocketGraphics3D = localRocket3D.value(iterItem->getUuid());
+            BombGraphics3D* bombGraphics3D = localBomb3D.value(iterItem->getUuid());
+
+            if(iterItem->getType() == "banana"){
+                if(!bananaGraphics3D){
+                    bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
+                    localBanana3D.insert(iterItem->getUuid(), bananaGraphics3D);
+                } else {
+
+                }
+                bananaGraphics3D->updateBanana3D(iterItem);
+
+            }
+
+            if(iterItem->getType() == "rocket"){
+                if(!rocketGraphics3D){
+                rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
+                localRocket3D.insert(rocketGraphics3D->getUuid(), rocketGraphics3D);
+                }
+                rocketGraphics3D->updateRocket3D(iterItem);
+            }
+
+            if(iterItem->getType() == "bomb"){
+                if(!bombGraphics3D){
+                    bombGraphics3D = new BombGraphics3D(iterItem, mScene);
+                    localBomb3D.insert(rocketGraphics3D->getUuid(), bombGraphics3D);
+                }
+                bombGraphics3D->updateBomb3D(iterItem);
+            }
+        }
+
+    /*
     for (BananaGraphics3D *iterLocalBanana : localBanana3D){
         //iterLocalBanana->setEnabled(false);
         delete(iterLocalBanana);
@@ -180,6 +217,8 @@ void Widget3D::updateGameMode3D() {
             localBomb3D.append(bombGraphics3D);
         }
     }
+
+    */
 
 
 

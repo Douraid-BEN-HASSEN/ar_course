@@ -31,11 +31,13 @@ class BananaGraphics3D: public Qt3DCore::QEntity
 public:
     BananaGraphics3D(Item *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
     void updateBanana3D(Item *);
+    QString getUuid();
     qreal getX();
     qreal getY();
     static qreal bananaRadius;
 
 private:
+    QString uuid;
     qreal x;
     qreal y;
 };

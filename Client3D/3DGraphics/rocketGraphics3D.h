@@ -31,11 +31,13 @@ class RocketGraphics3D: public Qt3DCore::QEntity
 public:
     RocketGraphics3D(Item *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
     void updateRocket3D(Item *);
+        QString getUuid();
     qreal getX();
     qreal getY();
     static qreal rocketRadius;
 
 private:
+    QString uuid;
     qreal x;
     qreal y;
 };

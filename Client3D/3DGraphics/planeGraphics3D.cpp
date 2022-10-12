@@ -16,8 +16,8 @@ PlaneGraphics3D::PlaneGraphics3D(Qt3DCore::QEntity *rootEntity, Qt3DCore::QNode 
     this->setParent(rootEntity);
 
     Qt3DExtras::QPlaneMesh *planeMesh = new Qt3DExtras::QPlaneMesh();
-    planeMesh->setHeight(5000);
-    planeMesh->setWidth(5000);
+    planeMesh->setHeight(2000);
+    planeMesh->setWidth(2000);
 
     Qt3DCore::QTransform *planeTransform = new Qt3DCore::QTransform();
     planeTransform->setTranslation(QVector3D(0.0f, 0.0f ,0.0f));
