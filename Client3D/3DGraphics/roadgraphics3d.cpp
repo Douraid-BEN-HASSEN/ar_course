@@ -2,11 +2,15 @@
 
 RoadGraphics3D::RoadGraphics3D( Checkpoint *checkpoint1, Checkpoint *checkpoint2, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
-    this->drawLine({ (const float)checkpoint1->getX(), 0, (const float)checkpoint1->getY() },
-                   { (const float)checkpoint2->getX(), 0, (const float)checkpoint2->getY() },
-                   Qt::blue,
+    this->drawLine({ (const float)checkpoint1->getX()-50, 0, (const float)checkpoint1->getY() },
+                   { (const float)checkpoint2->getX()-50, 0, (const float)checkpoint2->getY() },
+                   Qt::green,
                    mScene);
-    this->drawLine3D(checkpoint1, checkpoint2, mScene);
+    this->drawLine({ (const float)checkpoint1->getX()+50, 0, (const float)checkpoint1->getY() },
+                   { (const float)checkpoint2->getX()+50, 0, (const float)checkpoint2->getY() },
+                   Qt::green,
+                   mScene);
+    //this->drawLine3D(checkpoint1, checkpoint2, mScene);
 
 
 
@@ -80,26 +84,41 @@ void RoadGraphics3D::drawLine3D(Checkpoint *checkpoint1, Checkpoint *checkpoint2
 
     PlaneGraphics3D *planeEntity = new PlaneGraphics3D(mScene);
 
-    planeEntity->mesh()->setHeight(distance*2);
+    planeEntity->mesh()->setHeight(distance);
     planeEntity->mesh()->setWidth(100.0f);
+    planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()));
 
-    /*if(checkpoint1->getId() == 3) {
-        qDebug() << "X "<< checkpoint1->getX() << " Y "<< checkpoint1->getY();
-        qDebug() << "ANGLE ==> " << angle;
-        //planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()-(distance/2), 0, checkpoint1->getY()+planeEntity->mesh()->width()*2));
+    QVector3D c1(checkpoint1->getX(), 0, checkpoint1->getY());
+    QVector3D c2(checkpoint2->getX(), 0, checkpoint2->getY());
+    qDebug() << "Distance => " << QVector3D::normal(c1,c2);
+
+    /*if(checkpoint1->getX() > checkpoint2->getX() && checkpoint1->getY() >= checkpoint2->getY()) {
+        qDebug() << checkpoint1->getId() << " 1";
+        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()-(distance/2), 0, checkpoint1->getY()));
+    } else if(checkpoint1->getX() >= checkpoint2->getX() && checkpoint1->getY() < checkpoint2->getY()) {
+        qDebug() << checkpoint1->getId() << " 2";
+        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()+planeEntity->mesh()->width()*2));
+    } else if(checkpoint1->getX() < checkpoint2->getX() && checkpoint1->getY() >= checkpoint2->getY()) {
+        qDebug() << checkpoint1->getId() << " 3";
+        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()+(distance/2), 0, checkpoint1->getY()));
+    } else if(checkpoint1->getX() < checkpoint2->getX() && checkpoint1->getY() < checkpoint2->getY()) {
+        qDebug() << checkpoint1->getId() << " 3";
+    } else if(checkpoint1->getX() <= checkpoint2->getX() && checkpoint1->getY() > checkpoint2->getY()) {
+        qDebug() << checkpoint1->getId() << " 4";
+        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()-planeEntity->mesh()->width()*2));
+    } else {
+        qDebug() << checkpoint1->getId() << " else";
+        if(angle > 185) planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()-(distance/2), 0, checkpoint1->getY()));
+        else if(angle > 90) planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()-planeEntity->mesh()->width()*2));
+        else planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()+(distance/2), 0, checkpoint1->getY()));
     }*/
-
-    // 360 x
-    // 270 x
-    // 180 x
-    // 90 x
 
     /*if(angle > 300) planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()+planeEntity->mesh()->width()*2));
     else if(angle > 185) planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()-(distance/2), 0, checkpoint1->getY()));
     else if(angle > 90) planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()-planeEntity->mesh()->width()*2));
     else planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()+(distance/2), 0, checkpoint1->getY()));
-    */
-    planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()));
+*/
+    //planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()));
 
     planeEntity->m_transform->setRotationY(angle);
     planeEntity->m_material->setDiffuse(QColor(Qt::yellow));
