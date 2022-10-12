@@ -18,26 +18,26 @@ Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
     this->type = type;
 
     if(this->type == "bike") {
-        this->maxSpeed = 300;
+        this->maxSpeed = 100;
         this->acceleration = 10;
         this->weight = 200;
-        this->height = 5;
-        this->width = 2;
-        this->steeringAngle = -1;
+        this->height = 15;
+        this->width = 5;
+        this->steeringAngle = 1,0472; //60°
     } else if(this->type == "car") {
-        this->maxSpeed = 300;
+        this->maxSpeed = 75;
         this->acceleration = 10;
         this->weight = 1500;
-        this->height = 10;
-        this->width = 5;
-        this->steeringAngle = -1;
+        this->height = 20;
+        this->width = 10;
+        this->steeringAngle = 0,785398; // 45°
     } else if(this->type == "truck") {
-        this->maxSpeed = 300;
+        this->maxSpeed = 60;
         this->acceleration = 10;
-        this->weight = 35000;
-        this->height = 50;
-        this->width = 8;
-        this->steeringAngle = -1;
+        this->weight = 3500;
+        this->height = 25;
+        this->width = 12;
+        this->steeringAngle = 0,523599; //30°
     }
 }
 

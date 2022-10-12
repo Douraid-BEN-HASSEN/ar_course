@@ -76,6 +76,7 @@ void PlayerUi::onExitRun()
     this->controllerType = "" ;
     this->_controller->setControllerType("");
     this->uuid = QUuid::createUuid().toString();
+    this->_controller->setUuid(this->uuid);
 }
 
 void PlayerUi::onCloseGame()

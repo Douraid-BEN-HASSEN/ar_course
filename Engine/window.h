@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMap>
 #include <QVBoxLayout>
+#include <QDesktopServices>
 
 #include "Engine.h"
 #include "PlayerScoreItem.h"
@@ -26,6 +27,9 @@ private:
 
     QMap<QString, PlayerScoreItem*> *scorebordItem;
 
+    QVBoxLayout *scorebordLayout;
+    void clearLayout(QLayout *layout);
+
     Engine *engine;
     QTimer *timer;
     void chronoTimer();
@@ -37,6 +41,7 @@ private slots:
     void reload();
     void gameInfoUpdated();
     void teamNumberUpdated(int);
+    void openPropertiesFileConf();
 
 };
 

@@ -4,9 +4,11 @@
 #include <QGraphicsObject>
 #include <QObject>
 #include <QPainter>
+#include <QLine>
 
 #include <Kart/Player/Player.h>
 #include <Kart/Game/Properties.h>
+#include <Kart/Game/Vehicle.h>
 
 class GPlayer: public QGraphicsObject
 {
@@ -41,12 +43,19 @@ public:
     void setnRocket(int pnRocket);
     void setVitesse(QVector2D vectorSpeed);
 
+    QString getState();
+    void setState(QString);
+
+    QTime getTime();
+    void setTime(QTime);
+
     void hit();
 
     QString className();
     void update(Control *control);
     Player* getPlayer();
 
+    QPainterPath shape() const;
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -64,7 +73,19 @@ private:
     int _currentLap = 0;
     QString _status;
     QString _controller;
-    QVector2D _vitesse;
+
+    QTime timeLaps = QTime(0, 0, 0, 0);
+    QString state = "wait";
+
+    QVector2D _accelerationV;
+    QVector2D _speedV;
+    float _speed;
+
+
+    float _Flower = 0;
+    QVector2D _FlowerV;
+
+    float _vehiculeWeight = 1;
 
     //
     int _nBanane;
@@ -75,6 +96,9 @@ private:
     int _bananaCooldown;
     int _bombCooldown;
     int _rocketCooldown;
+
+public: signals:
+    void stateUpdated();
 
 };
 

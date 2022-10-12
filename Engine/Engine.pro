@@ -30,6 +30,7 @@ SOURCES += \
     2DGraphics/GObstacle.cpp \
     2DGraphics/GPlayer.cpp \
     2DGraphics/GRocket.cpp \
+    Config/ConfigManager.cpp \
     Engine.cpp \
     PlayerScoreItem.cpp \
     main.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     2DGraphics/GObstacle.h \
     2DGraphics/GPlayer.h \
     2DGraphics/GRocket.h \
+    Config/ConfigManager.h \
     Engine.h \
     PlayerScoreItem.h \
     window.h

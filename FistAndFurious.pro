@@ -1,12 +1,12 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-    Client3D \
     ExchangeLib \
-    Client \
+    Engine \
     Player \
-    IA \
-    Engine
+    Client3D \
+    Client \
+    IA
 
 unix {
 }

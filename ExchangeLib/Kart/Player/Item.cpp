@@ -6,15 +6,18 @@ Item::Item(QObject *parent): QObject{parent}
 
 }
 
-Item::Item(QPoint point, QString type, QObject *parent): QObject{parent}
+Item::Item(QPoint point, float angle, QString type, QObject *parent): QObject{parent}
 {
+    this->_uuid = QUuid::createUuid().toString();
     this->_x = point.x();
     this->_y = point.y();
     this->_type = type;
 }
 
-Item::Item(int x, int y, QString type, QObject *parent): QObject{parent}
+Item::Item(int x, int y, float angle, QString type, QObject *parent): QObject{parent}
 {
+    this->_uuid = QUuid::createUuid().toString();
+    this->_angle = angle;
     this->_x = x;
     this->_y = y;
     this->_type = type;
@@ -24,6 +27,7 @@ Item::Item(int x, int y, QString type, QObject *parent): QObject{parent}
 //  | UTILS |
 //  +-------+
 void Item::deserialize(const QJsonObject &jsonObject) {
+    this->_uuid = jsonObject["uuid"].toString();
     this->_x = jsonObject["x"].toInt();
     this->_y = jsonObject["y"].toInt();
     this->_angle = jsonObject["angle"].toDouble();
@@ -39,6 +43,7 @@ QString Item::serialize() {
 QJsonObject Item::toJson() {
     QJsonObject jsonObject;
 
+    jsonObject["uuid"] = this->_uuid;
     jsonObject["x"] = this->_x;
     jsonObject["y"] = this->_y;
     jsonObject["status"] = this->_status;
