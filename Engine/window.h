@@ -9,6 +9,7 @@
 #include "Engine.h"
 #include "PlayerScoreItem.h"
 #include "2DGraphics/GEngine.h"
+#include "EndGame.h"
 
 namespace Ui {
 class Window;
@@ -32,6 +33,9 @@ private:
 
     Engine *engine;
     QTimer *timer;
+    EndGame *popUpEnd;
+
+
     void chronoTimer();
     void init();
 

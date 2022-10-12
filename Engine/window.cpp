@@ -10,6 +10,7 @@ Window::Window(QWidget *parent) :
     connect(timer, &QTimer::timeout, this, &Window::chronoTimer);
 
     engine = new Engine(this);
+    popUpEnd = new EndGame(this);
 
     ui->setupUi(this);
     ui->verticalLayout_main->addWidget(engine->getGEngine());
@@ -50,6 +51,8 @@ Window::Window(QWidget *parent) :
 
     connect(engine, SIGNAL(updated()), this, SLOT(gameInfoUpdated()));
     connect(engine, SIGNAL(gameEnded()),this, SLOT(openGameEndModel()));
+
+    connect(popUpEnd, SIGNAL(closeEndScore()),this,SLOT(reset()));
 
     init();
 }
@@ -173,8 +176,8 @@ void Window::GravityUpdated(double Gravity)
 
 void Window::openGameEndModel()
 {
-        EndGame *popUpEnd = new EndGame(this);
-        popUpEnd->setScoreboard(ui->tabWidget_scoreboard);
+
+        this->popUpEnd->setScoreboard(ui->tabWidget_scoreboard);
         popUpEnd->setModal(true);
         popUpEnd->show();
 }
