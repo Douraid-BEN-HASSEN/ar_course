@@ -502,6 +502,17 @@ void Engine::startGame()
     if (!gameStarted) {
         this->gameStartAt = QDateTime::currentDateTime();
         this->gameStarted = true;
+        //recupere les players
+        for(GPlayer *g_player : this->playersGraphics.values()){
+            if (this->checkpointsGraphics.size() > 0) {
+
+                GCheckpoint *checkpoint = this->checkpointsGraphics.first();
+                g_player->setPos(checkpoint->pos());  //les placés sur le check point 1
+            }
+
+        }
+
+
     }
 }
 
