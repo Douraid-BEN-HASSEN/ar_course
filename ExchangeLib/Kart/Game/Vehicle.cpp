@@ -15,6 +15,10 @@ Vehicle::Vehicle(int maxSpeed, float acceleration, int weight, float steeringAng
 
 Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
 {
+    if (type == "") {
+        this->type = "car";
+    }
+
     this->type = type;
 
     if(this->type == "bike") {
