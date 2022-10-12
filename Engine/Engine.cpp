@@ -429,15 +429,20 @@ void Engine::registered(Register *r) {
 
     Vehicle *veh = this->_properties->vehicleOptions->value(p->getVehicule());
 
-    qDebug() << veh->toString();
-
-    if (veh != nullptr) {
-        qDebug() << veh->getHeight();
-        qDebug() << veh->getWidth();
-
-        playerGraphics->setHeigth(veh->getHeight());
-        playerGraphics->setWidth(veh->getWidth());
+    if (veh == nullptr) {
+        veh = this->_properties->vehicleOptions->first();
     }
+
+    p->setVehicule(veh->getType());
+
+
+    qDebug() << veh->toString();
+    qDebug() << veh->getHeight();
+    qDebug() << veh->getWidth();
+
+    playerGraphics->setHeigth(veh->getHeight());
+    playerGraphics->setWidth(veh->getWidth());
+
 
     playerGraphics->setPos(p->getPosition());
 

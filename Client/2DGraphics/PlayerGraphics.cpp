@@ -61,6 +61,9 @@ QRectF PlayerGraphics::boundingRect() const
 
 void PlayerGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED( option );
+    Q_UNUSED( widget );
+
     painter->setBrush(Qt::yellow);
     painter->drawRect(boundingRect());
     painter->setPen(Qt::black);
