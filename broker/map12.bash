@@ -10,7 +10,7 @@ echo "loop..."
 
 while true; do
     mosquitto_pub -h 127.0.0.1 \
-    -m '{"mapWidth":1000,"mapHeight":1000,"checkpoints":[{"id":3,"x":500,"y":50},{"id":1, "x" : 500 , "y" : 900} ],"obstacles":[{"id":120  , "angle" : 0 , "x" : 510 , "y" : 300} , {"id":122, "angle":0,"x":500,"y":500}]}' \
+    -m '{"mapWidth":1000,"mapHeight":1000,"checkpoints":[{"id":1,"x":100,"y":100} , {"id" : 200 , "x" : 200 , "y" : 200}],"obstacles":[] }' \
     -t map
     sleep 1
 done
