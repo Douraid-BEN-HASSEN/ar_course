@@ -70,28 +70,38 @@ void RoadGraphics3D::drawLine3D(Checkpoint *checkpoint1, Checkpoint *checkpoint2
 {
     float angle = 0;
 
-
-    if(checkpoint1->getId() == 1) {
-        angle = QLineF(QPointF(checkpoint1->getX(), checkpoint1->getY()),
-                                             QPointF(checkpoint2->getX(), checkpoint2->getY())).angle();
-
-        qDebug() << "ANGLE ===> " << angle;
-    }
-
+    angle = QLineF(QPointF(checkpoint1->getX(), checkpoint1->getY()),
+                                         QPointF(checkpoint2->getX(), checkpoint2->getY())).angle();
+    angle = angle + 90;
 
     int a = checkpoint1->getX() - checkpoint2->getX();
     int b = checkpoint1->getY() - checkpoint2->getY();
-
     float distance = std::sqrt(a*a+b*b);
 
     PlaneGraphics3D *planeEntity = new PlaneGraphics3D(mScene);
 
-   planeEntity->mesh()->setHeight(distance);
-   planeEntity->mesh()->setWidth(100.0f);
+    planeEntity->mesh()->setHeight(distance*2);
+    planeEntity->mesh()->setWidth(100.0f);
 
-   planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()));
-   planeEntity->m_transform->setRotationY(angle);
+    /*if(checkpoint1->getId() == 3) {
+        qDebug() << "X "<< checkpoint1->getX() << " Y "<< checkpoint1->getY();
+        qDebug() << "ANGLE ==> " << angle;
+        //planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()-(distance/2), 0, checkpoint1->getY()+planeEntity->mesh()->width()*2));
+    }*/
 
-   planeEntity->m_material->setDiffuse(QColor(Qt::red));
+    // 360 x
+    // 270 x
+    // 180 x
+    // 90 x
+
+    /*if(angle > 300) planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()+planeEntity->mesh()->width()*2));
+    else if(angle > 185) planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()-(distance/2), 0, checkpoint1->getY()));
+    else if(angle > 90) planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()-planeEntity->mesh()->width()*2));
+    else planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()+(distance/2), 0, checkpoint1->getY()));
+    */
+    planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()));
+
+    planeEntity->m_transform->setRotationY(angle);
+    planeEntity->m_material->setDiffuse(QColor(Qt::yellow));
 
 }
