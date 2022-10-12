@@ -33,6 +33,8 @@
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QAttribute>
 #include <cmath>
+#include <QVector2D>
+
 
 #include "planeGraphics3D.h"
 
@@ -41,7 +43,7 @@ class RoadGraphics3D: public Qt3DCore::QEntity
     Q_OBJECT
 public:
     RoadGraphics3D(Checkpoint *, Checkpoint *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
-    void drawLine(const QVector3D& start, const QVector3D& end, const QColor& color, Qt3DCore::QEntity *_rootEntity);
+    void drawLine(const QVector3D& start, const QVector3D& end, const QColor& color, Qt3DCore::QEntity *mScene, float ref =0);
     void drawLine3D(Checkpoint *checkpoint1, Checkpoint *checkpoint2, Qt3DCore::QEntity *mScene);
 
 };
