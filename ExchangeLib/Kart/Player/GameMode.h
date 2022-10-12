@@ -38,7 +38,7 @@ public:
     const QString topic = "game";
 
     QMap<QString, Player*> *_players;
-    QList<Item*> *_items;
+    QMap<QString, Item*> *_items;
 
     // === UTILS ===
     void publish();

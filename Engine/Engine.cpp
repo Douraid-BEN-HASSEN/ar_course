@@ -318,14 +318,14 @@ void Engine::spawnItem(GItem *gItem)
 {
     this->itemsGraphics.append(gItem);
     this->g_engine->addItemGraphics(gItem);
-    this->_gameMode->_items->append(gItem->getItem());
+    this->_gameMode->_items->insert(gItem->getItem()->getUuid(), gItem->getItem());
 }
 
 void Engine::destoryItem(GItem *gItem)
 {
     this->itemsGraphics.removeAll(gItem);
     this->g_engine->removeItem(gItem);
-    this->_gameMode->_items->removeAll(gItem->getItem());
+    this->_gameMode->_items->remove(gItem->getItem()->getUuid());
 
     delete gItem;
 }
