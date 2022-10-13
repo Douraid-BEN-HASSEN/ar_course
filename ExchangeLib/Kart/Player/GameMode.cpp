@@ -21,11 +21,11 @@ GameMode *GameMode::getInstance() {
 GameMode::GameMode(QObject *parent): QObject{parent}
 {   
     this->_players = new QMap<QString, Player*>();
-    this->_items = new QList<Item*>();
+    this->_items = new QMap<QString, Item*>();
 
     this->_elapsedTime = 0;
-    this->_infoMessage = "Init";
-    this->_status = "Init";
+    this->_infoMessage = "waiting";
+    this->_status = "IMERIR caca";
 }
 
 // destructor
@@ -44,7 +44,7 @@ void GameMode::publish() {
 void GameMode::deserialize(const QJsonObject &jsonObject)
 {
     this->_players = new QMap<QString, Player*>();
-    this->_items = new QList<Item*>();
+    this->_items = new QMap<QString, Item*>();
 
     QJsonArray jsonPlayers = jsonObject["players"].toArray();
 
@@ -66,7 +66,7 @@ void GameMode::deserialize(const QJsonObject &jsonObject)
         QJsonObject itemJsonObject = value.toObject();
         Item *item = new Item();
         item->deserialize(itemJsonObject);
-        this->_items->append(item);
+        this->_items->insert(item->getUuid(), item);
     }
 
     this->_elapsedTime = jsonObject["elapsedTime"].toInt();
@@ -112,6 +112,7 @@ void GameMode::receivedMessage(QJsonObject message, QString topic) {
     }
 }
 
+
 //  +--------+
 //  | SETTER |
 //  +--------+
@@ -146,4 +147,10 @@ QString GameMode::getInfoMessage()
 QString GameMode::getStatus()
 {
     return this->_status;
+}
+
+void GameMode::reset()
+{
+    _players->clear();
+    _items->clear();
 }

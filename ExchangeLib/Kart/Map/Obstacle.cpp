@@ -3,7 +3,7 @@
 // constructor
 Obstacle::Obstacle(QObject *parent): QObject{parent}
 {
-    qDebug() << "new Instance Obstacle";
+    //qDebug() << "new Instance Obstacle";
 }
 
 // destructor
@@ -86,6 +86,11 @@ int Obstacle::getX()
 int Obstacle::getY()
 {
     return this->_y;
+}
+
+QPoint Obstacle::getPos()
+{
+    return QPoint(_x, _y);
 }
 
 float Obstacle::getAngle()

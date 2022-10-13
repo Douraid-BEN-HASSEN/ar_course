@@ -26,7 +26,7 @@ Map::Map(QObject *parent): QObject{parent}
     this->_mapHeight = -1;
     this->_checkpoints = new QMap<int, Checkpoint*>();
     this->_obstacles = new QMap<int, Obstacle*>();
-
+    this->_lines = new QMap<int, QLineF*>();
     /* -- connect -- */
     /* todo implmente an interface and methode to connect */
     connect(MqttService::instance(), &MqttService::message, this, &Map::receivedMessage);
@@ -47,6 +47,8 @@ void Map::receivedMessage(QJsonObject message, QString topic) {
         this->deserialize(message);
     }
 }
+
+
 
 //  +-------+
 //  | UTILS |
@@ -142,6 +144,12 @@ void Map::addObstacle(Obstacle *pObstacle) {
     this->_obstacles->insert(pObstacle->getId(), pObstacle);
 }
 
+void Map::addLine(QLineF *pLine)
+{
+    this->_lines->insert( 5 , pLine);
+}
+
+
 /**
  *  +--------+
  *  | GETTER |
@@ -169,3 +177,8 @@ QMap<int, Obstacle*>* Map::getObstacles()
 }
 
 
+void Map::reste()
+{
+    this->_obstacles->clear();
+    this->_checkpoints->clear();
+}

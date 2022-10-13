@@ -8,11 +8,13 @@
 #include <Kart/Map/Map.h>
 #include <Kart/Game/Properties.h>
 #include <Kart/Player/GameMode.h>
+#include <Kart/Game/Vehicle.h>
 
 #include <Mqtt/MqttService.h>
 
 Widget::Widget(QWidget *parent): QWidget(parent)
 {
+    //ui->setupUi(this);
     mScene = new QGraphicsScene(this);
     mScene->setSceneRect(0, 0, 1000,1000);
     mView = new QGraphicsView(this);
@@ -21,6 +23,11 @@ Widget::Widget(QWidget *parent): QWidget(parent)
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(mView);
     setLayout(layout);
+    QGraphicsRectItem* rectItem = new QGraphicsRectItem(0,0,1000,1000);
+    rectItem->setBrush(Qt::gray);
+    mScene->addItem(rectItem);
+    rectItem->setPos(0,0);
+
 
     // L'objet que l on observe Field::instance()
     // regarder a chaque fois que cette méthode est appellé
@@ -38,14 +45,13 @@ void Widget::updateProperties() {
     ObstacleGraphics::radius = Properties::getInstance()->getCircleRadius();
 
     CheckpointGraphics::radiusCheckpoint = Properties::getInstance()->getCheckpointRadius();
+
+    BananaGraphics::radius = Properties::getInstance()->getBananaRadius();
+    BombGraphics::radius = Properties::getInstance()->getBombRadius();
+    RocketGraphics::radius = Properties::getInstance()->getRocketRadius();
 }
 
 void Widget::updateMap() {
-
-    qDebug() << "map";
-    //new QMap<int, Obstacle*>();
-    // Faire une boucle sur tous les obstacles
-    // Sur chaque obstacle on va devoir le créer + le placer
 
     for (Obstacle *iterObstacle : Map::getInstance()->getObstacles()->values()) {
         // Verifier si l object ObstacleRect* obstaclerect  exist
@@ -75,13 +81,12 @@ void Widget::updateMap() {
 
         checkpointGraphics->setPos(iterCheckpoint->getX(), iterCheckpoint->getY());
     }
-
+    mView->fitInView(mScene->sceneRect(),Qt::KeepAspectRatio);
 }
 
 void Widget::updateGameMode() {
 
     for (Player *iterPlayer : GameMode::getInstance()->_players->values()) {
-
         PlayerGraphics *playerGraphics = localPlayers.value(iterPlayer->getUuid());
 
         if (!playerGraphics) {
@@ -89,10 +94,31 @@ void Widget::updateGameMode() {
             mScene->addItem(playerGraphics);
             localPlayers.insert(playerGraphics->getUuid(), playerGraphics);
         }
-
-        playerGraphics->setPos(iterPlayer->getX(), iterPlayer->getY());
+        playerGraphics->updatePlayer(iterPlayer);
     }
 
+    for (ItemGraphics *graphicsItem : localItems) {
+        mScene->removeItem(graphicsItem);
+    }
+
+    localItems.clear();
+
+    for (Item *item : *GameMode::getInstance()->_items) {
+        ItemGraphics *itemGraphics = nullptr;
+
+        if (item->getType() == "banana") {
+            itemGraphics = new BananaGraphics(item);
+        } else if (item->getType() == "bomb") {
+            itemGraphics = new BombGraphics(item);
+        } else if (item->getType() == "rocket") {
+            itemGraphics = new RocketGraphics(item);
+        }
+
+        if (itemGraphics != nullptr) {
+            mScene->addItem(itemGraphics);
+            localItems.append(itemGraphics);
+        }
+    }
 }
 
 void Widget::resizeEvent(QResizeEvent *event)

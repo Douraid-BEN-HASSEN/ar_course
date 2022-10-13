@@ -1,18 +1,28 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "Kart/Game/Control.h"
+#define ENGINE_CYCLE 20
+#define ENGINE_FREQUENCY 1000 / ENGINE_CYCLE
+
 #include <QObject>
 
 #include <Mqtt/MqttService.h>
+#include <QVector2D>
 
 #include <Kart/Player/Player.h>
 #include <Kart/Player/GameMode.h>
 #include <Kart/Game/Control.h>
 #include <Kart/Game/Vehicle.h>
 #include <Kart/Map/Map.h>
+#include <Kart/Player/RegisterManager.h>
+#include <Kart/Game/Control.h>
 
-#include "GEngine.h"
+#include "2DGraphics/GEngine.h"
+
+#include "2DGraphics/GBanana.h"
+#include "2DGraphics/GBomb.h"
+#include "2DGraphics/GRocket.h"
+#include "Config/ConfigManager.h"
 
 class Engine : public QObject
 {
@@ -20,6 +30,26 @@ class Engine : public QObject
 public:
     explicit Engine(QObject *parent = nullptr);
     ~Engine();
+
+    static float CDRAG;
+    static float CRR;
+    static float GRAVITY;
+
+
+    QMap<QString, GPlayer*> getPlayersGraphics();
+
+    GEngine *getGEngine();
+    GameMode *getGameMode();
+    Properties *getProperties();
+    QDateTime getGameStartAt() const;
+
+    void startGame();
+    void endGame();
+
+
+public slots:
+    void reset();
+    void gameUpdate();
 
 private:
     MqttService *_mqtt;
@@ -37,16 +67,34 @@ private:
     void control_th();
     int getNextCheckpointId(int pCurrentCheckpoint);
 
-    // graphic
-    GEngine g_engine;
+    void spawnItem(GItem *);
+    void destoryItem(GItem *);
+    void lifeCycleItem(GItem *);
 
-    Checkpoint *testCheckpoint;
-    Obstacle *testObstacle;
-    Player *testPlayer;
+    QMap<int, GCheckpoint*> checkpointsGraphics;
+    QMap<int, GObstacle*> obstaclesGraphics;
+    QMap<QString, GPlayer*> playersGraphics;
+    QList<GItem*> itemsGraphics;
+
+    QList<QGraphicsItem*> collision(GPlayer*);
+    // retourne la valeur d'intersection entre 2 items
+    qreal intersectionVal(QGraphicsItem* pItem1, QGraphicsItem* pItem2);
+
+    // graphic
+    GEngine *g_engine;
+    QDateTime gameStartAt;
+
+    bool gameStarted = false;
 
 private slots:
     void receivedMessage(QJsonObject message, QString topic);
+    void registered(Register *);
+    void updateMap();
+    void initProperties();
 
+public: signals:
+    void updated();
+    void gameEnded();
 };
 
 #endif // ENGINE_H

@@ -15,34 +15,44 @@ Vehicle::Vehicle(int maxSpeed, float acceleration, int weight, float steeringAng
 
 Vehicle::Vehicle(QString type, QObject *parent): QObject{parent}
 {
+    if (type == "") {
+        this->type = "car";
+    }
+
     this->type = type;
 
     if(this->type == "bike") {
-        this->maxSpeed = 300;
+        this->maxSpeed = 100;
         this->acceleration = 10;
-        this->weight = 0;
-        this->steeringAngle = -1;
+        this->weight = 200;
+        this->height = 15;
+        this->width = 5;
+        this->steeringAngle = 1.0472; //60°
     } else if(this->type == "car") {
-        this->maxSpeed = 300;
+        this->maxSpeed = 75;
         this->acceleration = 10;
-        this->weight = 2;
-        this->steeringAngle = -1;
+        this->weight = 1500;
+        this->height = 20;
+        this->width = 10;
+        this->steeringAngle = 0.785398; // 45°
     } else if(this->type == "truck") {
-        this->maxSpeed = 300;
+        this->maxSpeed = 60;
         this->acceleration = 10;
-        this->weight = 38;
-        this->steeringAngle = -1;
+        this->weight = 3500;
+        this->height = 25;
+        this->width = 12;
+        this->steeringAngle = 0.523599; //30°
     }
 }
 
 QString Vehicle::toString() {
-    return QString("%1 | MS : %2 | A : %3 | W : %4 | SA : %5").arg(
+    return QString("MaxSpeed %1 | Acceleration : %2 | Weight : %3 | Height : %4, Width %5 | Angle : %6").arg(
                 QString::number(this->maxSpeed),
                 QString::number(this->acceleration),
                 QString::number(this->weight),
-                QString::number(this->steeringAngle),
-                QString::number(this->weight),
-                QString::number(this->height)
+                QString::number(this->height),
+                QString::number(this->width),
+                QString::number(this->steeringAngle)
                 );
 }
 
@@ -64,8 +74,8 @@ QJsonObject Vehicle::toJson() {
     jObject["maxSpeed"] = this->maxSpeed;
     jObject["acceleration"] = this->acceleration;
     jObject["weight"] = this->weight;
-    jObject["steeringAngle"] = this->weight;
-    jObject["width"] = this->weight;
+    jObject["steeringAngle"] = this->steeringAngle;
+    jObject["width"] = this->width;
     jObject["height"] = this->height;
 
     return jObject;

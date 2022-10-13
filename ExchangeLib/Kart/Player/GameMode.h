@@ -19,6 +19,7 @@
 #include <Kart/Game/Vehicle.h>
 #include <algorithm>
 #include <QTimer>
+#include <Kart/Player/Register.h>
 
 #include "Player.h"
 #include "Item.h"
@@ -37,7 +38,7 @@ public:
     const QString topic = "game";
 
     QMap<QString, Player*> *_players;
-    QList<Item*> *_items;
+    QMap<QString, Item*> *_items;
 
     // === UTILS ===
     void publish();
@@ -54,6 +55,8 @@ public:
     int getElapsedTime();
     QString getInfoMessage();
     QString getStatus();
+
+    void reset();
 
 private:
 

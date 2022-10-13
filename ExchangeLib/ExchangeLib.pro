@@ -1,4 +1,4 @@
-QT -= gui
+QT += gui
 QT += mqtt
 
 TEMPLATE = lib
@@ -9,7 +9,7 @@ DEFINES += \
     MQTTSERVICE_LIBRARY \
     MAP_LIBRARY CHECKPOINT_LIBRARY OBSTACLE_LIBRARY \
     PROPERTIES_LIBRARY VEHICLE_LIBRARY CONTROL_LIBRARY \
-    PLAYER_LIBRARY ITEM_LIBRARY GAMEMODE_LIBRARY REGISTER_LIBRARY
+    PLAYER_LIBRARY ITEM_LIBRARY GAMEMODE_LIBRARY REGISTER_LIBRARY REGISTERMANAGER_LIBRARY
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -26,6 +26,7 @@ SOURCES += \
     Kart/Player/Item.cpp \
     Kart/Player/Player.cpp \
     Kart/Player/Register.cpp \
+    Kart/Player/RegisterManager.cpp \
     Mqtt/MqttService.cpp
 
 HEADERS += \
@@ -39,6 +40,7 @@ HEADERS += \
     Kart/Player/Item.h \
     Kart/Player/Player.h \
     Kart/Player/Register.h \
+    Kart/Player/RegisterManager.h \
     Mqtt/MqttService.h
 
 # Default rules for deployment.

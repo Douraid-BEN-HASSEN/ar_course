@@ -94,27 +94,41 @@ bool MapAruco::setMapInfo(cv::Mat &pImage)
 
         itId = 0; // reset
 
+        float angleRad = 0;
+        float angleDeg = 0;
+
         // gestion des elements
         for (std::vector<std::vector< cv::Point2f >>::iterator nCorner = corners.begin(); nCorner != corners.end(); nCorner++) {
             // reset pos
             itemPos.x = 9999;
             itemPos.y = 0;
+            int angleIt = 0;
+            QPoint v1 = QPoint(0, 0);
+            QPoint v2 = QPoint(0, 0);
             for (std::vector< cv::Point2f >::iterator nPoint = nCorner->begin(); nPoint != nCorner->end(); nPoint++) {
+                // get angle value
+                if(angleIt == 0) {
+                    v1.setX(0 - nPoint->x);
+                    v1.setY(0 - nPoint->y);
+                    v2.setX(nCorner[0][0].x - nPoint->x);
+                }
+                if(angleIt == 2) {
+                    v2.setY(nCorner[0][0].y - nPoint->y);
+                }
+
                 if(ids[itId] > 9) {
                     if(nPoint->x < itemPos.x) itemPos.x = nPoint->x;
                     if(nPoint->y > itemPos.y) itemPos.y = nPoint->y;
                 }
+                angleIt++;
             }
 
-            // calcul angle
-            QPoint v1 = QPoint(topRight.x - cornerCenter[itId].x, topRight.y - cornerCenter[itId].y);
-            QPoint v2 = QPoint(itemPos.x - cornerCenter[itId].x, itemPos.y - cornerCenter[itId].y);
+
+            // calcul
             float num = (v1.x() * v2.x()) + (v1 .y() * v2.y());
             float den = sqrt(v1.x()*v1.x() + v1.y()*v1.y()) * sqrt(v2.x()*v2.x() + v2.y()*v2.y());
-            float angleRad = qAcos(num/den);
-            float angleDeg = angleRad * (180.0/3.141592653589793238463);
-
-            if(ids[itId] == 5) std::cout << angleDeg << std::endl;
+            angleRad = qAcos(num/den);
+            angleDeg = angleRad * (180.0/3.141592653589793238463);
 
             if((itemPos.x >= topleft.x && itemPos.x <= topRight.x) &&
                     (itemPos.y >= bottomLeft.y && itemPos.y <= topleft.y)) {

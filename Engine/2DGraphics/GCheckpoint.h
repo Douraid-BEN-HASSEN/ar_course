@@ -12,15 +12,20 @@ class GCheckpoint: public QGraphicsObject
 {
     Q_OBJECT
 public:
+    static QString type;
+
     static qreal radiusCheckpoint;
     GCheckpoint();
     GCheckpoint(Checkpoint *, QGraphicsItem *parent = nullptr);
-    Checkpoint *getCheckpoint();
 
     qreal getId() ;
     qreal getX();
     qreal getY();
     qreal getRadius();
+    Checkpoint *getCheckpoint();
+
+
+    QPainterPath shape() const;
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 

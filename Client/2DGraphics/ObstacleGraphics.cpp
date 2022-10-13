@@ -1,5 +1,4 @@
 #include "ObstacleGraphics.h"
-#include "Kart/Game/Properties.h"
 
 #include <QBrush>
 
@@ -49,12 +48,15 @@ QRectF ObstacleGraphics::boundingRect() const
     if((int)this->id % 2 == 1){
         return QRectF(-this->heigth/2, -this->width/2,this->heigth,this->width);
     } else {
-        return QRectF(-this->heigth/2, -this->width/2,this->radius*2,this->radius*2);
+        return QRectF(-this->radius, -this->radius, this->radius*2, this->radius*2);
     }
 }
 
 void ObstacleGraphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->setBrush(Qt::blue);
 
     if((int)this->getId() % 2 == 1){

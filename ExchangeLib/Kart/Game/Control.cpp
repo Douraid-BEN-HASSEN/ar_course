@@ -19,13 +19,18 @@ void Control::publish() {
     MqttService::instance()->publish(this->topic, this->serialize());
 }
 
+QString Control::toString()
+{
+    return QString("uuid : %1, angle : %2, power : %3").arg(this->_uuid, QString::number(_angle), QString::number(_power));
+}
+
 void Control::deserialize(const QJsonObject &jsonObject)
 {
     this->_uuid = jsonObject["uuid"].toString();
     this->_angle = jsonObject["angle"].toDouble();
     this->_power = jsonObject["power"].toInt();
 
-    QJsonObject itemsJObject = jsonObject["items"].toObject();
+    QJsonObject itemsJObject = jsonObject["buttons"].toObject();
 
     this->_buttons.insert("banana", itemsJObject["banana"].toBool());
     this->_buttons.insert("bomb", itemsJObject["bomb"].toBool());
@@ -71,14 +76,9 @@ void Control::setPower(int pPower)
     _power = pPower;
 }
 
-void Control::setButtonsVal(QString pKey, bool pVal)
+void Control::setButton(QString pKey, bool pVal)
 {
     _buttons[pKey] = pVal;
-}
-
-void Control::setButtons(QMap<QString, bool> pButtons)
-{
-    this->_buttons = pButtons;
 }
 
 QString Control::getUuid()
@@ -96,7 +96,7 @@ int Control::getPower()
     return _power;
 }
 
-bool Control::getButtonsVal(QString pKey)
+bool Control::getButton(QString pKey)
 {
     return _buttons[pKey];
 }
