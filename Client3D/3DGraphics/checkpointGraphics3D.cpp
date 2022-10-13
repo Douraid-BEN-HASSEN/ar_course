@@ -38,7 +38,7 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
    text2D->setColor(Qt::green);
    auto *textTransform = new Qt3DCore::QTransform(text2D);
    textTransform->setScale(20);
-   textTransform->setTranslation(QVector3D(this->x-((20*text2D->width())/3), 5.0 ,this->y));
+   textTransform->setTranslation(QVector3D(this->x-((20*text2D->width())/3), 15.0 ,this->y));
    //textTransform->setRotationY(50.0); //angle
    text2D->addComponent(textTransform);
 }

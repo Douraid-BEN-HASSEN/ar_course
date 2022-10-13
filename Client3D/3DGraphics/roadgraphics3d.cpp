@@ -87,23 +87,6 @@ void RoadGraphics3D::drawLine3D(Checkpoint *checkpoint1, Checkpoint *checkpoint2
     int b = checkpoint1->getY() - checkpoint2->getY();
     float distance = std::sqrt(a*a+b*b);
 
-    PlaneGraphics3D *planeEntity = new PlaneGraphics3D(mScene);
-
-    planeEntity->mesh()->setHeight(distance);
-    planeEntity->mesh()->setWidth(100.0f);
-
-    if(checkpoint1->getId() == 1) planeEntity->m_material->setDiffuse(QColor(Qt::blue));
-    else planeEntity->m_material->setDiffuse(QColor(Qt::green));
-
-    if(checkpoint1->getId() == 1) {
-        qDebug() << "distance => " << distance;
-
-        planeEntity->m_transform->setRotationY(angle+90.0);
-        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()+distance/2, 0, checkpoint1->getY()));
-    } else {
-        planeEntity->m_transform->setRotationY(angle+90.0);
-        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()+distance/2, 0, checkpoint1->getY()));
-    }
 
     /*if(checkpoint1->getX() > checkpoint2->getX() && checkpoint1->getY() >= checkpoint2->getY()) {
         qDebug() << checkpoint1->getId() << " 1";
