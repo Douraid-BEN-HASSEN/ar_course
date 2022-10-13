@@ -147,6 +147,11 @@ void Engine::control_th()
 
                     g_player->setState("finish");
                     this->_gameMode->_players->remove(player->getUuid());
+
+                    if(this->_gameMode->_players->isEmpty()){
+                        //appeler fonction endGame
+                        endGame();
+                    }
                 }
 
 //                qDebug() << player->getPseudo() << " Last checkpoint : " << player->getLastCheckpoint() << " nextCheckpoint : " << nextCheckpoint << " laps " << player->getCurrentLap();
@@ -519,6 +524,12 @@ void Engine::startGame()
 
 
     }
+}
+
+void Engine::endGame()
+{
+    //emetre signal de fin de partie
+    emit gameEnded();
 }
 
 void Engine::reset()

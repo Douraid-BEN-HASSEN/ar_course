@@ -44,6 +44,8 @@ public:
     QDateTime getGameStartAt() const;
 
     void startGame();
+    void endGame();
+
 
 public slots:
     void reset();
@@ -92,6 +94,7 @@ private slots:
 
 public: signals:
     void updated();
+    void gameEnded();
 };
 
 #endif // ENGINE_H

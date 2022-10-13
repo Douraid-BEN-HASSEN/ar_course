@@ -57,6 +57,9 @@ QRectF GCheckpoint::boundingRect() const
 
 void GCheckpoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->setBrush(Qt::green);
     //painter->drawEllipse(-this->getRadius(),-this->getRadius(),this->radius*2, this->radius*2);
     painter->drawEllipse(boundingRect());
