@@ -122,10 +122,12 @@ void Widget3D::updateMap3D() {
             checkpointGraphics3D = new CheckpointGraphics3D(iterCheckpoint, mScene, mapIds.value(iterCheckpoint->getId()));
             localCheckpoint3D.insert(checkpointGraphics3D->getId(), checkpointGraphics3D);
         }
-        // Modifier la position
-        checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint, playerCamFocus);
-        checkpointList.append(iterCheckpoint);
-        checkpointIds.append(iterCheckpoint->getId());
+        if(playerCamFocus != nullptr){
+            // Modifier la position
+            checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint, playerCamFocus);
+            checkpointList.append(iterCheckpoint);
+            checkpointIds.append(iterCheckpoint->getId());
+        }
     }
 
     if(keyLine == 0){
