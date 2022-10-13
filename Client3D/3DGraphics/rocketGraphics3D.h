@@ -30,8 +30,11 @@ class RocketGraphics3D: public Qt3DCore::QEntity
     Q_OBJECT
 public:
     RocketGraphics3D(Item *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
+    virtual ~RocketGraphics3D() {};
+
     void updateRocket3D(Item *);
-        QString getUuid();
+
+    QString getUuid();
     qreal getX();
     qreal getY();
     static qreal rocketRadius;

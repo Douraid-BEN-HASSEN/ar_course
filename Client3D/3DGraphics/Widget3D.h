@@ -57,6 +57,8 @@ class Widget3D: public Qt3DExtras::Qt3DWindow
 public:
     static Qt3DCore::QEntity *createScene();
     Widget3D();
+    virtual ~Widget3D() {};
+
     Qt3DCore::QEntity* mScene;
     Qt3DRender::QCamera *camerA;
 

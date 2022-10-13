@@ -9,7 +9,6 @@ Qt3DCore::QEntity* Widget3D::createScene()
     //En soi, un Qt3DCore::QEntity est une coquille vide.
     //Le comportement d'un objet Qt3DCore::QEntity est défini par les objets Qt3DCore::QComponent auxquels il fait référence.
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
-
     PlaneGraphics3D *planeEntity = new PlaneGraphics3D(rootEntity);
 
     return rootEntity;
@@ -39,18 +38,18 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
     this->setRootEntity(mScene);
 }
 
-
 void Widget3D::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_P) {
-      if(iterKey + 1 < GameMode::getInstance()->_players->size()){
-      iterKey ++;
-      }
+        if(iterKey + 1 < GameMode::getInstance()->_players->size()){
+            iterKey ++;
+        }
     }
+
     if (e->key() == Qt::Key_O) {
-      if(iterKey - 1 >= 0){
-      iterKey -- ;
-      }
+        if(iterKey - 1 >= 0){
+            iterKey -- ;
+        }
     }
 
     if (e->key() == Qt::Key_L){
@@ -63,9 +62,6 @@ void Widget3D::keyPressEvent(QKeyEvent *e)
     }
     qDebug() << "keyLine2 = " << keyLine;
 }
-
-
-
 
 void Widget3D::updateProperties3D(){
     ObstacleGraphics3D::heigth = Properties::getInstance()->getRectangleHeight();
@@ -122,6 +118,7 @@ void Widget3D::updateMap3D() {
             checkpointGraphics3D = new CheckpointGraphics3D(iterCheckpoint, mScene, mapIds.value(iterCheckpoint->getId()));
             localCheckpoint3D.insert(checkpointGraphics3D->getId(), checkpointGraphics3D);
         }
+
         if(playerCamFocus != nullptr){
             // Modifier la position
             checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint, playerCamFocus);
