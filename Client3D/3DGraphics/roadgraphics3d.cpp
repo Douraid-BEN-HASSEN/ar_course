@@ -11,7 +11,6 @@ RoadGraphics3D::RoadGraphics3D( Checkpoint *checkpoint1, Checkpoint *checkpoint2
 void RoadGraphics3D::drawLine(const QVector3D& start, const QVector3D& end, const QColor& color, Qt3DCore::QEntity *mScene, float ref)
 {
     auto *geometry = new Qt3DRender::QGeometry(mScene);
-
     QByteArray bufferBytes;
     bufferBytes.resize(3 * 2 * sizeof(float));
     float *positions = reinterpret_cast<float*>(bufferBytes.data());

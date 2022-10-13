@@ -1,6 +1,7 @@
 ﻿#include "Widget3D.h"
 
 static int iterKey = 0;
+static int keyLine = 1;
 
 Qt3DCore::QEntity* Widget3D::createScene()
 {
@@ -51,7 +52,19 @@ void Widget3D::keyPressEvent(QKeyEvent *e)
       iterKey -- ;
       }
     }
+
+    if (e->key() == Qt::Key_L){
+        qDebug() << "keyLine1 = " << keyLine;
+        if(keyLine == 1){
+            keyLine = 0;
+        } else {
+            keyLine = 1;
+        }
+    }
+    qDebug() << "keyLine2 = " << keyLine;
 }
+
+
 
 
 void Widget3D::updateProperties3D(){
@@ -115,23 +128,22 @@ void Widget3D::updateMap3D() {
         checkpointIds.append(iterCheckpoint->getId());
     }
 
-    //tracer des lignes entre les checkpoint
-    int nCheckpoint = Map::getInstance()->getCheckpoints()->count();
+    if(keyLine == 0){
+        //tracer des lignes entre les checkpoint
+        int nCheckpoint = Map::getInstance()->getCheckpoints()->count();
 
-    for(int it_checkpoint = 0; it_checkpoint < nCheckpoint; it_checkpoint++) {
-        if((it_checkpoint+1) >= nCheckpoint) {
-            RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
-                                checkpointListSorted[0],
-                                mScene);
-          //qDebug() << "je suis passé par  = " << checkpointListSorted[it_checkpoint] ;
-
-        } else {
-            RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
-                                checkpointListSorted[it_checkpoint+1],
-                                mScene);
-
-
+        for(int it_checkpoint = 0; it_checkpoint < nCheckpoint; it_checkpoint++) {
+            if((it_checkpoint+1) >= nCheckpoint) {
+                RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
+                                    checkpointListSorted[0],
+                                    mScene);
+            } else {
+                RoadGraphics3D rg3d(checkpointListSorted[it_checkpoint],
+                                    checkpointListSorted[it_checkpoint+1],
+                                    mScene);
+            }
         }
+
     }
 }
 
