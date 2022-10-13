@@ -70,7 +70,7 @@ private:
     QMap<QString, BananaGraphics3D*> localBanana3D;
     QMap<QString, RocketGraphics3D*> localRocket3D;
     QMap<QString, BombGraphics3D*> localBomb3D;
-    Player *playerCamFocus;
+    Player *playerCamFocus = nullptr;
 
 private slots:
     void updateMap3D();
