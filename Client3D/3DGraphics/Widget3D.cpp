@@ -87,7 +87,7 @@ void Widget3D::updateMap3D() {
             localCheckpoint3D.insert(checkpointGraphics3D->getId(), checkpointGraphics3D);
         }
         // Modifier la position
-        checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint);
+        checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint, playerCamFocus);
         checkpointList.append(iterCheckpoint);
         checkpointIds.append(iterCheckpoint->getId());
     }
