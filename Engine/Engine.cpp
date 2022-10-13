@@ -147,6 +147,11 @@ void Engine::control_th()
 
                     g_player->setState("finish");
                     this->_gameMode->_players->remove(player->getUuid());
+
+                    if(this->_gameMode->_players->isEmpty()){
+                        //appeler fonction endGame
+                        endGame();
+                    }
                 }
 
 //                qDebug() << player->getPseudo() << " Last checkpoint : " << player->getLastCheckpoint() << " nextCheckpoint : " << nextCheckpoint << " laps " << player->getCurrentLap();
@@ -424,15 +429,20 @@ void Engine::registered(Register *r) {
 
     Vehicle *veh = this->_properties->vehicleOptions->value(p->getVehicule());
 
-    qDebug() << veh->toString();
-
-    if (veh != nullptr) {
-        qDebug() << veh->getHeight();
-        qDebug() << veh->getWidth();
-
-        playerGraphics->setHeigth(veh->getHeight());
-        playerGraphics->setWidth(veh->getWidth());
+    if (veh == nullptr) {
+        veh = this->_properties->vehicleOptions->first();
     }
+
+    p->setVehicule(veh->getType());
+
+
+    qDebug() << veh->toString();
+    qDebug() << veh->getHeight();
+    qDebug() << veh->getWidth();
+
+    playerGraphics->setHeigth(veh->getHeight());
+    playerGraphics->setWidth(veh->getWidth());
+
 
     playerGraphics->setPos(p->getPosition());
 
@@ -514,6 +524,12 @@ void Engine::startGame()
 
 
     }
+}
+
+void Engine::endGame()
+{
+    //emetre signal de fin de partie
+    emit gameEnded();
 }
 
 void Engine::reset()

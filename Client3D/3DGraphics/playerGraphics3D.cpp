@@ -1,8 +1,6 @@
 #include "playerGraphics3D.h"
 //const QUrl url = QUrl("/home/pierre/Documents/ar_course/Client3D/vehiculeObj/DeLorean.obj");
 //QUrl car_path = QStringLiteral("qrc:/vehicule.qrc/DeLorean.obj");
-qreal PlayerGraphics3D::heigth = 100;
-qreal PlayerGraphics3D::width = 100;
 
 PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
@@ -15,9 +13,6 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     if (veh != nullptr){
         this->heigth = veh->getHeight();
         this->width = veh->getWidth();
-        qDebug() << "veh->getType() = " << veh->getType();
-        qDebug() << "this->heigth = " << this->heigth;
-        qDebug() << "this->width = " << this->width;
     }
 
     this->setParent(mScene);
@@ -61,11 +56,11 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
 
 void PlayerGraphics3D::followCameraPlayer(Player *playerCamFocus, Qt3DRender::QCamera *camerA){
 
-    int dist = 80;
+    int dist = 150 + heigth;
     float camX = playerCamFocus->getX() - cos(-playerCamFocus->getAngle()) * dist;
     float camY = playerCamFocus->getY() - sin(-playerCamFocus->getAngle()) * dist;
-    camerA->setPosition(QVector3D(camX, 10, camY));
-    camerA->setViewCenter(QVector3D(playerCamFocus->getX(), 10, playerCamFocus->getY()));
+    camerA->setPosition(QVector3D(camX, 40, camY));
+    camerA->setViewCenter( QVector3D(playerCamFocus->getX(), 40, playerCamFocus->getY()));
 }
 
 Player* PlayerGraphics3D::getPlayer()

@@ -42,14 +42,14 @@ public:
     qreal getHeigth();
     qreal getWidth();
     Player* getPlayer();
-    static qreal heigth;
-    static qreal width;
 
 
 private:
     QString uuid;
     qreal x;
     qreal y;
+    qreal heigth = 15;
+    qreal width = 5;
     Player *_player;
 signals:
 

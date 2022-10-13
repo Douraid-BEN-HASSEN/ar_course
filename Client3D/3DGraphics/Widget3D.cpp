@@ -22,6 +22,7 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
     camerA->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camerA->setPosition(QVector3D(0, 0, 4));
     camerA->setViewCenter(QVector3D(0, 0, 0));
+    //camerA->rotateAboutViewCenter(QQuaternion(-20, 0, 100, 0));
     camerA->setFarPlane(1000);
     //camerA->setFieldOfView(50);
 
@@ -30,7 +31,6 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
     camController->setLinearSpeed( 500.0f );
     camController->setLookSpeed( 180.0f );
     camController->setCamera(camerA);
-
 
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap3D()));
     connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties3D()));
@@ -54,7 +54,6 @@ void Widget3D::keyPressEvent(QKeyEvent *e)
 }
 
 
-
 void Widget3D::updateProperties3D(){
     ObstacleGraphics3D::heigth = Properties::getInstance()->getRectangleHeight();
     ObstacleGraphics3D::width = Properties::getInstance()->getRectangleWidth();
@@ -63,6 +62,7 @@ void Widget3D::updateProperties3D(){
     BananaGraphics3D::bananaRadius = Properties::getInstance()->getBananaRadius();
     RocketGraphics3D::rocketRadius = Properties::getInstance()->getRocketRadius();
     BombGraphics3D::bombRadius = Properties::getInstance()->getBombRadius();
+
 }
 
 void Widget3D::updateMap3D() {
@@ -101,6 +101,7 @@ void Widget3D::updateMap3D() {
             }
         }
     }
+
 
     for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
         CheckpointGraphics3D* checkpointGraphics3D = localCheckpoint3D.value(iterCheckpoint->getId());
