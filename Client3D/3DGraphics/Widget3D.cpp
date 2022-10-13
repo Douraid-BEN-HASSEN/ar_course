@@ -110,9 +110,12 @@ void Widget3D::updateMap3D() {
             localCheckpoint3D.insert(checkpointGraphics3D->getId(), checkpointGraphics3D);
         }
         // Modifier la position
-        checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint, playerCamFocus);
-        checkpointList.append(iterCheckpoint);
-        checkpointIds.append(iterCheckpoint->getId());
+        //qDebug() << "playerCamFocus" << playerCamFocus;
+        if(playerCamFocus != nullptr) {
+            checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint, playerCamFocus);
+            checkpointList.append(iterCheckpoint);
+            checkpointIds.append(iterCheckpoint->getId());
+        }
     }
 
     //tracer des lignes entre les checkpoint

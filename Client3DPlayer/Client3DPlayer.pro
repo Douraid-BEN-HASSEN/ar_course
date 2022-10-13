@@ -10,7 +10,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 DEPENDPATH += . ../ExchangeLib
-INCLUDEPATH += ../ExchangeLib ../Player
+INCLUDEPATH += ../ExchangeLib ../Player ../Client3D
 
 unix {
     LIBS += -L../ExchangeLib -lExchangeLib
@@ -55,3 +55,12 @@ HEADERS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+
+DISTFILES += \
+    ../Client3D/DeLorean.obj \
+    ../Client3D/Car.obj \
+
+RESOURCES += \
+    ../Client3D/vehicule.qrc
+

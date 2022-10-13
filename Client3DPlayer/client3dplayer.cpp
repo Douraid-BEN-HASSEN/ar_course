@@ -42,6 +42,7 @@ Client3DPlayer::Client3DPlayer(QWidget *parent)
 void Client3DPlayer::makeConnect() {
     connect(this->player_ui , SIGNAL(onRegisterButtonClick()) , this , SLOT(onRunFind()));
 }
+
 Client3DPlayer::~Client3DPlayer()
 {
 }
