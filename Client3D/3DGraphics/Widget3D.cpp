@@ -80,30 +80,38 @@ void Widget3D::updateMap3D() {
         obstacleGraphics3D->updateObstacle3D(iterObstacle);
     }
 
+    // trier les checkpoints
+    std::sort(checkpointIds.begin(), checkpointIds.end()); // sort id
+    QList<Checkpoint*> checkpointListSorted;
+    int iId = 0;
+
+    QMap<int, int> mapIds;
+
+    for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+        checkpointList.append(iterCheckpoint);
+        checkpointIds.append(iterCheckpoint->getId());
+    }
+
+    while((iId+1) < checkpointList.count()) {
+        for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+            if(checkpointIds[iId] == iterCheckpoint->getId()){
+                checkpointListSorted.append(iterCheckpoint);
+                mapIds.insert(iterCheckpoint->getId(), iId+1);
+                iId++;
+            }
+        }
+    }
+
     for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
         CheckpointGraphics3D* checkpointGraphics3D = localCheckpoint3D.value(iterCheckpoint->getId());
         if(!checkpointGraphics3D){
-            checkpointGraphics3D = new CheckpointGraphics3D(iterCheckpoint, mScene);
+            checkpointGraphics3D = new CheckpointGraphics3D(iterCheckpoint, mScene, mapIds.value(iterCheckpoint->getId()));
             localCheckpoint3D.insert(checkpointGraphics3D->getId(), checkpointGraphics3D);
         }
         // Modifier la position
         checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint, playerCamFocus);
         checkpointList.append(iterCheckpoint);
         checkpointIds.append(iterCheckpoint->getId());
-    }
-
-    // trier les checkpoints
-    std::sort(checkpointIds.begin(), checkpointIds.end()); // sort id
-    QList<Checkpoint*> checkpointListSorted;
-    int iId = 0;
-
-    while((iId+1) < checkpointList.count()) {
-        for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
-            if(checkpointIds[iId] == iterCheckpoint->getId()){
-                checkpointListSorted.append(iterCheckpoint);
-                iId++;
-            }
-        }
     }
 
     //tracer des lignes entre les checkpoint

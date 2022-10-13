@@ -3,7 +3,10 @@
 qreal CheckpointGraphics3D::radiusCheckpoint = 50;
 
 
-CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
+CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint,
+                                           Qt3DCore::QEntity *mScene,
+                                           int mapIndex,
+                                           QNode *parent): Qt3DCore::QEntity(parent)
 {
     qDebug() << "CheckpointGraphics3D " << mScene;
     this->id = checkpoint->getId();
@@ -27,21 +30,23 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
     this->addComponent(cylindreMesh);
     this->addComponent(cylindreTransform);
 
+    qDebug() << "ID=> " << checkpoint->getId();
+    qDebug() << "index=> " << mapIndex;
+
     // text
-   this->text2D = new Qt3DExtras::QText2DEntity();
-   this->text2D->setParent(mScene);
-   this->text2D->setFont(QFont("Times", 3, QFont::Bold));
-   this->text2D->setHeight(5);
-   this->text2D->setWidth(QString::number(checkpoint->getId()).length() * 3);
-   this->text2D->setText(QString::number(checkpoint->getId()));
+    this->text2D = new Qt3DExtras::QText2DEntity();
+    this->text2D->setParent(mScene);
+    this->text2D->setFont(QFont("Times", 3, QFont::Bold));
+    this->text2D->setHeight(5);
+    this->text2D->setWidth(QString::number(mapIndex).length() * 3);
+    this->text2D->setText(QString::number(mapIndex));
+    this->text2D->setColor(Qt::green);
+    this->textTransform = new Qt3DCore::QTransform();
+    this->textTransform->setScale(10);
 
-   this->text2D->setColor(Qt::green);
-
-   this->textTransform = new Qt3DCore::QTransform();
-   this->textTransform->setScale(20);
-   this->textTransform->setTranslation(QVector3D(this->x-((20*text2D->width())/3), 15.0 ,this->y));
-   this->textTransform->setRotationY(50);
-   this->text2D->addComponent(this->textTransform);
+    this->textTransform->setTranslation(QVector3D(this->x, 0,this->y-10));
+    //this->textTransform->setRotationY(50);
+    this->text2D->addComponent(this->textTransform);
 
 }
 
