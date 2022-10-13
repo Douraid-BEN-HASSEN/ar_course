@@ -5,6 +5,7 @@ qreal CheckpointGraphics3D::radiusCheckpoint = 50;
 
 CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
+    qDebug() << "CheckpointGraphics3D " << mScene;
     this->id = checkpoint->getId();
     this->x = checkpoint->getX();
     this->y = checkpoint->getY();
@@ -26,6 +27,20 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
     this->addComponent(cylindreMesh);
     this->addComponent(cylindreTransform);
 
+    // text
+    auto *text2D = new Qt3DExtras::QText2DEntity();
+   text2D->setParent(mScene);
+   text2D->setFont(QFont("Times", 3, QFont::Bold));
+   text2D->setHeight(5);
+   text2D->setWidth(QString::number(checkpoint->getId()).length() * 3);
+   text2D->setText(QString::number(checkpoint->getId()));
+
+   text2D->setColor(Qt::green);
+   auto *textTransform = new Qt3DCore::QTransform(text2D);
+   textTransform->setScale(20);
+   textTransform->setTranslation(QVector3D(this->x-((20*text2D->width())/3), 5.0 ,this->y));
+   //textTransform->setRotationY(50.0); //angle
+   text2D->addComponent(textTransform);
 }
 
 void CheckpointGraphics3D::updateCheckpoint3D(Checkpoint *checkpoint){
