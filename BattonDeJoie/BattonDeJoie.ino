@@ -26,14 +26,19 @@
 UUID uuid;
 
 /** credantial setup */
-const char *WIFI_SSID = "IMERIR_IoT";
-const char *WIFI_PASSWORD = "kohWoong5oox";
+const char *WIFI_SSID = "IMERIR_enculer";
+const char *WIFI_PASSWORD = "12345678";
 
 const char *MQTT_ENDPOINT = "omniumcorp.fr";     // Adresse IP du Broker Mqtt
-const char *MQTT_PUB_TOPIC = "game/properties";  // Topic
-const int MQTT_PORT = 1883;                      // Port utilisé par le Broker
+const char *MQTT_SUB_TOPIC = "game/properties";  // Topic
+const char *MQTT_REGISTER_TOPIC = "player/register";
+const char *MQTT_CONTROL_TOPIC = "player/control";
+
+
+const int MQTT_PORT = 1883;  // Port utilisé par le Broker
 long tps = 0;
 
+StaticJsonDocument<1024> properties_doc;
 StaticJsonDocument<1024> register_doc;
 StaticJsonDocument<1024> control_doc;
 
@@ -66,7 +71,29 @@ int get_key(unsigned int input);
 int catchButton();
 
 /** gameStatus */
-bool gameStarted = false;
+int gameStatus = 0;
+
+
+class Vehicule {
+
+public:
+    const char *name = "";
+    int maxSpeed = 0;
+    float acceleration = 0.;
+    int weight = 0;
+    float steeringAngle = -1;
+    int width = 0;
+    int height = 0;
+
+    String toString() {
+        return String(name) + " | " +  String(maxSpeed) + " | " + String(acceleration) + " | " + String(weight) + " | " + String(steeringAngle) + " | " + String(width) + " | " + String(height);
+    };
+
+};
+
+int vehicles_size = 0;
+Vehicule *vehicles[10];
+int vehicle_index = 0;
 
 void setup() {
 
@@ -76,7 +103,12 @@ void setup() {
     Wire.beginTransmission(MPU);
     Wire.write(0X6B);
     Wire.write(0);
-    Wire.endTransmission(true);
+    byte error = Wire.endTransmission(true);
+
+    Heltec.display->init();
+    Heltec.display->clear();
+    Heltec.display->drawString(0, 28, "Vroum Vroum started!");
+    Heltec.display->display();
 
     Serial.begin(9600);
     Serial.println("Started!");
@@ -84,25 +116,115 @@ void setup() {
     /* wifi connexion */
     while (!connectToWIFI(20, true)) {}
 
+    Heltec.display->clear();
+    Heltec.display->drawString(0, 28, "Wifi connected");
+    Heltec.display->display();
+
     Serial.println("\nConnected to the WiFi network");
     Serial.print("IP: ");
     Serial.println(WiFi.localIP());
 
     Serial.println("end setup!");
+
+    pubSubClient.setBufferSize(1024);
 }
 
 void loop() {
 
     /* mqtt connexion */
     if (WiFi.status() != WL_CONNECTED) {
+
+        Heltec.display->clear();
+        Heltec.display->drawString(0, 28, "Wifi disconnected!");
+        Heltec.display->display();
+
         while (!connectToWIFI(20, true)) {}
     }
 
     connectToMqtt();
 
-    if (!gameStarted) {
+    if (gameStatus == 0) {
 
-        if (catchButton() == RED_BUTTON) {
+        Heltec.display->clear();
+        Heltec.display->drawString(0, 28, "Wait Properties !");
+        Heltec.display->display();    
+
+        Serial.println(properties_doc["vehicleOptions"].size());
+        
+        if (properties_doc["vehicleOptions"].size() > 0) {
+
+            for (JsonPair kv : properties_doc["vehicleOptions"].as<JsonObject>()) {
+                JsonObject vehJson = kv.value().as<JsonObject>();
+                
+                static int i = 0;
+
+                Vehicule *vehicule = new Vehicule();
+
+                vehicule->name = kv.key().c_str();
+                vehicule->maxSpeed = vehJson["maxSpeed"].as<int>();
+                vehicule->acceleration = vehJson["acceleration"].as<float>();
+                vehicule->weight = vehJson["weight"].as<int>();
+                vehicule->steeringAngle = vehJson["steeringAngle"].as<float>();
+                vehicule->width = vehJson["width"].as<int>();
+                vehicule->height = vehJson["height"].as<int>();
+
+                vehicles[i] = vehicule;
+                
+                i++;
+
+                vehicles_size = i;
+
+                Serial.println(vehicule->toString());
+            }
+
+            pubSubClient.unsubscribe(MQTT_SUB_TOPIC);
+            gameStatus = 1;
+        }
+        
+        delay(1000);
+
+    } else if (gameStatus == 1) {
+
+        int button = catchButton();        
+
+        // Serial.print("Vhe : "); Serial.println(vehicle_index);
+
+        if (button != -1) {
+             Serial.print("button : "); Serial.println(button);
+        }
+
+        if (button == BLUE_BUTTON) {
+            Serial.print("select Previous : "); Serial.println(button);
+
+            vehicle_index--;
+            if (vehicle_index < 0) {
+                vehicle_index = vehicles_size - 1;
+            }
+
+            Serial.print("vehicle Index : ");  Serial.println(vehicle_index);
+            
+        } else if (button == GREEN_BUTTON) {
+
+            vehicle_index++;
+            if (vehicle_index >= vehicles_size) {
+                vehicle_index = 0;
+            }
+
+            Serial.print("vehicle Index : ");  Serial.println(vehicle_index);
+        }
+
+        Heltec.display->clear();
+        Heltec.display->drawString(20, 0, "Choice Vehicule");
+        Heltec.display->drawString(0, 20, String(vehicle_index));
+        Heltec.display->drawString(10, 20, vehicles[vehicle_index]->toString());
+        Heltec.display->display();
+
+
+        if (button == RED_BUTTON) {
+
+            Heltec.display->clear();
+            Heltec.display->drawString(0, 28, "Game started !");
+            Heltec.display->display();
 
             Serial.println("register player");
 
@@ -115,12 +237,12 @@ void loop() {
             String data;
             serializeJson(register_doc, data);
 
-            if (!pubSubClient.publish("player/register", data.c_str(), false)) {  // send json data to dynamoDbB topic
+            if (!pubSubClient.publish(MQTT_REGISTER_TOPIC, data.c_str(), false)) {  // send json data to dynamoDbB topic
                 Serial.println("ERROR??? :");
                 Serial.println(pubSubClient.state());  //Connected '0'
             } else {
                 Serial.println("player register upload");
-                gameStarted = true;
+                gameStatus = 2;
             }
 
             register_doc.clear();
@@ -131,38 +253,51 @@ void loop() {
         ReadGY521(gyRaw);
         ComputeAngle(gyRaw, PitchRollYaw);
 
-        uint8_t button = catchButton();        
+        int power = PitchRollYaw[2];
+
+        uint8_t button = catchButton();
+
+
+        if (get_key(analogRead(GPIO_BUTTONS)) == RED_BUTTON) {
+            power = 100;
+        }
+
+        if (get_key(analogRead(GPIO_BUTTONS)) == BLUE_BUTTON) {
+            power = -100;
+        }
 
         register_doc["uuid"] = uuid;
         register_doc["angle"] = PitchRollYaw[1] * DEG_TO_RAD;
-        register_doc["power"] = PitchRollYaw[2];
+        register_doc["power"] = power;
         register_doc["buttons"]["banana"] = button == GREEN_BUTTON;
         register_doc["buttons"]["bomb"] = button == WHITE_BUTTON;
         register_doc["buttons"]["rocket"] = button == YELLOW_BUTTON;
 
-        if (get_key(analogRead(GPIO_BUTTONS)) == RED_BUTTON) {
-            register_doc["power"] = 100;
+        Heltec.display->clear();
+
+        Heltec.display->drawString(0, 0, "angle");
+        Heltec.display->drawString(50, 0, String(PitchRollYaw[1]));
+
+        if (power >= 0) {
+            Heltec.display->drawString(20, 15, "front");
+        } else {
+            Heltec.display->drawString(20, 15, "back");
         }
 
-        if (get_key(analogRead(GPIO_BUTTONS)) == BLUE_BUTTON) {
-            register_doc["power"] = -100;
-        }
+        Heltec.display->drawProgressBar(10, 30, 100, 20, abs(power));
+
+        Heltec.display->display();
+
+
 
         String data;
         serializeJson(register_doc, data);
 
-        if (!pubSubClient.publish("player/control", data.c_str(), false)) {  // send json data to dynamoDbB topic
+        if (!pubSubClient.publish(MQTT_CONTROL_TOPIC, data.c_str(), false)) {
             Serial.println("ERROR??? :");
             Serial.println(pubSubClient.state());  //Connected '0'
-        } else {
-            Serial.println("player control");
         }
 
-
-        // mqttClient.setServer(mqtt_server, mqtt_port);
-        // mqttClient.setCallback(callback);
-        // mqttClient.subscribe("suce/pute");
-        // mqttClient.publish("suce/pute", "aaaa");
 
 
         // Serial.print("Pitch : ");
@@ -180,7 +315,7 @@ void loop() {
         // Serial.print(" Power Raw : ");
         // Serial.println(gyRaw[2]);
 
-        Serial.println(catchButton());
+        // Serial.println(catchButton());
 
         delay(100);
     }
@@ -209,6 +344,10 @@ bool connectToWIFI(int tryConnect, bool debug) {
         Serial.println("Connected");
     }
 
+    Heltec.display->clear();
+    Heltec.display->drawString(0, 28, "Wifi disconnected!");
+    Heltec.display->display();
+
     return true;
 }
 
@@ -216,6 +355,10 @@ bool connectToMqtt() {
     if (!pubSubClient.connected()) {
         Serial.print("PubSubClient connecting to : ");
         Serial.println(MQTT_ENDPOINT);
+
+        Heltec.display->clear();
+        Heltec.display->drawString(0, 28, "Mqtt Disconected");
+        Heltec.display->display();
 
         while (!pubSubClient.connected()) {
             Serial.print(pubSubClient.state());
@@ -225,8 +368,13 @@ bool connectToMqtt() {
         }
 
         Serial.println(" connected");
-        pubSubClient.subscribe(MQTT_PUB_TOPIC);
+        pubSubClient.subscribe(MQTT_SUB_TOPIC);
+
+        Heltec.display->clear();
+        Heltec.display->drawString(0, 28, "Mqtt connected!");
+        Heltec.display->display();
     }
+
 
     pubSubClient.loop();
     return true;
@@ -263,7 +411,20 @@ void ReadGY521(int16_t *gyRaw) {
     Wire.beginTransmission(MPU);
     Wire.write(0x3B);
     Wire.endTransmission(false);
-    Wire.requestFrom(MPU, 14, true);
+    byte error = Wire.requestFrom(MPU, 14, true);
+
+    if (error != 14) {
+        do {
+            Wire.beginTransmission(MPU);
+            Wire.write(0X6B);
+            Wire.write(0);
+            byte error = Wire.endTransmission(true);
+
+            delay(100);
+            Serial.print("error : ");
+            Serial.println(error);
+        } while (error != 0);
+    }
 
     for (int i = 0; i < DATA_BUFFER_SIZE; i++) {
         gyRaw[i] = (Wire.read() << 8 | Wire.read());
@@ -292,22 +453,15 @@ int get_key(unsigned int input) {
 }
 
 void callback(char *topic, byte *message, unsigned int length) {
-    Serial.print("Message arrived on topic: ");
-    Serial.print(topic);
-    Serial.print(". Message: ");
+
     String messageTemp;
 
     for (int i = 0; i < length; i++) {
-        Serial.print((char)message[i]);
+        // Serial.print((char)message[i]);
         messageTemp += (char)message[i];
     }
-    Serial.println();
 
-    // Feel free to add more if statements to control more GPIOs with MQTT
-
-    // If a message is received on the topic esp32/output, you check if the message is either "on" or "off".
-    // Changes the output state according to the message
-    if (String(topic) == "esp32/output") {
-        Serial.print("Changing output to ");
+    if (String(topic) == MQTT_SUB_TOPIC) {
+        deserializeJson(properties_doc, messageTemp.c_str());
     }
 }
