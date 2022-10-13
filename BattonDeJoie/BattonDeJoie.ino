@@ -30,10 +30,12 @@ uint8_t newMACAddress[] = {0x32, 0xAE, 0xA4, 0x07, 0x0D, 0x66};
 UUID uuid;
 
 /** credantial setup */
-const char *WIFI_SSID = "IMERIR_enculer";
-const char *WIFI_PASSWORD = "12345678";
-// const char *WIFI_SSID = "IMERIR_IoT";
-// const char *WIFI_PASSWORD = "kohWoong5oox";
+// const char *WIFI_SSID = "valentin";
+// const char *WIFI_PASSWORD = "valentin";
+// const char *WIFI_SSID = "IMERIR_enculer";
+// const char *WIFI_PASSWORD = "12345678";
+const char *WIFI_SSID = "IMERIR_IoT";
+const char *WIFI_PASSWORD = "kohWoong5oox";
 
 const char *MQTT_ENDPOINT = "omniumcorp.fr";     // Adresse IP du Broker Mqtt
 // const char *MQTT_ENDPOINT = "77.159.224.21";     // Adresse IP du Broker Mqtt
@@ -122,6 +124,8 @@ void setup() {
     Heltec.display->drawString(0, 28, "Vroum Vroum started!");
     Heltec.display->display();
 
+    delay(5000);
+
     Serial.begin(9600);
     Serial.println("Started!");
 
@@ -130,6 +134,7 @@ void setup() {
 
     Heltec.display->clear();
     Heltec.display->drawString(0, 28, "Wifi connected");
+    Heltec.display->drawString(0, 35, String(WiFi.localIP()));
     Heltec.display->display();
 
     Serial.println("\nConnected to the WiFi network");
@@ -281,7 +286,7 @@ void loop() {
         float _angle = 0;
 
         if (v->steeringAngle != -1) {
-            _angle = map(PitchRollYaw[1], -100, 100,  -v->steeringAngle, v->steeringAngle);
+            _angle = map(PitchRollYaw[1], -100, 100,  -v->steeringAngle * RAD_TO_DEG, v->steeringAngle * RAD_TO_DEG);
         } else {
             _angle = PitchRollYaw[1];
         }
@@ -346,6 +351,11 @@ bool connectToWIFI(int tryConnect, bool debug) {
     Serial.print("Waiting for connection to WiFi to : ");
     Serial.print(WIFI_SSID);
 
+    Heltec.display->clear();
+    Heltec.display->drawString(0, 28, "Try to connect wifi!");
+    Heltec.display->display();
+
+
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);  //WiFi connection
 
     if (debug) {
@@ -358,6 +368,10 @@ bool connectToWIFI(int tryConnect, bool debug) {
                 i++;
             } else {  //delay passed
                 Serial.println("Delay passed");
+                    Heltec.display->clear();
+                    Heltec.display->drawString(0, 28, "Wifi disconnected!");
+                    Heltec.display->display();
+
                 return false;
             }
         }
@@ -365,7 +379,7 @@ bool connectToWIFI(int tryConnect, bool debug) {
     }
 
     Heltec.display->clear();
-    Heltec.display->drawString(0, 28, "Wifi disconnected!");
+    Heltec.display->drawString(0, 28, "Wifi connected!");
     Heltec.display->display();
 
     return true;
@@ -381,9 +395,20 @@ bool connectToMqtt() {
         Heltec.display->display();
 
         while (!pubSubClient.connected()) {
-            Serial.print(pubSubClient.state());
+
+            int error = pubSubClient.state();
+            Serial.print(error);
+
+            Heltec.display->clear();
+            Heltec.display->drawString(0, 28, "Mqtt Disconected");
+            Heltec.display->drawString(90, 28, String(error));
+            Heltec.display->display();
+            
             delay(100);
             Serial.print(".");
+
+
+
             pubSubClient.connect("ladg");
         }
 
