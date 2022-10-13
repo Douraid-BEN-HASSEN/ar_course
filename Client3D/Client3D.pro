@@ -22,6 +22,7 @@ win32 {
 SOURCES += \
     3DGraphics/Widget3D.cpp \
     3DGraphics/checkpointGraphics3D.cpp \
+    3DGraphics/gone.cpp \
     3DGraphics/obstacleGraphics3D.cpp \
     3DGraphics/planeGraphics3D.cpp \
     3DGraphics/playerGraphics3D.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
 HEADERS += \
     3DGraphics/Widget3D.h \
     3DGraphics/checkpointGraphics3D.h \
+    3DGraphics/gone.h \
     3DGraphics/obstacleGraphics3D.h \
     3DGraphics/planeGraphics3D.h \
     3DGraphics/playerGraphics3D.h \

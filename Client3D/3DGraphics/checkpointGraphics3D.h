@@ -23,10 +23,9 @@
 #include <Qt3DExtras/QTorusMesh>
 #include <Qt3DExtras/QCuboidMesh>
 #include <QPropertyAnimation>
-
+#include <Qt3DExtras/QText2DEntity>
 #include <QDiffuseSpecularMaterial>
 #include <QOrbitCameraController>
-
 #include <Kart/Map/Checkpoint.h>
 
 class CheckpointGraphics3D: public Qt3DCore::QEntity
