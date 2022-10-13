@@ -15,6 +15,9 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     if (veh != nullptr){
         this->heigth = veh->getHeight();
         this->width = veh->getWidth();
+        qDebug() << "veh->getType() = " << veh->getType();
+        qDebug() << "this->heigth = " << this->heigth;
+        qDebug() << "this->width = " << this->width;
     }
 
     this->setParent(mScene);
@@ -27,10 +30,11 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
 
     Qt3DRender::QMesh *cuboid = new Qt3DRender::QMesh();
     cuboid->setSource(QStringLiteral("qrc:/Car.obj"));
+    //cuboid->setGeometry()
 
     Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
     cuboidTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
-    cuboidTransform->setScale3D(QVector3D(width, width, heigth));
+    cuboidTransform->setScale3D(QVector3D(this->width, this->width, this->heigth));
     cuboidTransform->setRotationY(qRadiansToDegrees(player->getAngle()) + 90);
     this->addComponent(material);
     this->addComponent(cuboid);
@@ -45,7 +49,7 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
     Qt3DCore::QTransform *palyerTransform = new Qt3DCore::QTransform();
     palyerTransform->setTranslation(QVector3D(this->getX(), 0.0f, this->getY()));
 
-    //palyerTransform->setScale3D(QVector3D(width, width, heigth));
+    palyerTransform->setScale3D(QVector3D(width, width, heigth));
 
     palyerTransform->setRotationY(qRadiansToDegrees(player->getAngle()) + 90);
 

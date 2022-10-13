@@ -9,6 +9,8 @@ Qt3DCore::QEntity* Widget3D::createScene()
     //Le comportement d'un objet Qt3DCore::QEntity est défini par les objets Qt3DCore::QComponent auxquels il fait référence.
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
 
+    PlaneGraphics3D *planeEntity = new PlaneGraphics3D(rootEntity);
+
     return rootEntity;
 }
 
