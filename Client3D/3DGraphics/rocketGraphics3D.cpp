@@ -6,6 +6,7 @@ RocketGraphics3D::RocketGraphics3D(Item *rocket, Qt3DCore::QEntity *mScene, QNod
 {
     this->x = rocket->getX();
     this->y = rocket->getY();
+    this->uuid = rocket->getUuid();
 
     this->setParent(mScene);
 

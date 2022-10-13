@@ -2,23 +2,23 @@
 
 RoadGraphics3D::RoadGraphics3D( Checkpoint *checkpoint1, Checkpoint *checkpoint2, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
-    this->drawLine({ (const float)checkpoint1->getX(), 0, (const float)checkpoint1->getY() },
-                   { (const float)checkpoint2->getX(), 0, (const float)checkpoint2->getY() },
-                   Qt::blue,
+    this->drawLine({ (const float)checkpoint1->getX(), 3, (const float)checkpoint1->getY() },
+                   { (const float)checkpoint2->getX(), 3, (const float)checkpoint2->getY() },
+                   Qt::red,
                    mScene);
 }
 
-void RoadGraphics3D::drawLine(const QVector3D& start, const QVector3D& end, const QColor& color, Qt3DCore::QEntity *_rootEntity)
+void RoadGraphics3D::drawLine(const QVector3D& start, const QVector3D& end, const QColor& color, Qt3DCore::QEntity *mScene, float ref)
 {
-    auto *geometry = new Qt3DRender::QGeometry(_rootEntity);
+    auto *geometry = new Qt3DRender::QGeometry(mScene);
 
     QByteArray bufferBytes;
     bufferBytes.resize(3 * 2 * sizeof(float));
     float *positions = reinterpret_cast<float*>(bufferBytes.data());
-    *positions++ = start.x();
+    *positions++ = start.x()+ref;
     *positions++ = start.y();
     *positions++ = start.z();
-    *positions++ = end.x();
+    *positions++ = end.x()+ref;
     *positions++ = end.y();
     *positions++ = end.z();
 
@@ -51,13 +51,22 @@ void RoadGraphics3D::drawLine(const QVector3D& start, const QVector3D& end, cons
     indexAttribute->setCount(2);
     geometry->addAttribute(indexAttribute);
 
-    auto *line = new Qt3DRender::QGeometryRenderer(_rootEntity);
+    auto *line = new Qt3DRender::QGeometryRenderer(mScene);
     line->setGeometry(geometry);
     line->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-    auto *material = new Qt3DExtras::QPhongMaterial(_rootEntity);
+    auto *material = new Qt3DExtras::QPhongMaterial(mScene);
     material->setAmbient(color);
 
-    auto *lineEntity = new Qt3DCore::QEntity(_rootEntity);
+    auto *lineEntity = new Qt3DCore::QEntity(mScene);
     lineEntity->addComponent(line);
     lineEntity->addComponent(material);
+}
+
+void RoadGraphics3D::drawLine3D(Checkpoint *checkpoint1, Checkpoint *checkpoint2, Qt3DCore::QEntity *mScene)
+{
+    float angle = QLineF(QPointF(checkpoint1->getX(), checkpoint1->getY()),
+                                         QPointF(checkpoint2->getX(), checkpoint2->getY())).angle();
+    int a = checkpoint1->getX() - checkpoint2->getX();
+    int b = checkpoint1->getY() - checkpoint2->getY();
+    float distance = std::sqrt(a*a+b*b);
 }

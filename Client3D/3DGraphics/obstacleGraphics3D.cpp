@@ -13,7 +13,6 @@ ObstacleGraphics3D::ObstacleGraphics3D(Obstacle *obstacle, Qt3DCore::QEntity *mS
     this->x = obstacle->getX();
     this->y = obstacle->getY();
     this->angle = obstacle->getAngle();
-    qDebug() << "angle obstacle = " << angle;
 
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::blue));

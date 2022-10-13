@@ -6,6 +6,7 @@ BananaGraphics3D::BananaGraphics3D(Item *banana, Qt3DCore::QEntity *mScene, QNod
 {
     this->x = banana->getX();
     this->y = banana->getY();
+    this->uuid = banana->getUuid();
 
     this->setParent(mScene);
 

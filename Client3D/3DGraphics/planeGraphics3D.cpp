@@ -9,10 +9,6 @@ PlaneGraphics3D::PlaneGraphics3D(Qt3DCore::QEntity *rootEntity, Qt3DCore::QNode 
     material->setAmbient(QColor(Qt::gray));
     material->shininess();
 
-    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(rootEntity);
-    light->setColor("white");
-    light->setIntensity(30);
-
     this->setParent(rootEntity);
 
     Qt3DExtras::QPlaneMesh *planeMesh = new Qt3DExtras::QPlaneMesh();
@@ -25,6 +21,5 @@ PlaneGraphics3D::PlaneGraphics3D(Qt3DCore::QEntity *rootEntity, Qt3DCore::QNode 
     this->addComponent(material);
     this->addComponent(planeMesh);
     this->addComponent(planeTransform);
-    this->addComponent(light);
 
 }

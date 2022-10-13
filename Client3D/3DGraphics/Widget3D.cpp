@@ -22,6 +22,7 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
     camerA->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camerA->setPosition(QVector3D(0, 0, 4));
     camerA->setViewCenter(QVector3D(0, 0, 0));
+    //camerA->rotateAboutViewCenter(QQuaternion(-20, 0, 100, 0));
     camerA->setFarPlane(1000);
     //camerA->setFieldOfView(50);
 
@@ -30,7 +31,6 @@ Widget3D::Widget3D(): Qt3DExtras::Qt3DWindow()
     camController->setLinearSpeed( 500.0f );
     camController->setLookSpeed( 180.0f );
     camController->setCamera(camerA);
-
 
     connect(Map::getInstance(), SIGNAL(updated()), this, SLOT(updateMap3D()));
     connect(Properties::getInstance(), SIGNAL(updated()), this, SLOT(updateProperties3D()));
@@ -54,7 +54,6 @@ void Widget3D::keyPressEvent(QKeyEvent *e)
 }
 
 
-
 void Widget3D::updateProperties3D(){
     ObstacleGraphics3D::heigth = Properties::getInstance()->getRectangleHeight();
     ObstacleGraphics3D::width = Properties::getInstance()->getRectangleWidth();
@@ -63,6 +62,7 @@ void Widget3D::updateProperties3D(){
     BananaGraphics3D::bananaRadius = Properties::getInstance()->getBananaRadius();
     RocketGraphics3D::rocketRadius = Properties::getInstance()->getRocketRadius();
     BombGraphics3D::bombRadius = Properties::getInstance()->getBombRadius();
+
 }
 
 void Widget3D::updateMap3D() {
@@ -80,30 +80,39 @@ void Widget3D::updateMap3D() {
         obstacleGraphics3D->updateObstacle3D(iterObstacle);
     }
 
-    for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
-        CheckpointGraphics3D* checkpointGraphics3D = localCheckpoint3D.value(iterCheckpoint->getId());
-        if(!checkpointGraphics3D){
-            checkpointGraphics3D = new CheckpointGraphics3D(iterCheckpoint, mScene);
-            localCheckpoint3D.insert(checkpointGraphics3D->getId(), checkpointGraphics3D);
-        }
-        // Modifier la position
-        checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint);
-        checkpointList.append(iterCheckpoint);
-        checkpointIds.append(iterCheckpoint->getId());
-    }
-
     // trier les checkpoints
     std::sort(checkpointIds.begin(), checkpointIds.end()); // sort id
     QList<Checkpoint*> checkpointListSorted;
     int iId = 0;
 
+    QMap<int, int> mapIds;
+
+    for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+        checkpointList.append(iterCheckpoint);
+        checkpointIds.append(iterCheckpoint->getId());
+    }
+
     while((iId+1) < checkpointList.count()) {
         for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
             if(checkpointIds[iId] == iterCheckpoint->getId()){
                 checkpointListSorted.append(iterCheckpoint);
+                mapIds.insert(iterCheckpoint->getId(), iId+1);
                 iId++;
             }
         }
+    }
+
+
+    for (Checkpoint *iterCheckpoint : Map::getInstance()->getCheckpoints()->values()) {
+        CheckpointGraphics3D* checkpointGraphics3D = localCheckpoint3D.value(iterCheckpoint->getId());
+        if(!checkpointGraphics3D){
+            checkpointGraphics3D = new CheckpointGraphics3D(iterCheckpoint, mScene, mapIds.value(iterCheckpoint->getId()));
+            localCheckpoint3D.insert(checkpointGraphics3D->getId(), checkpointGraphics3D);
+        }
+        // Modifier la position
+        checkpointGraphics3D->updateCheckpoint3D(iterCheckpoint, playerCamFocus);
+        checkpointList.append(iterCheckpoint);
+        checkpointIds.append(iterCheckpoint->getId());
     }
 
     //tracer des lignes entre les checkpoint
@@ -124,7 +133,6 @@ void Widget3D::updateMap3D() {
 
         }
     }
-
 }
 
 void Widget3D::updateGameMode3D() {
@@ -145,81 +153,66 @@ void Widget3D::updateGameMode3D() {
         iter++;
     }
 
-    for (Item *iterItem : *GameMode::getInstance()->_items) {
+    for (Item *iterItem : GameMode::getInstance()->_items->values()){
+        BananaGraphics3D* bananaGraphics3D = localBanana3D.value(iterItem->getUuid());
+        RocketGraphics3D* rocketGraphics3D = localRocket3D.value(iterItem->getUuid());
+        BombGraphics3D* bombGraphics3D = localBomb3D.value(iterItem->getUuid());
 
-
-
-            qDebug() << "iterItem->getUuid() = " << iterItem->getUuid();
-            BananaGraphics3D* bananaGraphics3D = localBanana3D.value(iterItem->getUuid());
-            RocketGraphics3D* rocketGraphics3D = localRocket3D.value(iterItem->getUuid());
-            BombGraphics3D* bombGraphics3D = localBomb3D.value(iterItem->getUuid());
-
-            if(iterItem->getType() == "banana"){
-                if(!bananaGraphics3D){
-                    bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
-                    localBanana3D.insert(iterItem->getUuid(), bananaGraphics3D);
-                } else {
-
-                }
-                bananaGraphics3D->updateBanana3D(iterItem);
-
+        if(iterItem->getType() == "banana"){
+            if(!bananaGraphics3D){
+                bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
+                localBanana3D.insert(bananaGraphics3D->getUuid(), bananaGraphics3D);
             }
+            bananaGraphics3D->updateBanana3D(iterItem);
+        }
 
-            if(iterItem->getType() == "rocket"){
-                if(!rocketGraphics3D){
+        if(iterItem->getType() == "rocket"){
+            if(!rocketGraphics3D){
                 rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
                 localRocket3D.insert(rocketGraphics3D->getUuid(), rocketGraphics3D);
-                }
-                rocketGraphics3D->updateRocket3D(iterItem);
             }
+            rocketGraphics3D->updateRocket3D(iterItem);
+        }
 
-            if(iterItem->getType() == "bomb"){
-                if(!bombGraphics3D){
-                    bombGraphics3D = new BombGraphics3D(iterItem, mScene);
-                    localBomb3D.insert(rocketGraphics3D->getUuid(), bombGraphics3D);
-                }
-                bombGraphics3D->updateBomb3D(iterItem);
+        if(iterItem->getType() == "bomb"){
+            if(!bombGraphics3D){
+                bombGraphics3D = new BombGraphics3D(iterItem, mScene);
+                localBomb3D.insert(bombGraphics3D->getUuid(), bombGraphics3D);
             }
-        }
-
-    /*
-    for (BananaGraphics3D *iterLocalBanana : localBanana3D){
-        //iterLocalBanana->setEnabled(false);
-        delete(iterLocalBanana);
-    }
-    for (RocketGraphics3D *iterLocalRocket : localRocket3D){
-        //iterLocalRocket->setEnabled(false);
-        delete(iterLocalRocket);
-    }
-
-    for (BombGraphics3D *iterLocalBomb : localBomb3D){
-        //iterLocalBomb->setEnabled(false);
-        delete(iterLocalBomb);
-    }
-
-    localBanana3D.clear();
-    localRocket3D.clear();
-    localBomb3D.clear();
-
-    for (Item *iterItem : *GameMode::getInstance()->_items) {
-        if(iterItem->getType() == "banana" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
-            BananaGraphics3D *bananaGraphics3D = new BananaGraphics3D(iterItem, mScene);
-            localBanana3D.append(bananaGraphics3D);
-        }
-
-        if(iterItem->getType() == "rocket" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
-            RocketGraphics3D *rocketGraphics3D = new RocketGraphics3D(iterItem, mScene);
-            localRocket3D.append(rocketGraphics3D);
-        }
-
-        if(iterItem->getType() == "bomb" && iterItem->getX() < 1000 &&  iterItem->getY() < 1000 && iterItem->getX() > -1000 && iterItem->getY() > -1000){
-            BombGraphics3D *bombGraphics3D = new BombGraphics3D(iterItem, mScene);
-            localBomb3D.append(bombGraphics3D);
+            bombGraphics3D->updateBomb3D(iterItem);
         }
     }
 
-    */
+   for(BananaGraphics3D *bananaLocal : localBanana3D.values()){
+        Item *itemCondition = GameMode::getInstance()->_items->value(bananaLocal->getUuid());
+        if(!itemCondition){
+            bananaLocal->setEnabled(false);
+            localBanana3D.remove(bananaLocal->getUuid());
+        }
+   }
 
+   for(RocketGraphics3D *rocketLocal : localRocket3D.values()){
+        Item *itemCondition = GameMode::getInstance()->_items->value(rocketLocal->getUuid());
+        if(!itemCondition){
+            rocketLocal->setEnabled(false);
+            localRocket3D.remove(rocketLocal->getUuid());
+        }
+   }
 
+   for(BombGraphics3D *bombLocal : localBomb3D.values()){
+        Item *itemCondition = GameMode::getInstance()->_items->value(bombLocal->getUuid());
+        if(!itemCondition || bombLocal->getX() > 1000 ||  bombLocal->getY() > 1000 || bombLocal->getX() < -1000 || bombLocal->getY() < -1000){
+            bombLocal->setEnabled(false);
+            localBomb3D.remove(bombLocal->getUuid());
+        }
+   }
 
 }
+
+
+
+
+
+
+
+
