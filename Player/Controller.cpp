@@ -152,12 +152,10 @@ void Controller::handleReleaseKeyEvent(QKeyEvent *key)
         this->sendMessageControl(0);
         break ;
     case Qt::Key_Z :
-        qDebug() << "test !!" ;
         this->power = 0 ;
         this->sendMessageControl( 0);
         break ;
     case Qt::Key_S :
-        qDebug() << "test !!" ;
         this->power = 0 ;
         this->sendMessageControl( 0);
         break ;
