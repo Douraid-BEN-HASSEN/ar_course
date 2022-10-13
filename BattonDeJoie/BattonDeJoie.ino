@@ -5,6 +5,8 @@
 
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include <esp_wifi.h>
+
 #include <PubSubClient.h>
 #include "UUID.h"
 #include <ArduinoJson.h>
@@ -23,13 +25,20 @@
 #define RED_BUTTON 3
 #define WHITE_BUTTON 4
 
+uint8_t newMACAddress[] = {0x32, 0xAE, 0xA4, 0x07, 0x0D, 0x66};
+
 UUID uuid;
 
 /** credantial setup */
 const char *WIFI_SSID = "IMERIR_enculer";
 const char *WIFI_PASSWORD = "12345678";
+// const char *WIFI_SSID = "IMERIR_IoT";
+// const char *WIFI_PASSWORD = "kohWoong5oox";
 
 const char *MQTT_ENDPOINT = "omniumcorp.fr";     // Adresse IP du Broker Mqtt
+// const char *MQTT_ENDPOINT = "77.159.224.21";     // Adresse IP du Broker Mqtt
+// const char *MQTT_ENDPOINT = "gerald.imerir.org";     // Adresse IP du Broker Mqtt
+
 const char *MQTT_SUB_TOPIC = "game/properties";  // Topic
 const char *MQTT_REGISTER_TOPIC = "player/register";
 const char *MQTT_CONTROL_TOPIC = "player/control";
@@ -74,7 +83,7 @@ int catchButton();
 int gameStatus = 0;
 
 
-class Vehicule {
+class Vehicle {
 
 public:
     const char *name = "";
@@ -86,13 +95,13 @@ public:
     int height = 0;
 
     String toString() {
-        return String(name) + " | " +  String(maxSpeed) + " | " + String(acceleration) + " | " + String(weight) + " | " + String(steeringAngle) + " | " + String(width) + " | " + String(height);
+        return String(name) + " | " +  String(maxSpeed) + " | " + String(acceleration) + "\n | " + String(weight) + " | " + String(steeringAngle) + " | " + String(width) + " | " + String(height);
     };
 
 };
 
 int vehicles_size = 0;
-Vehicule *vehicles[10];
+Vehicle *vehicles[10];
 int vehicle_index = 0;
 
 void setup() {
@@ -104,6 +113,9 @@ void setup() {
     Wire.write(0X6B);
     Wire.write(0);
     byte error = Wire.endTransmission(true);
+    WiFi.mode(WIFI_STA);
+    esp_wifi_set_mac(WIFI_IF_STA, &newMACAddress[0]);
+
 
     Heltec.display->init();
     Heltec.display->clear();
@@ -148,8 +160,6 @@ void loop() {
         Heltec.display->clear();
         Heltec.display->drawString(0, 28, "Wait Properties !");
         Heltec.display->display();    
-
-        Serial.println(properties_doc["vehicleOptions"].size());
         
         if (properties_doc["vehicleOptions"].size() > 0) {
 
@@ -158,23 +168,23 @@ void loop() {
                 
                 static int i = 0;
 
-                Vehicule *vehicule = new Vehicule();
+                Vehicle *vehicle = new Vehicle();
 
-                vehicule->name = kv.key().c_str();
-                vehicule->maxSpeed = vehJson["maxSpeed"].as<int>();
-                vehicule->acceleration = vehJson["acceleration"].as<float>();
-                vehicule->weight = vehJson["weight"].as<int>();
-                vehicule->steeringAngle = vehJson["steeringAngle"].as<float>();
-                vehicule->width = vehJson["width"].as<int>();
-                vehicule->height = vehJson["height"].as<int>();
+                vehicle->name = kv.key().c_str();
+                vehicle->maxSpeed = vehJson["maxSpeed"].as<int>();
+                vehicle->acceleration = vehJson["acceleration"].as<float>();
+                vehicle->weight = vehJson["weight"].as<int>();
+                vehicle->steeringAngle = vehJson["steeringAngle"].as<float>();
+                vehicle->width = vehJson["width"].as<int>();
+                vehicle->height = vehJson["height"].as<int>();
 
-                vehicles[i] = vehicule;
+                vehicles[i] = vehicle;
                 
                 i++;
 
                 vehicles_size = i;
 
-                Serial.println(vehicule->toString());
+                Serial.println(vehicle->toString());
             }
 
             pubSubClient.unsubscribe(MQTT_SUB_TOPIC);
@@ -214,7 +224,7 @@ void loop() {
         }
 
         Heltec.display->clear();
-        Heltec.display->drawString(20, 0, "Choice Vehicule");
+        Heltec.display->drawString(20, 0, "Choice Vehicle");
         Heltec.display->drawString(0, 20, String(vehicle_index));
         Heltec.display->drawString(10, 20, vehicles[vehicle_index]->toString());
         Heltec.display->display();
@@ -266,8 +276,18 @@ void loop() {
             power = -100;
         }
 
+        Vehicle *v = vehicles[vehicle_index];
+
+        float _angle = 0;
+
+        if (v->steeringAngle != -1) {
+            _angle = map(PitchRollYaw[1], -100, 100,  -v->steeringAngle, v->steeringAngle);
+        } else {
+            _angle = PitchRollYaw[1];
+        }
+
         register_doc["uuid"] = uuid;
-        register_doc["angle"] = PitchRollYaw[1] * DEG_TO_RAD;
+        register_doc["angle"] = _angle * DEG_TO_RAD;
         register_doc["power"] = power;
         register_doc["buttons"]["banana"] = button == GREEN_BUTTON;
         register_doc["buttons"]["bomb"] = button == WHITE_BUTTON;
@@ -276,7 +296,7 @@ void loop() {
         Heltec.display->clear();
 
         Heltec.display->drawString(0, 0, "angle");
-        Heltec.display->drawString(50, 0, String(PitchRollYaw[1]));
+        Heltec.display->drawString(50, 0, String(_angle));
 
         if (power >= 0) {
             Heltec.display->drawString(20, 15, "front");
