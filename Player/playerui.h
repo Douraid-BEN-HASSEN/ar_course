@@ -25,7 +25,6 @@ class PlayerUi : public QWidget
     Q_OBJECT
 
 private :
-    Controller *_controller;
 
     QStackedWidget * stackedWidget;
     QString uuid ;
@@ -90,6 +89,9 @@ protected :
     void keyPressEvent(QKeyEvent *e) ;
     void keyReleaseEvent(QKeyEvent *e);
 
+signals :
+    void onRegisterButtonClick() ;
+
 private slots :
     //Call when the user validate the initial form
     void buttonPlayPressed() ;
@@ -101,6 +103,8 @@ private slots :
     void onRunFind() ;
 
 public:
+    Controller *_controller;
+
     PlayerUi(QWidget *parent = nullptr);
     void makeMqttMessage(int keyAction );
     void updateLabel();

@@ -33,6 +33,7 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint,
     qDebug() << "ID=> " << checkpoint->getId();
     qDebug() << "index=> " << mapIndex;
 
+
     // text
     this->text2D = new Qt3DExtras::QText2DEntity();
     this->text2D->setParent(mScene);
@@ -48,18 +49,21 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint,
     //this->textTransform->setRotationY(50);
     this->text2D->addComponent(this->textTransform);
 
+
 }
 
 void CheckpointGraphics3D::updateCheckpoint3D(Checkpoint *checkpoint, Player *playerCamFocus){
-   this->x =  checkpoint->getX();
-   this->y = checkpoint->getY();
+    this->x =  checkpoint->getX();
+    this->y = checkpoint->getY();
 
-   Qt3DCore::QTransform *checkpointTransform = new Qt3DCore::QTransform();
-   checkpointTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
+    Qt3DCore::QTransform *checkpointTransform = new Qt3DCore::QTransform();
+    checkpointTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
 
-   this->textTransform->setRotationY((playerCamFocus->getAngle() * 180/3.14)-90.0);
-   this->text2D->removeComponent(this->text2D->components().at(0));
-   this->text2D->addComponent(this->textTransform);
+
+    this->textTransform->setRotationY((playerCamFocus->getAngle() * 180/3.14)-90.0);
+    this->text2D->removeComponent(this->text2D->components().at(0));
+    this->text2D->addComponent(this->textTransform);
+
 
     if(!this->components().empty()){
         this->removeComponent(this->components().at(2));

@@ -39,6 +39,8 @@ void PlayerUi::buttonPlayPressed()
         this->stackedWidget->setCurrentIndex(2);
         this->isGame = true ;
     }
+
+    emit onRegisterButtonClick();
 }
 
 //When receive mqtt message on topic /game/properties
@@ -125,7 +127,7 @@ PlayerUi::PlayerUi(QWidget *parent)
     this->isProperties = false ;
     this->isGame = false ;
 
-    this->resize(500 , 300);
+    this->setFixedSize(500 , 300);
     this->uuid = QUuid::createUuid().toString();
     this->props = Properties::getInstance();
     this->gameMode = GameMode::getInstance();
