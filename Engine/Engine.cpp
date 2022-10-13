@@ -389,6 +389,9 @@ void Engine::receivedMessage(QJsonObject pMessage, QString pTopic)
 void Engine::registered(Register *r) {
     qDebug() << "register";
 
+    if (gameStarted)
+        return;
+
     if (GameMode::getInstance()->_players->value(r->getUuid()) != nullptr) {
         return;
     }
