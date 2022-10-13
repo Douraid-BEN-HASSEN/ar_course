@@ -9,7 +9,7 @@
 class IA : public QObject
 {
     Q_OBJECT
-public:;
+public:
     explicit IA(QObject *parent = nullptr);
     IA(Register*, int , int ,  QObject *parent = nullptr);
     void determinePath();
@@ -19,6 +19,7 @@ public:;
     Player *getActivePlayer();
     void setRegister(Register *);
     void updateLabel() ;
+    QPair<int, int> getPairOffset(QPoint currentCheckpoint , Obstacle * obstacle) ;
 private:
     bool takeNextCheckpoint = true ;
     int currentCheckpointId = 0 ;
@@ -33,7 +34,9 @@ private:
     QList<QPair<QString , Checkpoint*>> path;
 
 signals:
+    //Emit signal to draw the path
     void determinePathDone(QList<QPair<QString , Checkpoint*>> resultPath);
+    //Emit signal on change target , to refresh the ihm
     void changeTarget(QPoint newTarget) ;
 };
 

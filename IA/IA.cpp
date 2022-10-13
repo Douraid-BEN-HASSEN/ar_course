@@ -1,5 +1,6 @@
 #include "IA.h"
 
+//Constructor
 IA::IA(QObject *parent): QObject{parent}
 {
     qDebug() << "Ia::Ia()";
@@ -11,6 +12,7 @@ IA::IA(QObject *parent): QObject{parent}
     this->obstacleRadius = Properties::getInstance()->getCircleRadius();
 }
 
+//Constructor
 IA::IA(Register *r, int speed, int offset ,   QObject *parent): QObject{parent}
 {
     qDebug() << "IA::IA()" ;
@@ -20,22 +22,79 @@ IA::IA(Register *r, int speed, int offset ,   QObject *parent): QObject{parent}
     this->offsetSelected = offset;
     QTimer::singleShot(1000, this, &IA::initIA);
 }
-
+//Setter for register
 void IA::setRegister(Register *reg) {
     qDebug() << "IA::setRegister()" ;
     this->_register = reg;
 }
 
-void IA::updateLabel()
+QPair<int, int> IA::getPairOffset(QPoint currentCheckpoint, Obstacle *obstacle)
 {
 
+    int offsetX = 0 ;
+    int offsetY = 0;
+    //Calculate the offset
+    //Top
+    if (currentCheckpoint.y() < obstacle->getY()) {
+        //Top Left
+        if (currentCheckpoint.x() > obstacle->getX()) {
+            offsetX = 0 ;
+            offsetY = this->offsetSelected ;
+        } else { //Top Right
+            offsetX = 0 ;
+            offsetY = -this->offsetSelected ;
+        }
+    }
+
+    //Bottom
+    else if (currentCheckpoint.y() > obstacle->getY()) {
+        //Bottom left
+        if (currentCheckpoint.x() > obstacle->getX()) {
+            offsetX = -this->offsetSelected ;
+            offsetY = 0;
+        } else { //Top Right
+            offsetX = this->offsetSelected ;
+            offsetY = 0;
+        }
+    }
+
+    //Left
+    if (currentCheckpoint.x() < obstacle->getX()) {
+        //Left top
+        if (currentCheckpoint.y() < obstacle->getY()) {
+            offsetX =0 ;
+            offsetY = -this->offsetSelected ;
+        } else { //Left bottom
+            offsetX = 0 ;
+            offsetY = +this->offsetSelected ;
+        }
+    }
+
+    //Right
+    if (currentCheckpoint.x() > obstacle->getX()) {
+        //Right top
+        if (currentCheckpoint.x() < obstacle->getX()) {
+            offsetX = 0 ;
+            offsetY = this->offsetSelected ;
+        } else { //Right bottom
+            offsetX = 0 ;
+            offsetY = this->offsetSelected ;
+        }
+    }
+
+    QPair<int,int> pair ;
+    pair.first= offsetX ;
+    pair.second = offsetY ;
+    return pair ;
 }
 
+//Get the current player
 Player* IA::getActivePlayer() {
     return GameMode::getInstance()->_players->value(this->_register->getUuid());
 
 }
 
+//Function to calc angle
 float normalizeAngleR(float angle) {
     while (angle > 0) {
         angle -= 2 * M_PI;
@@ -54,23 +113,26 @@ float IA::normalizeAngleD(float angle) {
     return angle;
 }
 
+//Start the ia
 void IA::initIA()
 {
     qDebug() << "Ia::initIA()";
     this->determinePath();
 }
 
+//Action to move to the checkpoint
 void IA::mooveToCheckpoint()
 {
     //Launch this every second
     QTimer::singleShot(1000 , this , &IA::mooveToCheckpoint);
-
 
     //While the run is not terminate
     while (this->currentCheckpointId < this->path.size() ){
 
         //Get the current checkpoint
         Checkpoint *target = path.at(this->currentCheckpointId).second;
+
+        //Emit signal to get the position display in the IHM
         emit this->changeTarget(target->getPosition());
 
         //If no checkpoint, return
@@ -80,7 +142,7 @@ void IA::mooveToCheckpoint()
         //Get the player
         this->player = this->getActivePlayer() ;
 
-        //Draw the line to go the checkpiint
+        //Draw the line to go the checkpoint
         QLineF WorldDirection = QLineF(this->player->getPosition(), target->getPosition());
         float playerAngle = qRadiansToDegrees(player->getAngle());
         float relativeDirection = WorldDirection.angle() - playerAngle;
@@ -90,7 +152,7 @@ void IA::mooveToCheckpoint()
         _control->setPower(this->speedSelected);
         _control->publish();
 
-
+        //Use timer
         QEventLoop loop;
         QTimer::singleShot(10, &loop, &QEventLoop::quit);
         loop.exec();
@@ -101,7 +163,7 @@ void IA::mooveToCheckpoint()
                 && player->getY() > ( target->getY() -  Properties::getInstance()->getCheckpointRadius())
                 && player->getY() < (target->getY() +  Properties::getInstance()->getCheckpointRadius())
                 ) {
-            qDebug() << "CHECKPOINT ATTEIGNED ";
+            //Go to the next checkpoint
             this->currentCheckpointId ++ ;
         }
     }
@@ -134,7 +196,6 @@ void IA::determinePath()
     int obstacleCheckpointLenght = 0 ;
 
     //Iterate the checkpoints
-    //for(int i = 0 ; i < checkpoints->size() + 100 ; i ++){
     for (int i = 0 ; i < checkpoints->size() + obstacleCheckpointLenght + 1   ; i++) {
 
         /* Get the next checkpoint or get the current checkpoint if the previous checkpoint
@@ -179,7 +240,6 @@ void IA::determinePath()
 
             //Determine is the obstacle is a circle of a rectangle
             if (obstacle->getId() % 2 == 0) {
-
                 obstacleLineWidth.setP1(QPointF(obstacle->getX() - obstacleRadius - ( obstacle->getX() - obstacleRadius - 50 < 0 ? 0 : 50 ) , obstacle->getY()));
                 obstacleLineWidth.setP2(QPointF(obstacle->getX() + obstacleRadius + ( obstacle->getX() + obstacleRadius + 50 > 1000 ? 0 : 50 ), obstacle->getY() ));
             } else {
@@ -215,60 +275,12 @@ void IA::determinePath()
                 Checkpoint *newCheck  = new Checkpoint ;
 
                 //Calculate coordinates of the new checkpoint according the position of obstacle
-                int offsetX = 0 ;
-                int offsetY = 0 ;
 
-                //Calculate the offset
-                //Top
-                if (currentCheckpoint.y() < obstacle->getY()) {
-                    //Top Left
-                    if (currentCheckpoint.x() > obstacle->getX()) {
-                        offsetX = 0 ;
-                        offsetY = this->offsetSelected ;
-                    } else { //Top Right
-                        offsetX = 0 ;
-                        offsetY = -this->offsetSelected ;
-                    }
-                }
 
-                //Bottom
-                else if (currentCheckpoint.y() > obstacle->getY()) {
-                    //Bottom left
-                    if (currentCheckpoint.x() > obstacle->getX()) {
-                        offsetX = -this->offsetSelected ;
-                        offsetY = 0;
-                    } else { //Top Right
-                        offsetX = this->offsetSelected ;
-                        offsetY = 0;
-                    }
-                }
+                QPair<int,int> currentPair = this->getPairOffset(currentCheckpoint , obstacle);
 
-                //Left
-                if (currentCheckpoint.x() < obstacle->getX()) {
-                    //Left top
-                    if (currentCheckpoint.y() < obstacle->getY()) {
-                        offsetX =0 ;
-                        offsetY = -this->offsetSelected ;
-                    } else { //Left bottom
-                        offsetX = 0 ;
-                        offsetY = +this->offsetSelected ;
-                    }
-                }
-
-                //Right
-                if (currentCheckpoint.x() > obstacle->getX()) {
-                    //Right top
-                    if (currentCheckpoint.x() < obstacle->getX()) {
-                        offsetX = 0 ;
-                        offsetY = this->offsetSelected ;
-                    } else { //Right bottom
-                        offsetX = 0 ;
-                        offsetY = this->offsetSelected ;
-                    }
-                }
-
-                newCheck->setX(obstacle->getId() % 2 == 0 ? collisionPoint->x() +  obstacleRadius + offsetX : collisionPoint->x() + obstacleWidth/2  + offsetX );
-                newCheck->setY(obstacle->getId() % 2 == 0 ? collisionPoint->y() +  obstacleRadius + offsetY : collisionPoint->y() +  obstacleWidth/2  + offsetY );
+                newCheck->setX(obstacle->getId() % 2 == 0 ? collisionPoint->x() +  obstacleRadius + currentPair.first : collisionPoint->x() + obstacleWidth/2  + currentPair.first );
+                newCheck->setY(obstacle->getId() % 2 == 0 ? collisionPoint->y() +  obstacleRadius + currentPair.second : collisionPoint->y() +  obstacleWidth/2  + currentPair.second );
 
                 //Add the new checkpoint
                 QPair<QString, Checkpoint*> p("obstacle" , newCheck);
@@ -277,8 +289,6 @@ void IA::determinePath()
                 takeNextCheckpoint = false ;
             }
         }
-
-
 
         if (isObstacle == false  ) {
             //If not obstacle , add to the path the current checkpoint and go to the new checkpoint
@@ -298,5 +308,6 @@ void IA::determinePath()
     //Launch the function to do the path and emit signal to draw the path
     emit this->determinePathDone(this->path);
 }
+
 
 
