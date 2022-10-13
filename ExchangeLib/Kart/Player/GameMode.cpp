@@ -24,8 +24,8 @@ GameMode::GameMode(QObject *parent): QObject{parent}
     this->_items = new QMap<QString, Item*>();
 
     this->_elapsedTime = 0;
-    this->_infoMessage = "Init";
-    this->_status = "Init";
+    this->_infoMessage = "waiting";
+    this->_status = "IMERIR caca";
 }
 
 // destructor

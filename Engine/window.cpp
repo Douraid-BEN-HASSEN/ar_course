@@ -155,6 +155,7 @@ void Window::chronoTimer()
 
     QString timeText = QTime::fromMSecsSinceStartOfDay(time).toString("m:ss:zzz");
 
+    engine->getGameMode()->setElapsedTime(time);
     ui->label_timer->setText(timeText);
 }
 

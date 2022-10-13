@@ -19,6 +19,8 @@ Engine::Engine(QObject *parent): QObject{parent}
 
     ConfigManager::watchProperties(this->_properties);
 
+    this->_gameMode->setStatus("waiting");
+
     this->initProperties();
 
     connect(RegisterManager::getInstance(), SIGNAL(application(Register*)), this, SLOT(registered(Register*)));
@@ -96,7 +98,7 @@ void Engine::control_th()
         Control *control = this->_controls->value(player->getUuid());
 
         if (gameStarted) {
-            g_player->setState("playing");
+            g_player->setState("progress");
         }
 
         g_player->update(control);
@@ -145,7 +147,7 @@ void Engine::control_th()
                 if (player->getCurrentLap() == this->_properties->getLaps()) {
                     qDebug() << player->getPseudo() << " finish!";
 
-                    g_player->setState("finish");
+                    g_player->setState("ended");
                     this->_gameMode->_players->remove(player->getUuid());
 
                     if(this->_gameMode->_players->isEmpty()){
@@ -512,6 +514,9 @@ void Engine::startGame()
     if (!gameStarted) {
         this->gameStartAt = QDateTime::currentDateTime();
         this->gameStarted = true;
+
+        this->_gameMode->setStatus("progress");
+
         //recupere les players
         for(GPlayer *g_player : this->playersGraphics.values()){
             if (this->checkpointsGraphics.size() > 0) {
@@ -528,6 +533,7 @@ void Engine::startGame()
 
 void Engine::endGame()
 {
+    this->_gameMode->setStatus("ended");
     //emetre signal de fin de partie
     emit gameEnded();
 }
