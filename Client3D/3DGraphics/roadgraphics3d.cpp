@@ -2,27 +2,10 @@
 
 RoadGraphics3D::RoadGraphics3D( Checkpoint *checkpoint1, Checkpoint *checkpoint2, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
-    /*this->drawLine({ (const float)checkpoint1->getX(), 3, (const float)checkpoint1->getY() },
-                   { (const float)checkpoint2->getX(), 3, (const float)checkpoint2->getY() },
-                   Qt::yellow,
-                   mScene, -50);*/
     this->drawLine({ (const float)checkpoint1->getX(), 3, (const float)checkpoint1->getY() },
                    { (const float)checkpoint2->getX(), 3, (const float)checkpoint2->getY() },
                    Qt::red,
                    mScene);
-    /*this->drawLine({ (const float)checkpoint1->getX(), 3, (const float)checkpoint1->getY() },
-                   { (const float)checkpoint2->getX(), 3, (const float)checkpoint2->getY() },
-                   Qt::blue,
-                   mScene, 50);*/
-    /*this->drawLine({ (const float)checkpoint1->getX(), 3, (const float)checkpoint1->getY()-50 },
-                   { (const float)checkpoint2->getX(), 3, (const float)checkpoint2->getY()-50 },
-                   Qt::green,
-                   mScene);
-    this->drawLine({ (const float)checkpoint1->getX(), 3, (const float)checkpoint1->getY()+50 },
-                   { (const float)checkpoint2->getX(), 3, (const float)checkpoint2->getY()+50 },
-                   Qt::blue,
-                   mScene);*/
-    //this->drawLine3D(checkpoint1, checkpoint2, mScene);
 }
 
 void RoadGraphics3D::drawLine(const QVector3D& start, const QVector3D& end, const QColor& color, Qt3DCore::QEntity *mScene, float ref)
@@ -86,25 +69,4 @@ void RoadGraphics3D::drawLine3D(Checkpoint *checkpoint1, Checkpoint *checkpoint2
     int a = checkpoint1->getX() - checkpoint2->getX();
     int b = checkpoint1->getY() - checkpoint2->getY();
     float distance = std::sqrt(a*a+b*b);
-
-
-    /*if(checkpoint1->getX() > checkpoint2->getX() && checkpoint1->getY() >= checkpoint2->getY()) {
-        qDebug() << checkpoint1->getId() << " 1";
-        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()-(distance/2)+100, 0, checkpoint1->getY()-200));
-    } else if(checkpoint1->getX() >= checkpoint2->getX() && checkpoint1->getY() < checkpoint2->getY()) {
-        qDebug() << checkpoint1->getId() << " 2";
-        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()+200+planeEntity->mesh()->width()*2));
-    } else if(checkpoint1->getX() < checkpoint2->getX() && checkpoint1->getY() >= checkpoint2->getY()) {
-        qDebug() << checkpoint1->getId() << " 3";
-        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX()+(distance/2), 0, checkpoint1->getY()));
-    } else if(checkpoint1->getX() < checkpoint2->getX() && checkpoint1->getY() < checkpoint2->getY()) {
-        qDebug() << checkpoint1->getId() << " 4";
-        //planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()+400));
-    } else if(checkpoint1->getX() <= checkpoint2->getX() && checkpoint1->getY() > checkpoint2->getY()) {
-        qDebug() << checkpoint1->getId() << " 5";
-        planeEntity->m_transform->setTranslation(QVector3D(checkpoint1->getX(), 0, checkpoint1->getY()-200));
-    } else {
-    }*/
-
-
 }

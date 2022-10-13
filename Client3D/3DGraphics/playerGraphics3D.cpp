@@ -61,11 +61,11 @@ void PlayerGraphics3D::updatePlayer3D(Player *player){
 
 void PlayerGraphics3D::followCameraPlayer(Player *playerCamFocus, Qt3DRender::QCamera *camerA){
 
-    int dist = 80;
+    int dist = 150 + heigth;
     float camX = playerCamFocus->getX() - cos(-playerCamFocus->getAngle()) * dist;
     float camY = playerCamFocus->getY() - sin(-playerCamFocus->getAngle()) * dist;
-    camerA->setPosition(QVector3D(camX, 10, camY));
-    camerA->setViewCenter(QVector3D(playerCamFocus->getX(), 10, playerCamFocus->getY()));
+    camerA->setPosition(QVector3D(camX, 40, camY));
+    camerA->setViewCenter( QVector3D(playerCamFocus->getX(), 40, playerCamFocus->getY()));
 }
 
 Player* PlayerGraphics3D::getPlayer()
