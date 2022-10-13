@@ -44,7 +44,7 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint,
     this->textTransform = new Qt3DCore::QTransform();
     this->textTransform->setScale(10);
 
-    this->textTransform->setTranslation(QVector3D(this->x, 0,this->y-10));
+    this->textTransform->setTranslation(QVector3D(this->x, 15.0,this->y-10));
     //this->textTransform->setRotationY(50);
     this->text2D->addComponent(this->textTransform);
 
