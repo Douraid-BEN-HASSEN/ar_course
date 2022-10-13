@@ -1,8 +1,6 @@
 #include "playerGraphics3D.h"
 //const QUrl url = QUrl("/home/pierre/Documents/ar_course/Client3D/vehiculeObj/DeLorean.obj");
 //QUrl car_path = QStringLiteral("qrc:/vehicule.qrc/DeLorean.obj");
-qreal PlayerGraphics3D::heigth = 100;
-qreal PlayerGraphics3D::width = 100;
 
 PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
@@ -15,9 +13,6 @@ PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QN
     if (veh != nullptr){
         this->heigth = veh->getHeight();
         this->width = veh->getWidth();
-        qDebug() << "veh->getType() = " << veh->getType();
-        qDebug() << "this->heigth = " << this->heigth;
-        qDebug() << "this->width = " << this->width;
     }
 
     this->setParent(mScene);

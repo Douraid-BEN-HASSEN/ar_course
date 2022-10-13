@@ -62,6 +62,7 @@ void Widget3D::updateProperties3D(){
     BananaGraphics3D::bananaRadius = Properties::getInstance()->getBananaRadius();
     RocketGraphics3D::rocketRadius = Properties::getInstance()->getRocketRadius();
     BombGraphics3D::bombRadius = Properties::getInstance()->getBombRadius();
+
 }
 
 void Widget3D::updateMap3D() {
