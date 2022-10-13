@@ -7,10 +7,8 @@ qreal PlayerGraphics3D::width = 100;
 PlayerGraphics3D::PlayerGraphics3D(Player *player, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
 {
     this->uuid = player->getUuid();
-    //this->pseudo = player->getPseudo();
     this->x = player->getX();
     this->y = player->getY();
-    //this->angle = player->getAngle();
     this->_player = player;
 
     Vehicle *veh = Properties::getInstance()->vehicleOptions->value(player->getVehicule());

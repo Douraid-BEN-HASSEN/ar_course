@@ -17,6 +17,7 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DExtras/QTorusMesh>
 #include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QText2DEntity>
 #include <QPropertyAnimation>
 
 #include <QDiffuseSpecularMaterial>

@@ -13,9 +13,8 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
 
     Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial(mScene);
     material->setDiffuse(QColor(Qt::green));
+    material->setAmbient(QColorConstants::Green);
 
-    //Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
-    //sphereMesh->setRadius(radiusCheckpoint);
     Qt3DExtras::QCylinderMesh *cylindreMesh = new Qt3DExtras::QCylinderMesh;
     cylindreMesh->setRadius(radiusCheckpoint);
     cylindreMesh->setLength(1);
@@ -52,7 +51,7 @@ qreal CheckpointGraphics3D::getX()
     return x;
 }
 
-qreal CheckpointGraphics3D::getY()        //painter->drawEllipse(0,0,this->heigth, this->width);
+qreal CheckpointGraphics3D::getY()
 {
     return y;
 }

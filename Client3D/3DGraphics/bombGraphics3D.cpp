@@ -1,7 +1,6 @@
-
-
 #include "bombGraphics3D.h"
 // Valeur par défaut
+
 qreal BombGraphics3D::bombRadius = 10;
 
 BombGraphics3D::BombGraphics3D(Item *bomb, Qt3DCore::QEntity *mScene, QNode *parent): Qt3DCore::QEntity(parent)
