@@ -28,27 +28,33 @@ CheckpointGraphics3D::CheckpointGraphics3D(Checkpoint *checkpoint, Qt3DCore::QEn
     this->addComponent(cylindreTransform);
 
     // text
-    auto *text2D = new Qt3DExtras::QText2DEntity();
-   text2D->setParent(mScene);
-   text2D->setFont(QFont("Times", 3, QFont::Bold));
-   text2D->setHeight(5);
-   text2D->setWidth(QString::number(checkpoint->getId()).length() * 3);
-   text2D->setText(QString::number(checkpoint->getId()));
+   this->text2D = new Qt3DExtras::QText2DEntity();
+   this->text2D->setParent(mScene);
+   this->text2D->setFont(QFont("Times", 3, QFont::Bold));
+   this->text2D->setHeight(5);
+   this->text2D->setWidth(QString::number(checkpoint->getId()).length() * 3);
+   this->text2D->setText(QString::number(checkpoint->getId()));
 
-   text2D->setColor(Qt::green);
-   auto *textTransform = new Qt3DCore::QTransform(text2D);
-   textTransform->setScale(20);
-   textTransform->setTranslation(QVector3D(this->x-((20*text2D->width())/3), 15.0 ,this->y));
-   //textTransform->setRotationY(50.0); //angle
-   text2D->addComponent(textTransform);
+   this->text2D->setColor(Qt::green);
+
+   this->textTransform = new Qt3DCore::QTransform();
+   this->textTransform->setScale(20);
+   this->textTransform->setTranslation(QVector3D(this->x-((20*text2D->width())/3), 15.0 ,this->y));
+   this->textTransform->setRotationY(50);
+   this->text2D->addComponent(this->textTransform);
+
 }
 
-void CheckpointGraphics3D::updateCheckpoint3D(Checkpoint *checkpoint){
+void CheckpointGraphics3D::updateCheckpoint3D(Checkpoint *checkpoint, Player *playerCamFocus){
    this->x =  checkpoint->getX();
    this->y = checkpoint->getY();
 
    Qt3DCore::QTransform *checkpointTransform = new Qt3DCore::QTransform();
    checkpointTransform->setTranslation(QVector3D(this->x, 0.0f ,this->y));
+
+   this->textTransform->setRotationY((playerCamFocus->getAngle() * 180/3.14)-90.0);
+   this->text2D->removeComponent(this->text2D->components().at(0));
+   this->text2D->addComponent(this->textTransform);
 
     if(!this->components().empty()){
         this->removeComponent(this->components().at(2));

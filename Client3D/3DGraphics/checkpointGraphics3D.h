@@ -23,6 +23,7 @@
 #include <QDiffuseSpecularMaterial>
 #include <QOrbitCameraController>
 #include <Kart/Map/Checkpoint.h>
+#include <Kart/Player/GameMode.h>
 
 class CheckpointGraphics3D: public Qt3DCore::QEntity
 {
@@ -30,7 +31,7 @@ class CheckpointGraphics3D: public Qt3DCore::QEntity
 public:
     static qreal radiusCheckpoint;
     CheckpointGraphics3D(Checkpoint *, Qt3DCore::QEntity *mScene, QNode *parent = nullptr);
-    void updateCheckpoint3D(Checkpoint *);
+    void updateCheckpoint3D(Checkpoint *, Player *);
     qreal getId() ;
     qreal getX();
     qreal getY();
@@ -40,6 +41,9 @@ private:
     qreal id;
     qreal x;
     qreal y;
+
+    Qt3DExtras::QText2DEntity *text2D;
+    Qt3DCore::QTransform *textTransform;
 
 };
 
