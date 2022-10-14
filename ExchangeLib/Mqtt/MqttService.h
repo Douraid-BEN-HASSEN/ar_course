@@ -14,6 +14,7 @@
 #include <QJsonObject>
 
 struct {
+
     const QString hostname = "localhost";
     const unsigned short port = 1883;
     const QString username = "";
