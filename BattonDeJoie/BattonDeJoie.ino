@@ -8,7 +8,7 @@
 #include <esp_wifi.h>
 
 #include <PubSubClient.h>
-#include "UUID.h"
+#include <UUID.h>
 #include <ArduinoJson.h>
 
 #define DATA_BUFFER_SIZE 7
@@ -32,14 +32,14 @@ UUID uuid;
 /** credantial setup */
 // const char *WIFI_SSID = "valentin";
 // const char *WIFI_PASSWORD = "valentin";
-// const char *WIFI_SSID = "IMERIR_enculer";
-// const char *WIFI_PASSWORD = "12345678";
-const char *WIFI_SSID = "IMERIR_IoT";
-const char *WIFI_PASSWORD = "kohWoong5oox";
+const char *WIFI_SSID = "IMERIR_iot_celui_qui_marche";
+const char *WIFI_PASSWORD = "12345678";
+// const char *WIFI_SSID = "IMERIR_IoT";
+// const char *WIFI_PASSWORD = "kohWoong5oox";
 
-const char *MQTT_ENDPOINT = "omniumcorp.fr";     // Adresse IP du Broker Mqtt
+// const char *MQTT_ENDPOINT = "omniumcorp.fr";     // Adresse IP du Broker Mqtt
 // const char *MQTT_ENDPOINT = "77.159.224.21";     // Adresse IP du Broker Mqtt
-// const char *MQTT_ENDPOINT = "gerald.imerir.org";     // Adresse IP du Broker Mqtt
+const char *MQTT_ENDPOINT = "10.3.3.42";     // Adresse IP du Broker Mqtt
 
 const char *MQTT_SUB_TOPIC = "game/properties";  // Topic
 const char *MQTT_REGISTER_TOPIC = "player/register";
@@ -243,10 +243,10 @@ void loop() {
 
             Serial.println("register player");
 
-            register_doc["uuid"] = uuid;
+            register_doc["uuid"] = "58e1cfa4-85f6-4928-b16b-74289dee9881";
             register_doc["pseudo"] = "ladg";
             register_doc["controller"] = "controller";
-            register_doc["vehicle"] = 1;
+            register_doc["vehicle"] = "bike";
             register_doc["team"] = 1;
 
             String data;
@@ -291,12 +291,12 @@ void loop() {
             _angle = PitchRollYaw[1];
         }
 
-        register_doc["uuid"] = uuid;
-        register_doc["angle"] = _angle * DEG_TO_RAD;
-        register_doc["power"] = power;
-        register_doc["buttons"]["banana"] = button == GREEN_BUTTON;
-        register_doc["buttons"]["bomb"] = button == WHITE_BUTTON;
-        register_doc["buttons"]["rocket"] = button == YELLOW_BUTTON;
+        control_doc["uuid"] = uuid;
+        control_doc["angle"] = _angle * DEG_TO_RAD;
+        control_doc["power"] = power;
+        control_doc["buttons"]["banana"] = button == GREEN_BUTTON;
+        control_doc["buttons"]["bomb"] = button == WHITE_BUTTON;
+        control_doc["buttons"]["rocket"] = button == YELLOW_BUTTON;
 
         Heltec.display->clear();
 
@@ -316,7 +316,8 @@ void loop() {
 
 
         String data;
-        serializeJson(register_doc, data);
+        serializeJson(control_doc, data);
+        control_doc.clear();
 
         if (!pubSubClient.publish(MQTT_CONTROL_TOPIC, data.c_str(), false)) {
             Serial.println("ERROR??? :");
@@ -368,15 +369,16 @@ bool connectToWIFI(int tryConnect, bool debug) {
                 i++;
             } else {  //delay passed
                 Serial.println("Delay passed");
-                    Heltec.display->clear();
-                    Heltec.display->drawString(0, 28, "Wifi disconnected!");
-                    Heltec.display->display();
+                Heltec.display->clear();
+                Heltec.display->drawString(0, 28, "Wifi disconnected!");
+                Heltec.display->display();
 
                 return false;
             }
         }
         Serial.println("Connected");
     }
+    delay(500);
 
     Heltec.display->clear();
     Heltec.display->drawString(0, 28, "Wifi connected!");
